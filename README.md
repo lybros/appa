@@ -9,3 +9,8 @@ structure from motion.  :mortar_board:  course work on FAMCS, BSU and UIIP, NASB
 * set `DYLD_LIBRARY_PATH` environment variable to `path/to/openimageio/lib`
 * set `OPENIMAGEIO_INCLUDE_DIR` environment variable `path/to/openimageio/include`
 * set `OPENIMAGEIO_LIBRARY` environment variable to `path/to/openimageio/lib`
+* add `path/to/openimageio/bin` to `$PATH`
+* add `path/to/theiaSfM/build/bin` to `$PATH`
+
+# Development:
+* use `bash view.sh path/to/model` or just `. view.sh` for view default model from `out/model-0.txt`

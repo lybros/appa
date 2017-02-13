@@ -12,6 +12,7 @@ ReconstructionBuilderOptions SetReconstructionBuilderOptions() {
     options.descriptor_type = theia::DescriptorExtractorType::SIFT;
     options.output_matches_file = out_matches_file;
     options.matching_options.match_out_of_core = true;
+    options.matching_options.perform_geometric_verification = false;
     options.matching_options.keypoints_and_descriptors_output_dir = "out/matches";
     return options;
 }
@@ -33,9 +34,13 @@ int main(int argc, char* argv[]) {
                 &camera_intrinsics_prior,
                 &image_matches);
 
+        theia::CameraIntrinsicsGroupId intrinsics_group_id = 0;
+
         for (int i = 0; i < image_files.size(); i++) {
-            reconstruction_builder.AddImage(image_files[i]);
+            reconstruction_builder.AddImageWithCameraIntrinsicsPrior(
+                    image_files[i], camera_intrinsics_prior[i], intrinsics_group_id);
         }
+
 
         for (const auto& match : image_matches) {
             cout << "(" << match.image1 << ", " << match.image2 << ")" << endl;

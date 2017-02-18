@@ -33,3 +33,4 @@
 .idea/
 images/
 out/
+cmake-build/

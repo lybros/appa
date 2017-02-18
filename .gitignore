@@ -34,3 +34,5 @@
 images/
 out/
 cmake-build/
+CMakeLists.txt.user
+

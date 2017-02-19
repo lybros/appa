@@ -21,9 +21,14 @@ void MainWindow::on_actionNewProject_triggered()
     NewProjectDialog new_project_dialog;
     new_project_dialog.SetActiveProject(active_project);
     if (new_project_dialog.exec()) {
-        cout << "accepted" << endl;
+        // Checking if we've initialized new project.
+        std::cout << "New project basic parameteres:" << std::endl;
+        std::cout << active_project->getProjectName() << std::endl;
+        std::cout << active_project->getProjectPath() << std::endl;
+        std::cout << active_project->getImagesPath() << std::endl;
+        std::cout << "-------------------------------------" << std::endl;
+        // TODO(uladbohdan): to create the project in filesystem.
     } else {
-        cout << "rejected" << endl;
     }
 }
 

@@ -61,6 +61,36 @@ void Project::RunReconstruction()
     return;
 }
 
+std::string Project::getProjectName()
+{
+    return project_name;
+}
+
+std::string Project::getProjectPath()
+{
+    return project_path;
+}
+
+std::string Project::getImagesPath()
+{
+    return images_path;
+}
+
+void Project::setProjectName(std::string _project_name)
+{
+    project_name = _project_name;
+}
+
+void Project::setProjectPath(std::string _project_path)
+{
+    project_path = _project_path;
+}
+
+void Project::setImagesPath(std::string _images_path)
+{
+    images_path = _images_path;
+}
+
 Project::~Project()
 {
     delete options;

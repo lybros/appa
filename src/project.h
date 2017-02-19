@@ -1,3 +1,6 @@
+#ifndef PROJECT_H
+#define PROJECT_H
+
 #include <iostream>
 #include <theia/theia.h>
 
@@ -17,3 +20,5 @@ public:
 private:
     ReconstructionBuilderOptions *options;
 };
+
+#endif // PROJECT_H

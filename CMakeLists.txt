@@ -21,9 +21,20 @@ INCLUDE_DIRECTORIES(Qt5Widgets_INCLUDE_DIRS)
 add_definitions(${Qt5Widgets_DEFINITIONS})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 
-set(SRC_UI ui/mainwindow.cpp)
-set(HEADERS_UI ui/mainwindow.h)
-set(FORMS_UI ui/mainwindow.ui)
+set(SRC_UI
+    ui/mainwindow.cpp
+    ui/newproject.cpp
+    )
+
+set(HEADERS_UI
+    ui/mainwindow.h
+    ui/newproject.h
+    )
+
+set(FORMS_UI
+    ui/mainwindow.ui
+    ui/newproject.ui
+    )
 
 set(SOURCE_FILES main.cpp src/project.h src/project.cpp)
 

@@ -27,7 +27,7 @@
     <property name="title">
      <string>Project</string>
     </property>
-    <addaction name="actionNew"/>
+    <addaction name="actionNewProject"/>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
@@ -58,9 +58,12 @@
    <addaction name="actionMatch_Features"/>
    <addaction name="actionStart_Reconstruction"/>
   </widget>
-  <action name="actionNew">
+  <action name="actionNewProject">
    <property name="text">
-    <string>New</string>
+    <string>New Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Create New Project</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -80,7 +83,8 @@
   </action>
   <action name="actionRun_Reconstruction">
    <property name="icon">
-    <iconset theme=":/icons/sample0.png"/>
+    <iconset theme=":/icons/sample0.png">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Run Reconstruction</string>
@@ -88,7 +92,8 @@
   </action>
   <action name="actionExtract_Features">
    <property name="icon">
-    <iconset theme=":/icons/sample2.png"/>
+    <iconset theme=":/icons/sample2.png">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Extract Features</string>
@@ -99,7 +104,8 @@
   </action>
   <action name="actionMatch_Features">
    <property name="icon">
-    <iconset theme=":/icons/sample1.png"/>
+    <iconset theme=":/icons/sample1.png">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Match Features</string>
@@ -110,7 +116,8 @@
   </action>
   <action name="actionStart_Reconstruction">
    <property name="icon">
-    <iconset theme=":/icons/sample0.png"/>
+    <iconset theme=":/icons/sample0.png">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Start Reconstruction</string>

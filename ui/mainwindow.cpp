@@ -6,17 +6,29 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    project = new Project();
+    active_project = new Project();
 }
 
 void MainWindow::on_actionRun_Reconstruction_triggered()
 {
     std::cout << "Reconstruction started..." << std::endl;
-    project->RunReconstruction();
+    active_project->RunReconstruction();
+}
+
+void MainWindow::on_actionNewProject_triggered()
+{
+    std::cout << "Opening New Project dialog..." << std::endl;
+    NewProjectDialog new_project_dialog;
+    new_project_dialog.SetActiveProject(active_project);
+    if (new_project_dialog.exec()) {
+        cout << "accepted" << endl;
+    } else {
+        cout << "rejected" << endl;
+    }
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete project;
+    delete active_project;
 }

@@ -5,6 +5,8 @@
 
 #include <QMainWindow>
 
+#include "newproject.h"
+
 #include "../src/project.h"
 
 namespace Ui {
@@ -21,10 +23,11 @@ public:
 
 private slots:
     void on_actionRun_Reconstruction_triggered();
+    void on_actionNewProject_triggered();
 
 private:
     Ui::MainWindow *ui;
-    Project *project;
+    Project *active_project;
 };
 
 #endif // MAINWINDOW_H

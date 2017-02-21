@@ -41,14 +41,26 @@ bool NewProjectDialog::verify_new_project_options()
         error = "Project Name cannot be empty";
     }
 
-    QString projectPath = ui->project_path->text();
-    if (projectPath.isEmpty()) {
+    QString projectParentPath = ui->project_path->text();
+    if (projectParentPath.isEmpty()) {
         error = "Project Path cannot be empty";
+    }
+    if (!QFileInfo::exists(projectParentPath)) {
+        error = "The path for project you've chosen does not exist!";
+    }
+
+    QDir projectParentDir(projectParentPath);
+
+    if (QFileInfo::exists(projectParentDir.filePath(projectName))) {
+        error = "You have to choose another name for your project! It's already exist.";
     }
 
     QString imagePath = ui->images_path->text();
     if (imagePath.isEmpty()) {
         error = "Images Path cannot be empty";
+    }
+    if (!QFileInfo::exists(imagePath)) {
+        error = "Invalid path to images directory.";
     }
 
     if (!error.isEmpty()) {
@@ -64,9 +76,9 @@ bool NewProjectDialog::initialize_new_project()
     QString projectPath = ui->project_path->text();
     QString imagePath = ui->images_path->text();
 
-    project->setProjectName(projectName.toStdString());
-    project->setProjectPath(projectPath.toStdString());
-    project->setImagesPath(imagePath.toStdString());
+    project->setProjectName(projectName);
+    project->setProjectPath(projectPath);
+    project->setImagesPath(imagePath);
 
     return true;
 }
@@ -81,4 +93,24 @@ void NewProjectDialog::show_warning(QString& error)
 NewProjectDialog::~NewProjectDialog()
 {
     delete ui;
+}
+
+void NewProjectDialog::on_locate_project_button_clicked()
+{
+    QString dir = QFileDialog::getExistingDirectory(this,
+                                                    tr("Choose the directory"),
+                                                    QDir::homePath(),
+                                                    QFileDialog::ShowDirsOnly
+                                                    | QFileDialog::DontResolveSymlinks);
+    ui->project_path->setText(dir);
+}
+
+void NewProjectDialog::on_locate_images_button_clicked()
+{
+    QString dir = QFileDialog::getExistingDirectory(this,
+                                                    tr("Choose the directory"),
+                                                    QDir::homePath(),
+                                                    QFileDialog::ShowDirsOnly
+                                                    | QFileDialog::DontResolveSymlinks);
+    ui->images_path->setText(dir);
 }

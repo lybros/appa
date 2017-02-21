@@ -61,34 +61,54 @@ void Project::RunReconstruction()
     return;
 }
 
-std::string Project::getProjectName()
+QString Project::getProjectName()
 {
     return project_name;
 }
 
-std::string Project::getProjectPath()
+QString Project::getProjectPath()
 {
     return project_path;
 }
 
-std::string Project::getImagesPath()
+QString Project::getImagesPath()
 {
     return images_path;
 }
 
-void Project::setProjectName(std::string _project_name)
+void Project::setProjectName(QString _project_name)
 {
     project_name = _project_name;
 }
 
-void Project::setProjectPath(std::string _project_path)
+void Project::setProjectPath(QString _project_path)
 {
     project_path = _project_path;
 }
 
-void Project::setImagesPath(std::string _images_path)
+void Project::setImagesPath(QString _images_path)
 {
     images_path = _images_path;
+}
+
+bool Project::WriteConfigurationFile()
+{
+    QFile configFile(getConfigurationFilePath());
+    if (configFile.open(QIODevice::ReadWrite)) {
+        QTextStream stream(&configFile);
+        stream << "PROJECT_CONFIG_VERSION v1.0" << endl;
+    } else {
+        return false;
+    }
+    configFile.close();
+    return true;
+}
+
+QString Project::getConfigurationFilePath()
+{
+    QString projectFolder = QDir(project_path).filePath(project_name);
+    QString configFilePath = QDir(projectFolder).filePath("project-config");
+    return configFilePath;
 }
 
 Project::~Project()

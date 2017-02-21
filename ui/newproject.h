@@ -20,6 +20,9 @@
 
 #include <QDialog>
 #include <QMessageBox>
+#include <QFileDialog>
+#include <QDir>
+#include <QFileInfo>
 
 #include "../src/project.h"
 
@@ -38,6 +41,10 @@ public:
 
 private slots:
     void accept();
+
+    void on_locate_project_button_clicked();
+
+    void on_locate_images_button_clicked();
 
 private:
     Ui::NewProjectDialog *ui;

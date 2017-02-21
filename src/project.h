@@ -4,6 +4,10 @@
 #include <iostream>
 #include <theia/theia.h>
 
+#include <QString>
+#include <QDir>
+#include <QTextStream>
+
 using namespace std;
 using theia::Reconstruction;
 using theia::ReconstructionBuilder;
@@ -16,22 +20,26 @@ public:
     Project();
     void RunReconstruction();
 
-    std::string getProjectName();
-    std::string getProjectPath();
-    std::string getImagesPath();
+    QString getProjectName();
+    QString getProjectPath();
+    QString getImagesPath();
 
-    void setProjectName(std::string);
-    void setProjectPath(std::string);
-    void setImagesPath(std::string);
+    void setProjectName(QString);
+    void setProjectPath(QString);
+    void setImagesPath(QString);
+
+    bool WriteConfigurationFile();
 
     ~Project();
 
 private:
     ReconstructionBuilderOptions *options;
 
-    std::string project_name;
-    std::string project_path;
-    std::string images_path;
+    QString project_name;
+    QString project_path;
+    QString images_path;
+
+    QString getConfigurationFilePath();
 };
 
 #endif // PROJECT_H

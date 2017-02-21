@@ -23,11 +23,24 @@ void MainWindow::on_actionNewProject_triggered()
     if (new_project_dialog.exec()) {
         // Checking if we've initialized new project.
         std::cout << "New project basic parameteres:" << std::endl;
-        std::cout << active_project->getProjectName() << std::endl;
-        std::cout << active_project->getProjectPath() << std::endl;
-        std::cout << active_project->getImagesPath() << std::endl;
+        std::cout << active_project->getProjectName().toStdString() << std::endl;
+        std::cout << active_project->getProjectPath().toStdString() << std::endl;
+        std::cout << active_project->getImagesPath().toStdString() << std::endl;
         std::cout << "-------------------------------------" << std::endl;
-        // TODO(uladbohdan): to create the project in filesystem.
+
+        QDir projectDir(active_project->getProjectPath());
+        if (!projectDir.mkdir(active_project->getProjectName())) {
+            QMessageBox warningBox;
+            warningBox.setText("Failed to create a folder for project.");
+            warningBox.exec();
+            return;
+        }
+        if (!active_project->WriteConfigurationFile()) {
+            QMessageBox warningBox;
+            warningBox.setText("Failed to write the configuration on filesystem:(");
+            warningBox.exec();
+            return;
+        }
     } else {
     }
 }

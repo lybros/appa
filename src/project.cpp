@@ -75,7 +75,7 @@ QString Project::GetProjectPath()
 
 QString Project::GetImagesPath()
 {
-    return images_path_;
+    return storage_->GetImagesPath();
 }
 
 void Project::SetProjectName(QString project_name)
@@ -90,7 +90,6 @@ void Project::SetProjectPath(QString project_path)
 
 void Project::SetImagesPath(QString images_path)
 {
-    images_path_ = images_path;
     storage_->UpdateImagesPath(images_path);
 }
 
@@ -101,12 +100,93 @@ bool Project::WriteConfigurationFile()
         QTextStream stream(&configFile);
         stream << "PROJECT_CONFIG_VERSION v1.0" << endl;
         stream << "PROJECT_NAME " << project_name_ << endl;
-        stream << "IMAGES_LOCATION " << images_path_ << endl;
-        stream << "NUMBER_OF_IMAGES " << 0 << endl;
-        // TODO(uladbohdan): to write list of images to the configuration file.
-        // TODO(uladbohdan): to figure out if the output location is a part
-        // of project configutation.
-        stream << "OUTPUT_LOCATION " << "default" << endl;
+        stream << "IMAGES_LOCATION " << GetImagesPath() << endl;
+        stream << "NUMBER_OF_IMAGES " << storage_->NumberOfImages() << endl;
+        stream << "IMAGE NAMES " << endl;
+        for (auto image_path : storage_->GetImages()) {
+            stream << image_path << endl;
+        }
+        stream << "OUTPUT_LOCATION " << "DEFAULT" << endl;
+    } else {
+        return false;
+    }
+    configFile.close();
+    return true;
+}
+
+bool Project::ReadConfigurationFile()
+{
+    QFile configFile(GetConfigurationFilePath());
+
+    if (configFile.open(QIODevice::ReadOnly)) {
+        QTextStream stream(&configFile);
+        QString temp_line;
+
+        temp_line = stream.readLine();
+        if (temp_line != "PROJECT_CONFIG_VERSION v1.0") {
+            std::cerr << "Reading config failed: wrong file version." << std::endl;
+            configFile.close();
+            return false;
+        }
+
+        stream >> temp_line;
+        if (temp_line != "PROJECT_NAME") {
+            std::cerr << "Wrong config file format. No PROJECT_NAME attribute."
+                      << std::endl;
+            configFile.close();
+            return false;
+        }
+
+        stream >> project_name_;
+
+        stream >> temp_line;
+        if (temp_line != "IMAGES_LOCATION") {
+            std::cerr << "Wrong config file format. No IMAGES_LOCATION attribute."
+                      << std::endl;
+            configFile.close();
+            return false;
+        }
+
+        QString images_path;
+        stream >> images_path;
+        // TODO(uladbohdan): to remove explicit setting of images path after
+        // the Storage::ForceInitialize is implemented.
+        SetImagesPath(images_path);
+
+        stream >> temp_line;
+        if (temp_line != "NUMBER_OF_IMAGES") {
+            std::cerr << "Wrong config file format. No NUMBER_OF_IMAGES attr."
+                      << std::endl;
+            configFile.close();
+            return false;
+        }
+
+        int number_of_images;
+        stream >> number_of_images;
+        QVector<QString> images(number_of_images);
+        for (int i = 0; i < number_of_images; i++) {
+            stream >> images[i];
+        }
+        if (! storage_->ForceInitialize(images_path, images)) {
+            std::cerr << "Force storage initializing failed :(" << std::endl;
+            configFile.close();
+            return false;
+        }
+
+        stream >> temp_line;
+        if (temp_line != "OUTPUT_LOCATION") {
+            std::cerr << "Wrong config file format. No OUTPUT_LOCATION attr."
+                      << std::endl;
+            configFile.close();
+            return false;
+        }
+
+        stream >> temp_line;
+        if (temp_line == "DEFAULT") {
+            output_location_ = GetDefaultOutputPath();
+        } else {
+            output_location_ = temp_line;
+        }
     } else {
         return false;
     }
@@ -116,9 +196,19 @@ bool Project::WriteConfigurationFile()
 
 QString Project::GetConfigurationFilePath()
 {
-    QString projectFolder = QDir(project_path_).filePath(project_name_);
-    QString configFilePath = QDir(projectFolder).filePath("project-config");
-    return configFilePath;
+    //QString projectFolder = QDir(project_path_).filePath(project_name_);
+    //QString configFilePath = QDir(projectFolder).filePath(CONFIG_FILE_NAME);
+    //return configFilePath;
+    return QDir(project_path_).filePath(CONFIG_FILE_NAME);
+}
+
+QString Project::GetDefaultOutputPath()
+{
+    //QString projectFolder = QDir(project_path_).filePath(project_name_);
+    //QString outputLocation =
+    //        QDir(projectFolder).filePath(DEFAULT_OUTPUT_LOCATION_POSTFIX);
+    //return outputLocation;
+    return QDir(project_path_).filePath(DEFAULT_OUTPUT_LOCATION_POSTFIX);
 }
 
 Project::~Project()

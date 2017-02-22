@@ -35,7 +35,7 @@
      <x>10</x>
      <y>11</y>
      <width>541</width>
-     <height>101</height>
+     <height>140</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -71,7 +71,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="project_path">
+       <widget class="QLabel" name="project_parent_path">
         <property name="text">
          <string>...choose the location...</string>
         </property>

@@ -41,7 +41,7 @@ bool NewProjectDialog::verify_new_project_options()
         error = "Project Name cannot be empty";
     }
 
-    QString projectParentPath = ui->project_path->text();
+    QString projectParentPath = ui->project_parent_path->text();
     if (projectParentPath.isEmpty()) {
         error = "Project Path cannot be empty";
     }
@@ -73,11 +73,11 @@ bool NewProjectDialog::verify_new_project_options()
 bool NewProjectDialog::initialize_new_project()
 {
     QString projectName = ui->project_name->toPlainText();
-    QString projectPath = ui->project_path->text();
+    QString projectPath = ui->project_parent_path->text();
     QString imagePath = ui->images_path->text();
 
     project->SetProjectName(projectName);
-    project->SetProjectPath(projectPath);
+    project->SetProjectPath(QDir(projectPath).filePath(projectName));
     project->SetImagesPath(imagePath);
 
     return true;
@@ -102,7 +102,7 @@ void NewProjectDialog::on_locate_project_button_clicked()
                                                     QDir::homePath(),
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
-    ui->project_path->setText(dir);
+    ui->project_parent_path->setText(dir);
 }
 
 void NewProjectDialog::on_locate_images_button_clicked()

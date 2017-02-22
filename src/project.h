@@ -1,3 +1,21 @@
+/* The project structure is:
+ * project_name_folder
+ * |--"project-config"
+ *
+ * project-config file is:
+ * ---------------------------------------------
+ * PROJECT_CONFIG_VERSION v1.0
+ * PROJECT_NAME "project-name"
+ * IMAGES_LOCATION "~/datasets/dataset0/"
+ * NUMBER_OF_IMAGES N_IMAGES
+ * IMAGE_NAMES
+ * "name0.jpg"
+ * ...
+ * "nameN.jpg"
+ * OUTPUT_LOCATION "~/models/model0" // if "DEFAULT"
+ *     "out/" directory is used.
+ * --------------------------------------------- */
+
 #ifndef PROJECT_H
 #define PROJECT_H
 
@@ -14,7 +32,13 @@ using namespace std;
 using theia::Reconstruction;
 using theia::ReconstructionBuilder;
 using theia::ReconstructionBuilderOptions;
+
+// DEPRECATED.
+// TODO(uladbohdan/drapegnik): to replace all usages with output_location_ path.
 const string out_matches_file = "out/matches.txt";
+
+const QString CONFIG_FILE_NAME = "project-config";
+const QString DEFAULT_OUTPUT_LOCATION_POSTFIX = "out/";
 
 class Project {
 
@@ -32,6 +56,7 @@ public:
     void SetImagesPath(QString);
 
     bool WriteConfigurationFile();
+    bool ReadConfigurationFile();
 
     ~Project();
 
@@ -39,12 +64,16 @@ private:
     ReconstructionBuilderOptions *options_;
 
     QString project_name_;
+    // project_path_ contains the full way to the project.
+    // e.g. CONFIG_FILE_NAME is directly inside this folder.
     QString project_path_;
-    QString images_path_;
+    QString output_location_;
 
+    // images_path_ is stored inside of Storage object.
     Storage* storage_;
 
     QString GetConfigurationFilePath();
+    QString GetDefaultOutputPath();
 };
 
 #endif // PROJECT_H

@@ -25,9 +25,11 @@ private slots:
     void on_actionRun_Reconstruction_triggered();
     void on_actionNewProject_triggered();
 
+    void on_actionOpen_triggered();
+
 private:
     Ui::MainWindow *ui;
-    Project *active_project;
+    Project *active_project_;
 };
 
 #endif // MAINWINDOW_H

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <theia/theia.h>
 
+#include "storage.h"
+
 #include <QString>
 #include <QDir>
 #include <QTextStream>
@@ -18,28 +20,31 @@ class Project {
 
 public:
     Project();
+
     void RunReconstruction();
 
-    QString getProjectName();
-    QString getProjectPath();
-    QString getImagesPath();
+    QString GetProjectName();
+    QString GetProjectPath();
+    QString GetImagesPath();
 
-    void setProjectName(QString);
-    void setProjectPath(QString);
-    void setImagesPath(QString);
+    void SetProjectName(QString);
+    void SetProjectPath(QString);
+    void SetImagesPath(QString);
 
     bool WriteConfigurationFile();
 
     ~Project();
 
 private:
-    ReconstructionBuilderOptions *options;
+    ReconstructionBuilderOptions *options_;
 
-    QString project_name;
-    QString project_path;
-    QString images_path;
+    QString project_name_;
+    QString project_path_;
+    QString images_path_;
 
-    QString getConfigurationFilePath();
+    Storage* storage_;
+
+    QString GetConfigurationFilePath();
 };
 
 #endif // PROJECT_H

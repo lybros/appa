@@ -1,6 +1,8 @@
 set(SOURCE_FILES
     project.h
     project.cpp
+    storage.h
+    storage.cpp
     )
 
 add_library(src ${SOURCE_FILES})

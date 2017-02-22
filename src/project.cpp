@@ -2,19 +2,21 @@
 
 Project::Project()
 {
-    options = new ReconstructionBuilderOptions();
-    options->descriptor_type = theia::DescriptorExtractorType::SIFT;
-    options->output_matches_file = out_matches_file;
-    options->matching_options.match_out_of_core = true;
-    options->matching_options.perform_geometric_verification = false;
-    options->matching_options.keypoints_and_descriptors_output_dir = "out/matches";
+    options_ = new ReconstructionBuilderOptions();
+    options_->descriptor_type = theia::DescriptorExtractorType::SIFT;
+    options_->output_matches_file = out_matches_file;
+    options_->matching_options.match_out_of_core = true;
+    options_->matching_options.perform_geometric_verification = false;
+    options_->matching_options.keypoints_and_descriptors_output_dir = "out/matches";
+
+    storage_ = new Storage();
 }
 
 void Project::RunReconstruction()
 {
     const bool readMatchesFromFile = false;
     //google::InitGoogleLogging(argv[0]);
-    ReconstructionBuilder reconstruction_builder(*options);
+    ReconstructionBuilder reconstruction_builder(*options_);
 
     if (readMatchesFromFile) {
         vector<string> image_files;
@@ -61,42 +63,50 @@ void Project::RunReconstruction()
     return;
 }
 
-QString Project::getProjectName()
+QString Project::GetProjectName()
 {
-    return project_name;
+    return project_name_;
 }
 
-QString Project::getProjectPath()
+QString Project::GetProjectPath()
 {
-    return project_path;
+    return project_path_;
 }
 
-QString Project::getImagesPath()
+QString Project::GetImagesPath()
 {
-    return images_path;
+    return images_path_;
 }
 
-void Project::setProjectName(QString _project_name)
+void Project::SetProjectName(QString project_name)
 {
-    project_name = _project_name;
+    project_name_ = project_name;
 }
 
-void Project::setProjectPath(QString _project_path)
+void Project::SetProjectPath(QString project_path)
 {
-    project_path = _project_path;
+    project_path_ = project_path;
 }
 
-void Project::setImagesPath(QString _images_path)
+void Project::SetImagesPath(QString images_path)
 {
-    images_path = _images_path;
+    images_path_ = images_path;
+    storage_->UpdateImagesPath(images_path);
 }
 
 bool Project::WriteConfigurationFile()
 {
-    QFile configFile(getConfigurationFilePath());
+    QFile configFile(GetConfigurationFilePath());
     if (configFile.open(QIODevice::ReadWrite)) {
         QTextStream stream(&configFile);
         stream << "PROJECT_CONFIG_VERSION v1.0" << endl;
+        stream << "PROJECT_NAME " << project_name_ << endl;
+        stream << "IMAGES_LOCATION " << images_path_ << endl;
+        stream << "NUMBER_OF_IMAGES " << 0 << endl;
+        // TODO(uladbohdan): to write list of images to the configuration file.
+        // TODO(uladbohdan): to figure out if the output location is a part
+        // of project configutation.
+        stream << "OUTPUT_LOCATION " << "default" << endl;
     } else {
         return false;
     }
@@ -104,14 +114,14 @@ bool Project::WriteConfigurationFile()
     return true;
 }
 
-QString Project::getConfigurationFilePath()
+QString Project::GetConfigurationFilePath()
 {
-    QString projectFolder = QDir(project_path).filePath(project_name);
+    QString projectFolder = QDir(project_path_).filePath(project_name_);
     QString configFilePath = QDir(projectFolder).filePath("project-config");
     return configFilePath;
 }
 
 Project::~Project()
 {
-    delete options;
+    delete options_;
 }

@@ -76,9 +76,9 @@ bool NewProjectDialog::initialize_new_project()
     QString projectPath = ui->project_path->text();
     QString imagePath = ui->images_path->text();
 
-    project->setProjectName(projectName);
-    project->setProjectPath(projectPath);
-    project->setImagesPath(imagePath);
+    project->SetProjectName(projectName);
+    project->SetProjectPath(projectPath);
+    project->SetImagesPath(imagePath);
 
     return true;
 }

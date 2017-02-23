@@ -45,7 +45,17 @@ class Project {
 public:
     Project();
 
+    // The method is aimed to start with raw data and finish with ready-to-use
+    // model. TODO: to rename.
     void RunReconstruction();
+
+    void ExtractFeatures();
+
+    void MatchFeatures();
+
+    // To run reconstruction assuming the features are already extracted and
+    // matched.
+    void StartReconstruction();
 
     QString GetProjectName();
     QString GetProjectPath();

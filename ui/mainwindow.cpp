@@ -70,6 +70,18 @@ void MainWindow::on_actionOpen_triggered()
     }
 }
 
+void MainWindow::on_actionExtract_Features_triggered() {
+    active_project_->ExtractFeatures();
+}
+
+void MainWindow::on_actionMatch_Features_triggered() {
+    active_project_->MatchFeatures();
+}
+
+void MainWindow::on_actionStart_Reconstruction_triggered() {
+    active_project_->StartReconstruction();
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;

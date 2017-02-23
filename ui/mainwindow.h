@@ -1,5 +1,7 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+// Copyright 2017 Lybros.
+
+#ifndef UI_MAINWINDOW_H_
+#define UI_MAINWINDOW_H_
 
 #include <iostream>
 
@@ -12,21 +14,20 @@
 #include "../src/project.h"
 
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 
 class MainWindow : public QMainWindow {
-Q_OBJECT
+    Q_OBJECT
 
-public:
+ public:
     explicit MainWindow(QWidget* parent = 0);
 
     void set_icons(QtAwesome* awesome = 0);
 
     ~MainWindow();
 
-private slots:
-
+ private slots:
     void on_actionRun_Reconstruction_triggered();
 
     void on_actionNewProject_triggered();
@@ -39,9 +40,9 @@ private slots:
 
     void on_actionStart_Reconstruction_triggered();
 
-private:
+ private:
     Ui::MainWindow* ui;
     Project* active_project_;
 };
 
-#endif // MAINWINDOW_H
+#endif  // UI_MAINWINDOW_H_

@@ -1,3 +1,5 @@
+// Copyright 2017 Lybros.
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -13,13 +15,17 @@ void MainWindow::set_icons(QtAwesome* awesome) {
     QVariantMap options;
 
     options.insert("color", QColor(0, 189, 58));
-    ui->actionRun_Reconstruction->setIcon(awesome->icon(fa::play, options));
+    ui->actionRun_Reconstruction->setIcon(
+                awesome->icon(fa::play, options));
     options.insert("color", QColor(255, 175, 24));
-    ui->actionExtract_Features->setIcon(awesome->icon(fa::crosshairs, options));
+    ui->actionExtract_Features->setIcon(
+                awesome->icon(fa::crosshairs, options));
     options.insert("color", QColor(147, 205, 255));
-    ui->actionMatch_Features->setIcon(awesome->icon(fa::filepictureo, options));
+    ui->actionMatch_Features->setIcon(
+                awesome->icon(fa::filepictureo, options));
     options.insert("color", QColor(0, 189, 58));
-    ui->actionStart_Reconstruction->setIcon(awesome->icon(fa::play, options));
+    ui->actionStart_Reconstruction->setIcon(
+                awesome->icon(fa::play, options));
 }
 
 void MainWindow::on_actionRun_Reconstruction_triggered() {
@@ -34,9 +40,12 @@ void MainWindow::on_actionNewProject_triggered() {
     if (new_project_dialog.exec()) {
         // Checking if we've initialized new project.
         std::cout << "New project basic parameteres:" << std::endl;
-        std::cout << active_project_->GetProjectName().toStdString() << std::endl;
-        std::cout << active_project_->GetProjectPath().toStdString() << std::endl;
-        std::cout << active_project_->GetImagesPath().toStdString() << std::endl;
+        std::cout << active_project_->GetProjectName().toStdString()
+                  << std::endl;
+        std::cout << active_project_->GetProjectPath().toStdString()
+                  << std::endl;
+        std::cout << active_project_->GetImagesPath().toStdString()
+                  << std::endl;
         std::cout << "-------------------------------------" << std::endl;
 
         QDir projectDir(active_project_->GetProjectPath());
@@ -48,7 +57,8 @@ void MainWindow::on_actionNewProject_triggered() {
         }
         if (!active_project_->WriteConfigurationFile()) {
             QMessageBox warningBox;
-            warningBox.setText("Failed to write the configuration on filesystem:(");
+            warningBox.setText(
+                        "Failed to write the configuration on filesystem:(");
             warningBox.exec();
             return;
         }
@@ -57,10 +67,12 @@ void MainWindow::on_actionNewProject_triggered() {
 }
 
 void MainWindow::on_actionOpen_triggered() {
-    QString projectPathChosen = QFileDialog::getExistingDirectory(this,
-                                                                  tr("Choose the directory"), QDir::homePath(),
-                                                                  QFileDialog::ShowDirsOnly |
-                                                                  QFileDialog::DontResolveSymlinks);
+    QString projectPathChosen =
+            QFileDialog::getExistingDirectory(this,
+                                              tr("Choose the directory"),
+                                              QDir::homePath(),
+                                              QFileDialog::ShowDirsOnly |
+                                              QFileDialog::DontResolveSymlinks);
 
     // TODO(uladbohdan): to check if the folder is really a project folder.
 
@@ -72,9 +84,12 @@ void MainWindow::on_actionOpen_triggered() {
     if (active_project_->ReadConfigurationFile()) {
         // To check the data read from config file.
         std::cout << "project READ!" << std::endl;
-        std::cout << active_project_->GetProjectName().toStdString() << std::endl;
-        std::cout << active_project_->GetProjectPath().toStdString() << std::endl;
-        std::cout << active_project_->GetImagesPath().toStdString() << std::endl;
+        std::cout << active_project_->GetProjectName().toStdString()
+                  << std::endl;
+        std::cout << active_project_->GetProjectPath().toStdString()
+                  << std::endl;
+        std::cout << active_project_->GetImagesPath().toStdString()
+                  << std::endl;
         std::cout << "-------------------------------------" << std::endl;
     } else {
         std::cerr << "Reading failed!" << std::endl;

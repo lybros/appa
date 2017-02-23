@@ -1,3 +1,5 @@
+// Copyright 2017 Lybros.
+
 /* The project structure is:
  * project_name_folder
  * |--"project-config"
@@ -16,13 +18,16 @@
  *     "out/" directory is used.
  * --------------------------------------------- */
 
-#ifndef PROJECT_H
-#define PROJECT_H
-
-#include <iostream>
-#include <theia/theia.h>
+#ifndef SRC_PROJECT_H_
+#define SRC_PROJECT_H_
 
 #include "storage.h"
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include <theia/theia.h>
 
 #include <QString>
 #include <QDir>
@@ -41,8 +46,7 @@ const QString CONFIG_FILE_NAME = "project-config";
 const QString DEFAULT_OUTPUT_LOCATION_POSTFIX = "out/";
 
 class Project {
-
-public:
+ public:
     Project();
 
     // The method is aimed to start with raw data and finish with ready-to-use
@@ -70,7 +74,7 @@ public:
 
     ~Project();
 
-private:
+ private:
     ReconstructionBuilderOptions *options_;
 
     QString project_name_;
@@ -86,4 +90,4 @@ private:
     QString GetDefaultOutputPath();
 };
 
-#endif // PROJECT_H
+#endif  // SRC_PROJECT_H_

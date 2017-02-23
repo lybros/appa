@@ -1,48 +1,40 @@
+// Copyright 2017 Lybros.
+
 #include "storage.h"
 
-Storage::Storage()
-{
-
+Storage::Storage() {
 }
 
 Storage::Storage(QString images_path) :
-    images_path_(images_path)
-{
+    images_path_(images_path) {
     Storage();
 }
 
-QString Storage::GetImagesPath()
-{
+QString Storage::GetImagesPath() {
     return images_path_;
 }
 
-int Storage::UpdateImagesPath(QString images_path)
-{
+int Storage::UpdateImagesPath(QString images_path) {
     images_path_ = images_path;
     return ParseImageFolder();
 }
 
-bool Storage::ForceInitialize(QString images_path, QVector<QString>& images)
-{
+bool Storage::ForceInitialize(QString images_path,
+                              QVector<QString>& images) {
     return true;
 }
 
-int Storage::ParseImageFolder()
-{
+int Storage::ParseImageFolder() {
     return 0;
 }
 
-QVector<QString>& Storage::GetImages()
-{
+QVector<QString>& Storage::GetImages() {
     return images_;
 }
 
-int Storage::NumberOfImages()
-{
+int Storage::NumberOfImages() {
     return images_.length();
 }
 
-Storage::~Storage()
-{
-
+Storage::~Storage() {
 }

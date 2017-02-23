@@ -1,14 +1,15 @@
-#ifndef STORAGE_H
-#define STORAGE_H
+// Copyright 2017 Lybros.
+
+#ifndef SRC_STORAGE_H_
+#define SRC_STORAGE_H_
 
 #include <QVector>
 
 class Storage {
-
-public:
+ public:
     Storage();
 
-    Storage(QString images_path);
+    explicit Storage(QString images_path);
 
     QString GetImagesPath();
 
@@ -30,10 +31,9 @@ public:
 
     ~Storage();
 
-private:
+ private:
     QVector<QString> images_;
     QString images_path_;
-
 };
 
-#endif // STORAGE_H
+#endif  // SRC_STORAGE_H_

@@ -1,21 +1,22 @@
+// Copyright 2017 Lybros.
+
 #include "project.h"
 
-Project::Project()
-{
+Project::Project() {
     options_ = new ReconstructionBuilderOptions();
     options_->descriptor_type = theia::DescriptorExtractorType::SIFT;
     options_->output_matches_file = out_matches_file;
     options_->matching_options.match_out_of_core = true;
     options_->matching_options.perform_geometric_verification = false;
-    options_->matching_options.keypoints_and_descriptors_output_dir = "out/matches";
+    options_->matching_options.keypoints_and_descriptors_output_dir =
+            "out/matches";
 
     storage_ = new Storage();
 }
 
-void Project::RunReconstruction()
-{
+void Project::RunReconstruction() {
     const bool readMatchesFromFile = false;
-    //google::InitGoogleLogging(argv[0]);
+    // google::InitGoogleLogging(argv[0]);
     ReconstructionBuilder reconstruction_builder(*options_);
 
     if (readMatchesFromFile) {
@@ -33,17 +34,20 @@ void Project::RunReconstruction()
 
         for (int i = 0; i < image_files.size(); i++) {
             reconstruction_builder.AddImageWithCameraIntrinsicsPrior(
-                    image_files[i], camera_intrinsics_prior[i], intrinsics_group_id);
+                    image_files[i], camera_intrinsics_prior[i],
+                        intrinsics_group_id);
         }
 
 
         for (const auto& match : image_matches) {
             cout << "(" << match.image1 << ", " << match.image2 << ")" << endl;
-            CHECK(reconstruction_builder.AddTwoViewMatch(match.image1, match.image2, match));
+            CHECK(reconstruction_builder.AddTwoViewMatch(
+                      match.image1, match.image2, match));
         }
     } else {
         for (int num = 1; num <= 9; num++) {
-            reconstruction_builder.AddImage(theia::StringPrintf("images/image00%d.jpg", num));
+            reconstruction_builder.AddImage(theia::StringPrintf(
+                                                "images/image00%d.jpg", num));
         }
         CHECK(reconstruction_builder.ExtractAndMatchFeatures())
         << "Could not extract and match features";
@@ -56,7 +60,8 @@ void Project::RunReconstruction()
 
     for (int i = 0; i < reconstructions.size(); i++) {
         string output_file = theia::StringPrintf("%s-%d.txt", "out/model", i);
-        cout << "Writing reconstruction " << i << " to " << output_file << endl;
+        cout << "Writing reconstruction " << i << " to " <<
+                output_file << endl;
         CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
         << "Could not write reconstruction to file";
     }
@@ -64,49 +69,39 @@ void Project::RunReconstruction()
 }
 
 void Project::ExtractFeatures() {
-
 }
 
 void Project::MatchFeatures() {
-
 }
 
 void Project::StartReconstruction() {
-
 }
 
-QString Project::GetProjectName()
-{
+QString Project::GetProjectName() {
     return project_name_;
 }
 
-QString Project::GetProjectPath()
-{
+QString Project::GetProjectPath() {
     return project_path_;
 }
 
-QString Project::GetImagesPath()
-{
+QString Project::GetImagesPath() {
     return storage_->GetImagesPath();
 }
 
-void Project::SetProjectName(QString project_name)
-{
+void Project::SetProjectName(QString project_name) {
     project_name_ = project_name;
 }
 
-void Project::SetProjectPath(QString project_path)
-{
+void Project::SetProjectPath(QString project_path) {
     project_path_ = project_path;
 }
 
-void Project::SetImagesPath(QString images_path)
-{
+void Project::SetImagesPath(QString images_path) {
     storage_->UpdateImagesPath(images_path);
 }
 
-bool Project::WriteConfigurationFile()
-{
+bool Project::WriteConfigurationFile() {
     QFile configFile(GetConfigurationFilePath());
     if (configFile.open(QIODevice::ReadWrite)) {
         QTextStream stream(&configFile);
@@ -126,8 +121,7 @@ bool Project::WriteConfigurationFile()
     return true;
 }
 
-bool Project::ReadConfigurationFile()
-{
+bool Project::ReadConfigurationFile() {
     QFile configFile(GetConfigurationFilePath());
 
     if (configFile.open(QIODevice::ReadOnly)) {
@@ -136,7 +130,8 @@ bool Project::ReadConfigurationFile()
 
         temp_line = stream.readLine();
         if (temp_line != "PROJECT_CONFIG_VERSION v1.0") {
-            std::cerr << "Reading config failed: wrong file version." << std::endl;
+            std::cerr << "Reading config failed: wrong file version."
+                      << std::endl;
             configFile.close();
             return false;
         }
@@ -179,7 +174,7 @@ bool Project::ReadConfigurationFile()
         for (int i = 0; i < number_of_images; i++) {
             stream >> images[i];
         }
-        if (! storage_->ForceInitialize(images_path, images)) {
+        if (!storage_->ForceInitialize(images_path, images)) {
             std::cerr << "Force storage initializing failed :(" << std::endl;
             configFile.close();
             return false;
@@ -206,24 +201,14 @@ bool Project::ReadConfigurationFile()
     return true;
 }
 
-QString Project::GetConfigurationFilePath()
-{
-    //QString projectFolder = QDir(project_path_).filePath(project_name_);
-    //QString configFilePath = QDir(projectFolder).filePath(CONFIG_FILE_NAME);
-    //return configFilePath;
+QString Project::GetConfigurationFilePath() {
     return QDir(project_path_).filePath(CONFIG_FILE_NAME);
 }
 
-QString Project::GetDefaultOutputPath()
-{
-    //QString projectFolder = QDir(project_path_).filePath(project_name_);
-    //QString outputLocation =
-    //        QDir(projectFolder).filePath(DEFAULT_OUTPUT_LOCATION_POSTFIX);
-    //return outputLocation;
+QString Project::GetDefaultOutputPath() {
     return QDir(project_path_).filePath(DEFAULT_OUTPUT_LOCATION_POSTFIX);
 }
 
-Project::~Project()
-{
+Project::~Project() {
     delete options_;
 }

@@ -1,20 +1,19 @@
+// Copyright 2017 Lybros.
+
 #include "newproject.h"
 #include "ui_newproject.h"
 
 NewProjectDialog::NewProjectDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::NewProjectDialog)
-{
+    ui(new Ui::NewProjectDialog) {
     ui->setupUi(this);
 }
 
-void NewProjectDialog::SetActiveProject(Project *active_project)
-{
+void NewProjectDialog::SetActiveProject(Project *active_project) {
     project = active_project;
 }
 
-void NewProjectDialog::accept()
-{
+void NewProjectDialog::accept() {
     if (create_new_project()) {
         std::cout << "created successfully!" << std::endl;
         QDialog::accept();
@@ -32,8 +31,7 @@ bool NewProjectDialog::create_new_project() {
     }
 }
 
-bool NewProjectDialog::verify_new_project_options()
-{
+bool NewProjectDialog::verify_new_project_options() {
     QString error = "";
 
     QString projectName = ui->project_name->toPlainText();
@@ -70,8 +68,7 @@ bool NewProjectDialog::verify_new_project_options()
     return true;
 }
 
-bool NewProjectDialog::initialize_new_project()
-{
+bool NewProjectDialog::initialize_new_project() {
     QString projectName = ui->project_name->toPlainText();
     QString projectPath = ui->project_parent_path->text();
     QString imagePath = ui->images_path->text();
@@ -83,34 +80,32 @@ bool NewProjectDialog::initialize_new_project()
     return true;
 }
 
-void NewProjectDialog::show_warning(QString& error)
-{
+void NewProjectDialog::show_warning(QString& error) {
     QMessageBox warningBox;
     warningBox.setText(error);
     warningBox.exec();
 }
 
-NewProjectDialog::~NewProjectDialog()
-{
+NewProjectDialog::~NewProjectDialog() {
     delete ui;
 }
 
-void NewProjectDialog::on_locate_project_button_clicked()
-{
-    QString dir = QFileDialog::getExistingDirectory(this,
-                                                    tr("Choose the directory"),
-                                                    QDir::homePath(),
-                                                    QFileDialog::ShowDirsOnly
-                                                    | QFileDialog::DontResolveSymlinks);
+void NewProjectDialog::on_locate_project_button_clicked() {
+    QString dir =
+            QFileDialog::getExistingDirectory(this,
+                                              tr("Choose the directory"),
+                                              QDir::homePath(),
+                                              QFileDialog::ShowDirsOnly
+                                              | QFileDialog::DontResolveSymlinks);
     ui->project_parent_path->setText(dir);
 }
 
-void NewProjectDialog::on_locate_images_button_clicked()
-{
-    QString dir = QFileDialog::getExistingDirectory(this,
-                                                    tr("Choose the directory"),
-                                                    QDir::homePath(),
-                                                    QFileDialog::ShowDirsOnly
-                                                    | QFileDialog::DontResolveSymlinks);
+void NewProjectDialog::on_locate_images_button_clicked() {
+    QString dir =
+            QFileDialog::getExistingDirectory(this,
+                                             tr("Choose the directory"),
+                                             QDir::homePath(),
+                                             QFileDialog::ShowDirsOnly
+                                             | QFileDialog::DontResolveSymlinks);
     ui->images_path->setText(dir);
 }

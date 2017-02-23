@@ -1,5 +1,7 @@
-#ifndef NEWPROJECT_H
-#define NEWPROJECT_H
+// Copyright 2017 Lybros.
+
+#ifndef UI_NEWPROJECT_H_
+#define UI_NEWPROJECT_H_
 
 #include <QDialog>
 #include <QMessageBox>
@@ -13,23 +15,22 @@ namespace Ui {
 class NewProjectDialog;
 }
 
-class NewProjectDialog : public QDialog
-{
+class NewProjectDialog : public QDialog {
     Q_OBJECT
 
-public:
+ public:
     explicit NewProjectDialog(QWidget *parent = 0);
     void SetActiveProject(Project *project);
     ~NewProjectDialog();
 
-private slots:
+ private slots:
     void accept();
 
     void on_locate_project_button_clicked();
 
     void on_locate_images_button_clicked();
 
-private:
+ private:
     Ui::NewProjectDialog *ui;
     Project *project;
 
@@ -39,4 +40,4 @@ private:
     void show_warning(QString& error);
 };
 
-#endif // NEWPROJECT_H
+#endif  // UI_NEWPROJECT_H_

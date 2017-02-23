@@ -1,22 +1,31 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
+MainWindow::MainWindow(QWidget* parent) :
+        QMainWindow(parent),
+        ui(new Ui::MainWindow) {
     ui->setupUi(this);
     active_project_ = new Project();
 }
 
-void MainWindow::on_actionRun_Reconstruction_triggered()
-{
+void MainWindow::set_icons(QtAwesome* awesome) {
+    awesome->initFontAwesome();
+    QVariantMap options;
+
+    options.insert("color", QColor(0, 189, 58));
+    ui->actionRun_Reconstruction->setIcon(awesome->icon(fa::play, options));
+    options.insert("color", QColor(255, 175, 24));
+    ui->actionExtract_Features->setIcon(awesome->icon(fa::crosshairs, options));
+    options.insert("color", QColor(147, 205, 255));
+    ui->actionMatch_Features->setIcon(awesome->icon(fa::filepictureo, options));
+}
+
+void MainWindow::on_actionRun_Reconstruction_triggered() {
     std::cout << "Reconstruction started..." << std::endl;
     active_project_->RunReconstruction();
 }
 
-void MainWindow::on_actionNewProject_triggered()
-{
+void MainWindow::on_actionNewProject_triggered() {
     std::cout << "Opening New Project dialog..." << std::endl;
     NewProjectDialog new_project_dialog;
     new_project_dialog.SetActiveProject(active_project_);
@@ -45,11 +54,11 @@ void MainWindow::on_actionNewProject_triggered()
     }
 }
 
-void MainWindow::on_actionOpen_triggered()
-{
+void MainWindow::on_actionOpen_triggered() {
     QString projectPathChosen = QFileDialog::getExistingDirectory(this,
-        tr("Choose the directory"), QDir::homePath(),
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                                  tr("Choose the directory"), QDir::homePath(),
+                                                                  QFileDialog::ShowDirsOnly |
+                                                                  QFileDialog::DontResolveSymlinks);
 
     // TODO(uladbohdan): to check if the folder is really a project folder.
 
@@ -57,7 +66,7 @@ void MainWindow::on_actionOpen_triggered()
     active_project_ = new Project();
     active_project_->SetProjectPath(projectPathChosen);
     std::cout << "PROJECT FOLDER: " <<
-                 active_project_->GetProjectPath().toStdString() << std::endl;
+    active_project_->GetProjectPath().toStdString() << std::endl;
     if (active_project_->ReadConfigurationFile()) {
         // To check the data read from config file.
         std::cout << "project READ!" << std::endl;
@@ -82,8 +91,7 @@ void MainWindow::on_actionStart_Reconstruction_triggered() {
     active_project_->StartReconstruction();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
     delete active_project_;
 }

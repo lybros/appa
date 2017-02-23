@@ -18,6 +18,8 @@ void MainWindow::set_icons(QtAwesome* awesome) {
     ui->actionExtract_Features->setIcon(awesome->icon(fa::crosshairs, options));
     options.insert("color", QColor(147, 205, 255));
     ui->actionMatch_Features->setIcon(awesome->icon(fa::filepictureo, options));
+    options.insert("color", QColor(0, 189, 58));
+    ui->actionStart_Reconstruction->setIcon(awesome->icon(fa::play, options));
 }
 
 void MainWindow::on_actionRun_Reconstruction_triggered() {

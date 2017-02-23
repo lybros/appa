@@ -14,13 +14,11 @@ set(FORMS_UI
     )
 
 QT5_WRAP_UI(FORMS_UI_HDRS ${FORMS_UI})
-QT5_ADD_RESOURCES(UI_RES resources.qrc)
 
 add_library(ui
     ${SRC_UI}
     ${HEADERS_UI}
     ${FORMS_UI_HDRS}
-    ${UI_RES}
     )
 
 # We're building the ui library on top of src library,

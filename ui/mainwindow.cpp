@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget* parent) :
     active_project_ = new Project();
 }
 
-void MainWindow::set_icons(QtAwesome * awesome) {
+void MainWindow::set_icons(QtAwesome* awesome) {
     awesome->initFontAwesome();
     QVariantMap options;
 
@@ -77,6 +77,18 @@ void MainWindow::on_actionOpen_triggered() {
     } else {
         std::cerr << "Reading failed!" << std::endl;
     }
+}
+
+void MainWindow::on_actionExtract_Features_triggered() {
+    active_project_->ExtractFeatures();
+}
+
+void MainWindow::on_actionMatch_Features_triggered() {
+    active_project_->MatchFeatures();
+}
+
+void MainWindow::on_actionStart_Reconstruction_triggered() {
+    active_project_->StartReconstruction();
 }
 
 MainWindow::~MainWindow() {

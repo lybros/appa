@@ -63,6 +63,18 @@ void Project::RunReconstruction()
     return;
 }
 
+void Project::ExtractFeatures() {
+
+}
+
+void Project::MatchFeatures() {
+
+}
+
+void Project::StartReconstruction() {
+
+}
+
 QString Project::GetProjectName()
 {
     return project_name_;

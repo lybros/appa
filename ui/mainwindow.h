@@ -33,6 +33,12 @@ private slots:
 
     void on_actionOpen_triggered();
 
+    void on_actionExtract_Features_triggered();
+
+    void on_actionMatch_Features_triggered();
+
+    void on_actionStart_Reconstruction_triggered();
+
 private:
     Ui::MainWindow* ui;
     Project* active_project_;

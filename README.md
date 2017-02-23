@@ -1,6 +1,13 @@
 # sfm
 structure from motion.  :mortar_board:  course work on FAMCS, BSU and UIIP, NASB
 
+### install:
+```
+git clone https://github.com/lybros/sfm.git
+git submodule init
+git submodule update
+```
+
 ### dependencies:
 * [OpenImageIO](https://sites.google.com/site/openimageio/home) ~ [`v1.7.11`](https://github.com/OpenImageIO/oiio/tree/Release-1.7.11)
 * [TheiaSfM](http://www.theia-sfm.org/) ~ [`v0.7`](https://github.com/sweeneychris/TheiaSfM/tree/v0.7)

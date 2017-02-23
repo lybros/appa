@@ -4,8 +4,9 @@
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);
     QtAwesome* awesome = new QtAwesome(&a);
-    MainWindow w(nullptr, awesome);
     awesome->initFontAwesome();
+    MainWindow w;
+    w.set_icons(awesome);
     w.show();
 
     return a.exec();

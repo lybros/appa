@@ -4,6 +4,8 @@
 #include <iostream>
 
 #include <QMainWindow>
+#include <QPushButton>
+#include "../libs/QtAwesome/QtAwesome/QtAwesome.h"
 
 #include "newproject.h"
 
@@ -18,7 +20,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0, QtAwesome *awesome = 0);
     ~MainWindow();
 
 private slots:

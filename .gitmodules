@@ -1,0 +1,3 @@
+[submodule "libs/QtAwesome"]
+	path = libs/QtAwesome
+	url = https://github.com/Drapegnik/QtAwesome.git

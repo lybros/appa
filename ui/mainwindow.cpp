@@ -1,12 +1,22 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent, QtAwesome *awesome) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     active_project_ = new Project();
+
+    awesome->initFontAwesome();
+    QVariantMap options;
+
+    options.insert("color", QColor(0, 189, 58));
+    ui->actionRun_Reconstruction->setIcon(awesome->icon(fa::play, options));
+    options.insert("color", QColor(255, 175, 24));
+    ui->actionExtract_Features->setIcon(awesome->icon(fa::crosshairs, options));
+    options.insert("color", QColor(147, 205, 255));
+    ui->actionMatch_Features->setIcon(awesome->icon(fa::filepictureo, options));
 }
 
 void MainWindow::on_actionRun_Reconstruction_triggered()

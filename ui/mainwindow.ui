@@ -56,8 +56,6 @@
     </property>
     <addaction name="actionNewProject"/>
     <addaction name="actionOpen"/>
-    <addaction name="actionSave"/>
-    <addaction name="actionSave_As"/>
    </widget>
    <addaction name="project_menu"/>
   </widget>

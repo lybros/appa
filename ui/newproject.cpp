@@ -9,16 +9,17 @@ NewProjectDialog::NewProjectDialog(QWidget *parent) :
     ui->setupUi(this);
 }
 
-void NewProjectDialog::SetActiveProject(Project *active_project) {
-    project = active_project;
+void NewProjectDialog::SetProjectOptions(NewProjectOptions *project_options) {
+    project_options_ = project_options;
 }
 
 void NewProjectDialog::accept() {
     if (create_new_project()) {
-        std::cout << "created successfully!" << std::endl;
+        std::cout << "[NewProjectDialog]: created successfully!" << std::endl;
         QDialog::accept();
     } else {
-        std::cout << "failed to create new project" << std::endl;
+        std::cout << "[NewProjectDialog]: failed to create new project"
+                  << std::endl;
     }
 }
 
@@ -69,14 +70,18 @@ bool NewProjectDialog::verify_new_project_options() {
 }
 
 bool NewProjectDialog::initialize_new_project() {
-    QString projectName = ui->project_name->toPlainText();
-    QString projectPath = ui->project_parent_path->text();
-    QString imagePath = ui->images_path->text();
+    project_options_->project_name = ui->project_name->toPlainText();
 
-    project->SetProjectName(projectName);
-    project->SetProjectPath(QDir(projectPath).filePath(projectName));
-    project->SetImagesPath(imagePath);
+    QString project_parent_path = ui->project_parent_path->text();
+    project_options_->project_path =
+            QDir(project_parent_path).filePath(project_options_->project_name);
 
+    project_options_->images_path = ui->images_path->text();
+    std::cout << "[NewProjectDialog] Parameters to be returned back from NewProjectDialog: "
+              << std::endl
+              << project_options_->project_name.toStdString() << " "
+              << project_options_->project_path.toStdString() << " "
+              << project_options_->images_path.toStdString() << std::endl;
     return true;
 }
 

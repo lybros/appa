@@ -10,7 +10,6 @@
  * PROJECT_NAME "project-name"
  * IMAGES_LOCATION "~/datasets/dataset0/"
  * NUMBER_OF_IMAGES N_IMAGES
- * IMAGE_NAMES
  * "name0.jpg"
  * ...
  * "nameN.jpg"
@@ -48,6 +47,8 @@ const QString DEFAULT_OUTPUT_LOCATION_POSTFIX = "out/";
 class Project {
  public:
     Project();
+
+    Project(QString project_name, QString project_path, QString images_path);
 
     // The method is aimed to start with raw data and finish with ready-to-use
     // model. TODO: to rename.

@@ -3,7 +3,11 @@
 #ifndef SRC_STORAGE_H_
 #define SRC_STORAGE_H_
 
+#include <iostream>
+
 #include <QVector>
+#include <QFileInfo>
+#include <QDirIterator>
 
 class Storage {
  public:
@@ -32,7 +36,7 @@ class Storage {
     ~Storage();
 
  private:
-    QVector<QString> images_;
+    QVector<QString>* images_;
     QString images_path_;
 };
 

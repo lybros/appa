@@ -43,6 +43,8 @@ class MainWindow : public QMainWindow {
  private:
     Ui::MainWindow* ui;
     Project* active_project_;
+
+    bool isProjectDirectory(QString& project_path);
 };
 
 #endif  // UI_MAINWINDOW_H_

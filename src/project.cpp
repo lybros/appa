@@ -14,6 +14,31 @@ Project::Project() {
     storage_ = new Storage();
 }
 
+Project::Project(QString project_name,
+                 QString project_path,
+                 QString images_path) :
+    project_name_(project_name),
+    project_path_(project_path) {
+    Project();
+    storage_->UpdateImagesPath(images_path);
+
+
+    // Creating a Project in filesystem.
+    // TODO(uladbohdan): to handle the situation when creating a folder fails.
+    QDir project_parent_dir(project_path);
+    if (!project_parent_dir.cdUp()) {
+        std::cerr << "cdUp failed" << std::endl;
+    }
+    // std::cout << "PARENT PATH: " << project_parent_dir.currentPath().toStdString() << std::endl;
+    if (project_parent_dir.mkdir(project_name)) {
+        std::cout << "Project Directory seems to be created successfully!"
+              << std::endl;
+    } else {
+        std::cout << "Creating Project Directory failed." << std::endl;
+    }
+    WriteConfigurationFile();
+}
+
 void Project::RunReconstruction() {
     const bool readMatchesFromFile = false;
     // google::InitGoogleLogging(argv[0]);
@@ -90,14 +115,17 @@ QString Project::GetImagesPath() {
 }
 
 void Project::SetProjectName(QString project_name) {
+    // std::cout << "set project name" << std::endl;
     project_name_ = project_name;
 }
 
 void Project::SetProjectPath(QString project_path) {
+    // std::cout << "set project path" << std::endl;
     project_path_ = project_path;
 }
 
 void Project::SetImagesPath(QString images_path) {
+    // std::cout << "set images path" << std::endl;
     storage_->UpdateImagesPath(images_path);
 }
 
@@ -109,7 +137,6 @@ bool Project::WriteConfigurationFile() {
         stream << "PROJECT_NAME " << project_name_ << endl;
         stream << "IMAGES_LOCATION " << GetImagesPath() << endl;
         stream << "NUMBER_OF_IMAGES " << storage_->NumberOfImages() << endl;
-        stream << "IMAGE NAMES " << endl;
         for (auto image_path : storage_->GetImages()) {
             stream << image_path << endl;
         }
@@ -156,9 +183,6 @@ bool Project::ReadConfigurationFile() {
 
         QString images_path;
         stream >> images_path;
-        // TODO(uladbohdan): to remove explicit setting of images path after
-        // the Storage::ForceInitialize is implemented.
-        SetImagesPath(images_path);
 
         stream >> temp_line;
         if (temp_line != "NUMBER_OF_IMAGES") {
@@ -211,4 +235,5 @@ QString Project::GetDefaultOutputPath() {
 
 Project::~Project() {
     delete options_;
+    // delete storage_;
 }

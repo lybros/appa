@@ -3,6 +3,7 @@
 #include "storage.h"
 
 Storage::Storage() {
+    images_ = new QVector<QString>();
 }
 
 Storage::Storage(QString images_path) :
@@ -21,20 +22,49 @@ int Storage::UpdateImagesPath(QString images_path) {
 
 bool Storage::ForceInitialize(QString images_path,
                               QVector<QString>& images) {
+    // Verifying if "images" are still in filesystem and accessible.
+    for (QString& image : images) {
+        if (!QFileInfo(image).exists()) {
+            std::cerr << "Image \"" << image.toStdString()
+                      << "\" used to be in filesystem but not any more."
+                      << std::endl;
+            return false;
+        }
+    }
+
+    // Everything seems to be fine. Force overriding the fields.
+    images_path_ = images_path;
+    images_ = new QVector<QString>(images);
+
+    std::cout << "Force initialization: success. " << images_->length() << " read." << std::endl;
+
     return true;
 }
 
 int Storage::ParseImageFolder() {
-    return 0;
+    images_ = new QVector<QString>();
+    QDirIterator it(images_path_, QDirIterator::Subdirectories);
+    std::cout << "Reading images..." << std::endl;
+    while (it.hasNext()) {
+        QString next_image;
+        next_image = it.next();
+        std::cout << next_image.toStdString() << std::endl;
+        // TODO(uladbohdan): to check if a file is an image.
+        images_->push_back(next_image);
+    }
+    return images_->length();
 }
 
 QVector<QString>& Storage::GetImages() {
-    return images_;
+    return *images_;
 }
 
 int Storage::NumberOfImages() {
-    return images_.length();
+    return images_->length();
 }
 
 Storage::~Storage() {
+    if (images_) {
+        delete images_;
+    }
 }

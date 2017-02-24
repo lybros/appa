@@ -34,36 +34,35 @@ void MainWindow::on_actionRun_Reconstruction_triggered() {
 }
 
 void MainWindow::on_actionNewProject_triggered() {
-    std::cout << "Opening New Project dialog..." << std::endl;
     NewProjectDialog new_project_dialog;
-    new_project_dialog.SetActiveProject(active_project_);
+    NewProjectOptions* project_options = new NewProjectOptions();
+    new_project_dialog.SetProjectOptions(project_options);
+
     if (new_project_dialog.exec()) {
         // Checking if we've initialized new project.
-        std::cout << "New project basic parameteres:" << std::endl;
-        std::cout << active_project_->GetProjectName().toStdString()
+        std::cout << "[MainWindow] New project basic parameteres:"
                   << std::endl;
-        std::cout << active_project_->GetProjectPath().toStdString()
+        std::cout << project_options->project_name.toStdString()
                   << std::endl;
-        std::cout << active_project_->GetImagesPath().toStdString()
+        std::cout << project_options->project_path.toStdString()
+                  << std::endl;
+        std::cout << project_options->images_path.toStdString()
                   << std::endl;
         std::cout << "-------------------------------------" << std::endl;
 
-        QDir projectDir(active_project_->GetProjectPath());
-        if (!projectDir.mkdir(active_project_->GetProjectName())) {
-            QMessageBox warningBox;
-            warningBox.setText("Failed to create a folder for project.");
-            warningBox.exec();
-            return;
+        if (active_project_) {
+            delete active_project_;
         }
-        if (!active_project_->WriteConfigurationFile()) {
-            QMessageBox warningBox;
-            warningBox.setText(
-                        "Failed to write the configuration on filesystem:(");
-            warningBox.exec();
-            return;
-        }
+        // Try/catch section here to understand if constructor failed
+        // to create a Project instance. (?)
+        active_project_ = new Project(
+                    project_options->project_name,
+                    project_options->project_path,
+                    project_options->images_path);
     } else {
     }
+
+    delete project_options;
 }
 
 void MainWindow::on_actionOpen_triggered() {
@@ -74,16 +73,20 @@ void MainWindow::on_actionOpen_triggered() {
                                               QFileDialog::ShowDirsOnly |
                                               QFileDialog::DontResolveSymlinks);
 
-    // TODO(uladbohdan): to check if the folder is really a project folder.
+    if (!isProjectDirectory(projectPathChosen)) {
+        QMessageBox warningBox;
+        warningBox.setText("Failed to open a project.");
+        warningBox.exec();
 
-    delete active_project_;
+        return;
+    }
+
+    // delete active_project_;
     active_project_ = new Project();
     active_project_->SetProjectPath(projectPathChosen);
-    std::cout << "PROJECT FOLDER: " <<
-    active_project_->GetProjectPath().toStdString() << std::endl;
     if (active_project_->ReadConfigurationFile()) {
         // To check the data read from config file.
-        std::cout << "project READ!" << std::endl;
+        std::cout << "[MainWindow] project READ!" << std::endl;
         std::cout << active_project_->GetProjectName().toStdString()
                   << std::endl;
         std::cout << active_project_->GetProjectPath().toStdString()
@@ -92,7 +95,7 @@ void MainWindow::on_actionOpen_triggered() {
                   << std::endl;
         std::cout << "-------------------------------------" << std::endl;
     } else {
-        std::cerr << "Reading failed!" << std::endl;
+        std::cerr << "[MainWindow] Reading config file failed!" << std::endl;
     }
 }
 
@@ -106,6 +109,24 @@ void MainWindow::on_actionMatch_Features_triggered() {
 
 void MainWindow::on_actionStart_Reconstruction_triggered() {
     active_project_->StartReconstruction();
+}
+
+bool MainWindow::isProjectDirectory(QString &project_path) {
+    QFileInfo projectDir(project_path);
+    if (!projectDir.exists()) {
+        std::cerr << "[MainWindow] Failed to open the project: directory does not exist."
+                  << std::endl;
+        return false;
+    }
+
+    QFileInfo configFileInfo(QDir(project_path).filePath("project-config"));
+    if (!configFileInfo.exists()) {
+        std::cerr << "[MainWindow] Failed to open the project: no config file."
+                  << std::endl;
+        return false;
+    }
+
+    return true;
 }
 
 MainWindow::~MainWindow() {

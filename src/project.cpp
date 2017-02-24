@@ -115,17 +115,14 @@ QString Project::GetImagesPath() {
 }
 
 void Project::SetProjectName(QString project_name) {
-    // std::cout << "set project name" << std::endl;
     project_name_ = project_name;
 }
 
 void Project::SetProjectPath(QString project_path) {
-    // std::cout << "set project path" << std::endl;
     project_path_ = project_path;
 }
 
 void Project::SetImagesPath(QString images_path) {
-    // std::cout << "set images path" << std::endl;
     storage_->UpdateImagesPath(images_path);
 }
 

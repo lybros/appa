@@ -24,6 +24,8 @@ class ReconstructionWindow : public Qt3DExtras::Qt3DWindow {
  public:
     ReconstructionWindow();
 
+    void BuildWithDefaultParameters();
+
     ~ReconstructionWindow();
 
  private:

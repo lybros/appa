@@ -45,12 +45,17 @@ int Storage::ParseImageFolder() {
     images_ = new QVector<QString>();
     QDirIterator it(images_path_, QDirIterator::Subdirectories);
     std::cout << "Reading images..." << std::endl;
+    QRegExp rx(IMAGE_FILENAME_PATTERN);
     while (it.hasNext()) {
         QString next_image;
         next_image = it.next();
-        std::cout << next_image.toStdString() << std::endl;
-        // TODO(uladbohdan): to check if a file is an image.
-        images_->push_back(next_image);
+        if (rx.indexIn(next_image) != -1) {
+            std::cout << next_image.toStdString() << std::endl;
+            images_->push_back(next_image);
+        } else {
+            std::cout << "\"" << next_image.toStdString()
+                      << "\" does not match the regex." << std::endl;
+        }
     }
     return images_->length();
 }

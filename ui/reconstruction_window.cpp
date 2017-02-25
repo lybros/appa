@@ -35,6 +35,9 @@ ReconstructionWindow::ReconstructionWindow() {
     setRootEntity(scene_);
 }
 
+void ReconstructionWindow::BuildWithDefaultParameters() {
+}
+
 ReconstructionWindow::~ReconstructionWindow() {
     delete scene_;
 

@@ -9,6 +9,9 @@
 #include <QFileInfo>
 #include <QDirIterator>
 
+// TODO(uladbohdan): to improve the regex.
+const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|png)";
+
 class Storage {
  public:
     Storage();

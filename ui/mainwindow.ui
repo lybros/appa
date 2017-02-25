@@ -64,7 +64,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionRun_Reconstruction"/>
+   <addaction name="actionBuildToBinary"/>
+   <addaction name="actionVisualizeBinary"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="toolBar">
@@ -104,13 +105,13 @@
     <string>Save As</string>
    </property>
   </action>
-  <action name="actionRun_Reconstruction">
+  <action name="actionBuildToBinary">
    <property name="icon">
     <iconset>
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Run Reconstruction</string>
+    <string>Build into a binary file</string>
    </property>
   </action>
   <action name="actionExtract_Features">
@@ -147,6 +148,14 @@
    </property>
    <property name="toolTip">
     <string>Start Recostruction</string>
+   </property>
+  </action>
+  <action name="actionVisualizeBinary">
+   <property name="text">
+    <string>Visualize a binary (using default path)</string>
+   </property>
+   <property name="toolTip">
+    <string>Visualize a binary (using default path)</string>
    </property>
   </action>
  </widget>

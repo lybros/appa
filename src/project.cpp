@@ -4,13 +4,6 @@
 
 Project::Project() {
     options_ = new ReconstructionBuilderOptions();
-    options_->descriptor_type = theia::DescriptorExtractorType::SIFT;
-    options_->output_matches_file = out_matches_file;
-    options_->matching_options.match_out_of_core = true;
-    options_->matching_options.perform_geometric_verification = false;
-    options_->matching_options.keypoints_and_descriptors_output_dir =
-            "out/matches";
-
     storage_ = new Storage();
 }
 
@@ -22,14 +15,13 @@ Project::Project(QString project_name,
     Project();
     storage_->UpdateImagesPath(images_path);
 
-
     // Creating a Project in filesystem.
     // TODO(uladbohdan): to handle the situation when creating a folder fails.
     QDir project_parent_dir(project_path);
     if (!project_parent_dir.cdUp()) {
         std::cerr << "cdUp failed" << std::endl;
     }
-    // std::cout << "PARENT PATH: " << project_parent_dir.currentPath().toStdString() << std::endl;
+
     if (project_parent_dir.mkdir(project_name)) {
         std::cout << "Project Directory seems to be created successfully!"
               << std::endl;
@@ -37,54 +29,38 @@ Project::Project(QString project_name,
         std::cout << "Creating Project Directory failed." << std::endl;
     }
     WriteConfigurationFile();
+
+    // Creating out/ directory.
+    QDir(project_path).mkdir("out");
 }
 
-void Project::RunReconstruction() {
-    const bool readMatchesFromFile = false;
-    // google::InitGoogleLogging(argv[0]);
+// Simple build from scratch and save into a binary file.
+void Project::BuildModelToBinary() {
+    options_->descriptor_type = theia::DescriptorExtractorType::SIFT;
+    options_->output_matches_file =
+            QDir(output_location_).filePath("matches.binary").toStdString();
+    options_->matching_options.match_out_of_core = true;
+    options_->matching_options.perform_geometric_verification = false;
+    options_->matching_options.keypoints_and_descriptors_output_dir =
+            QDir(output_location_).filePath("matches").toStdString();
+
     ReconstructionBuilder reconstruction_builder(*options_);
 
-    if (readMatchesFromFile) {
-        vector<string> image_files;
-        vector<theia::CameraIntrinsicsPrior> camera_intrinsics_prior;
-        vector<theia::ImagePairMatch> image_matches;
-
-        theia::ReadMatchesAndGeometry(
-                out_matches_file,
-                &image_files,
-                &camera_intrinsics_prior,
-                &image_matches);
-
-        theia::CameraIntrinsicsGroupId intrinsics_group_id = 0;
-
-        for (int i = 0; i < image_files.size(); i++) {
-            reconstruction_builder.AddImageWithCameraIntrinsicsPrior(
-                    image_files[i], camera_intrinsics_prior[i],
-                        intrinsics_group_id);
-        }
-
-
-        for (const auto& match : image_matches) {
-            cout << "(" << match.image1 << ", " << match.image2 << ")" << endl;
-            CHECK(reconstruction_builder.AddTwoViewMatch(
-                      match.image1, match.image2, match));
-        }
-    } else {
-        for (int num = 1; num <= 9; num++) {
-            reconstruction_builder.AddImage(theia::StringPrintf(
-                                                "images/image00%d.jpg", num));
-        }
-        CHECK(reconstruction_builder.ExtractAndMatchFeatures())
-        << "Could not extract and match features";
+    for (QString image_path : storage_->GetImages()) {
+        reconstruction_builder.AddImage(image_path.toStdString());
     }
-
+    CHECK(reconstruction_builder.ExtractAndMatchFeatures())
+    << "Could not extract and match features";
 
     vector<Reconstruction*> reconstructions;
     CHECK(reconstruction_builder.BuildReconstruction(&reconstructions))
     << "Could not create a reconstruction";
 
+    std::string output_file_template =
+            QDir(output_location_).filePath("model").toStdString();
     for (int i = 0; i < reconstructions.size(); i++) {
-        string output_file = theia::StringPrintf("%s-%d.txt", "out/model", i);
+        string output_file =
+                theia::StringPrintf("%s-%d.binary", output_file_template.c_str(), i);
         cout << "Writing reconstruction " << i << " to " <<
                 output_file << endl;
         CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
@@ -137,7 +113,8 @@ bool Project::WriteConfigurationFile() {
         for (auto image_path : storage_->GetImages()) {
             stream << image_path << endl;
         }
-        stream << "OUTPUT_LOCATION " << "DEFAULT" << endl;
+        stream << "OUTPUT_LOCATION "
+               << GetDefaultOutputPath() << endl;
     } else {
         return false;
     }
@@ -210,11 +187,7 @@ bool Project::ReadConfigurationFile() {
         }
 
         stream >> temp_line;
-        if (temp_line == "DEFAULT") {
-            output_location_ = GetDefaultOutputPath();
-        } else {
-            output_location_ = temp_line;
-        }
+        output_location_ = temp_line;
     } else {
         return false;
     }

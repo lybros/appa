@@ -30,7 +30,7 @@ class MainWindow : public QMainWindow {
     ~MainWindow();
 
  private slots:
-    void on_actionRun_Reconstruction_triggered();
+    void on_actionBuildToBinary_triggered();
 
     void on_actionNewProject_triggered();
 
@@ -42,7 +42,9 @@ class MainWindow : public QMainWindow {
 
     void on_actionStart_Reconstruction_triggered();
 
- private:
+    void on_actionVisualizeBinary_triggered();
+
+private:
     Ui::MainWindow* ui;
     Project *active_project_;
 

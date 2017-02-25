@@ -13,8 +13,7 @@
  * "name0.jpg"
  * ...
  * "nameN.jpg"
- * OUTPUT_LOCATION "~/models/model0" // if "DEFAULT"
- *     "out/" directory is used.
+ * OUTPUT_LOCATION "~/project0/out"
  * --------------------------------------------- */
 
 #ifndef SRC_PROJECT_H_
@@ -37,12 +36,9 @@ using theia::Reconstruction;
 using theia::ReconstructionBuilder;
 using theia::ReconstructionBuilderOptions;
 
-// DEPRECATED.
-// TODO(uladbohdan/drapegnik): to replace all usages with output_location_ path.
-const string out_matches_file = "out/matches.txt";
-
 const QString CONFIG_FILE_NAME = "project-config";
 const QString DEFAULT_OUTPUT_LOCATION_POSTFIX = "out/";
+const QString DEFAULT_MODEL_BINARY_FILENAME = "model-0.binary";
 
 class Project {
  public:
@@ -50,9 +46,7 @@ class Project {
 
     Project(QString project_name, QString project_path, QString images_path);
 
-    // The method is aimed to start with raw data and finish with ready-to-use
-    // model. TODO: to rename.
-    void RunReconstruction();
+    void BuildModelToBinary();
 
     void ExtractFeatures();
 

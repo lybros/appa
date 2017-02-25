@@ -19,8 +19,12 @@ void MainWindow::set_icons(QtAwesome* awesome) {
     QVariantMap options;
 
     options.insert("color", QColor(0, 189, 58));
-    ui->actionRun_Reconstruction->setIcon(
-                awesome->icon(fa::play, options));
+    ui->actionBuildToBinary->setIcon(
+                awesome->icon(fa::filetext, options));
+    options.insert("color", QColor(255,0,0));
+    ui->actionVisualizeBinary->setIcon(
+                awesome->icon(fa::image, options));
+
     options.insert("color", QColor(255, 175, 24));
     ui->actionExtract_Features->setIcon(
                 awesome->icon(fa::crosshairs, options));
@@ -32,9 +36,9 @@ void MainWindow::set_icons(QtAwesome* awesome) {
                 awesome->icon(fa::play, options));
 }
 
-void MainWindow::on_actionRun_Reconstruction_triggered() {
+void MainWindow::on_actionBuildToBinary_triggered() {
     std::cout << "Reconstruction started..." << std::endl;
-    active_project_->RunReconstruction();
+    active_project_->BuildModelToBinary();
 }
 
 void MainWindow::on_actionNewProject_triggered() {
@@ -138,4 +142,8 @@ MainWindow::~MainWindow() {
     delete active_project_;
     delete view_;
     delete container_;
+}
+
+void MainWindow::on_actionVisualizeBinary_triggered() {
+    view_->BuildWithDefaultParameters();
 }

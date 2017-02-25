@@ -8,44 +8,10 @@ MainWindow::MainWindow(QWidget* parent) :
         ui(new Ui::MainWindow) {
     ui->setupUi(this);
     active_project_ = new Project();
-    createQt3D();
-}
 
-void MainWindow::createQt3D() {
-    view_ = new Qt3DExtras::Qt3DWindow;
-    scene_ = new Qt3DCore::QEntity;
-    container = QWidget::createWindowContainer(view_);
-
-    ui->sceneLayout->addWidget(container);
-
-    // Material
-    material = new Qt3DExtras::QPhongMaterial(scene_);
-
-    // Torus
-    torusEntity = new Qt3DCore::QEntity(scene_);
-    torusMesh = new Qt3DExtras::QTorusMesh;
-    torusMesh->setRadius(5);
-    torusMesh->setMinorRadius(1);
-    torusMesh->setRings(100);
-    torusMesh->setSlices(20);
-
-    torusTransform = new Qt3DCore::QTransform;
-    torusTransform->setScale3D(QVector3D(1.5, 1, 0.5));
-    torusTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
-
-    torusEntity->addComponent(torusMesh);
-    torusEntity->addComponent(torusTransform);
-    torusEntity->addComponent(material);
-
-    // Camera
-    cameraEntity = view_->camera();
-
-    cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    cameraEntity->setPosition(QVector3D(0, 0, 20.0f));
-    cameraEntity->setUpVector(QVector3D(0, 1, 0));
-    cameraEntity->setViewCenter(QVector3D(0, 0, 0));
-
-    view_->setRootEntity(scene_);
+    view_ = new ReconstructionWindow();
+    container_ = QWidget::createWindowContainer(view_);
+    ui->sceneLayout->addWidget(container_);
 }
 
 void MainWindow::set_icons(QtAwesome* awesome) {
@@ -170,6 +136,6 @@ bool MainWindow::isProjectDirectory(QString &project_path) {
 MainWindow::~MainWindow() {
     delete ui;
     delete active_project_;
-    // delete view_;
-    // delete scene_;
+    delete view_;
+    delete container_;
 }

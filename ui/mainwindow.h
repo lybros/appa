@@ -8,27 +8,10 @@
 #include <QMainWindow>
 #include <QPushButton>
 
-// to figure out what I need:
-#include <Qt3DExtras/Qt3DWindow>
-
-#include <Qt3DCore/QEntity>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QCameraLens>
-#include <Qt3DCore/QTransform>
-#include <Qt3DCore/QAspectEngine>
-
-#include <Qt3DInput/QInputAspect>
-
-#include <Qt3DRender/QRenderAspect>
-#include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QCylinderMesh>
-#include <Qt3DExtras/QSphereMesh>
-#include <Qt3DExtras/QTorusMesh>
-
 #include "../libs/QtAwesome/QtAwesome/QtAwesome.h"
 
 #include "newproject.h"
+#include "reconstruction_window.h"
 
 #include "../src/project.h"
 
@@ -62,18 +45,10 @@ class MainWindow : public QMainWindow {
  private:
     Ui::MainWindow* ui;
     Project *active_project_;
-    Qt3DExtras::Qt3DWindow *view_;
-    Qt3DCore::QEntity *scene_;
 
-    void createQt3D();
-
-    //
-    Qt3DCore::QEntity *torusEntity;
-    Qt3DExtras::QTorusMesh *torusMesh;
-    Qt3DCore::QTransform *torusTransform;
-    Qt3DRender::QCamera *cameraEntity;
-    Qt3DRender::QMaterial *material;
-    QWidget *container;
+    // Interaction with window rendering the model.
+    QWidget *container_;
+    ReconstructionWindow *view_;
 
     bool isProjectDirectory(QString& project_path);
 };

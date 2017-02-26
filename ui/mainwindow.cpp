@@ -145,5 +145,5 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_actionVisualizeBinary_triggered() {
-    view_->BuildWithDefaultParameters();
+    view_->BuildWithDefaultParameters(active_project_);
 }

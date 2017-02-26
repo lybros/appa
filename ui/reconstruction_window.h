@@ -20,11 +20,18 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DExtras/QTorusMesh>
 
+#include <vector>
+
+#include <Eigen/Core>
+#include <theia/theia.h>
+
+#include "../src/project.h"
+
 class ReconstructionWindow : public Qt3DExtras::Qt3DWindow {
  public:
     ReconstructionWindow();
 
-    void BuildWithDefaultParameters();
+    void BuildWithDefaultParameters(Project *project);
 
     ~ReconstructionWindow();
 
@@ -36,6 +43,9 @@ class ReconstructionWindow : public Qt3DExtras::Qt3DWindow {
     Qt3DCore::QTransform *torusTransform;
     Qt3DRender::QCamera *cameraEntity;
     Qt3DRender::QMaterial *material;
+
+    Qt3DCore::QEntity *torus2;
+    Qt3DExtras::QTorusMesh *torus2Mesh;
 };
 
 #endif  // UI_RECONSTRUCTION_WINDOW_H_

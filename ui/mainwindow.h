@@ -49,7 +49,6 @@ private:
     Project *active_project_;
 
     // Interaction with window rendering the model.
-    QWidget *container_;
     ReconstructionWindow *view_;
 
     bool isProjectDirectory(QString& project_path);

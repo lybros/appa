@@ -9,9 +9,8 @@ MainWindow::MainWindow(QWidget* parent) :
     ui->setupUi(this);
     active_project_ = new Project();
 
-    view_ = new ReconstructionWindow();
-    container_ = QWidget::createWindowContainer(view_);
-    ui->sceneLayout->addWidget(container_);
+    view_ = new ReconstructionWindow(this);
+    ui->sceneLayout->addWidget(view_);
 }
 
 void MainWindow::set_icons(QtAwesome* awesome) {
@@ -141,7 +140,6 @@ MainWindow::~MainWindow() {
     delete ui;
     delete active_project_;
     delete view_;
-    delete container_;
 }
 
 void MainWindow::on_actionVisualizeBinary_triggered() {

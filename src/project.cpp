@@ -9,7 +9,7 @@ Project::Project() {
     options_->matching_options.match_out_of_core = true;
     options_->matching_options.perform_geometric_verification = false;
     options_->matching_options.keypoints_and_descriptors_output_dir =
-            "out/matches";
+            "out/features";
 
     storage_ = new Storage();
 }
@@ -17,8 +17,8 @@ Project::Project() {
 Project::Project(QString project_name,
                  QString project_path,
                  QString images_path) :
-    project_name_(project_name),
-    project_path_(project_path) {
+        project_name_(project_name),
+        project_path_(project_path) {
     Project();
     storage_->UpdateImagesPath(images_path);
 
@@ -32,7 +32,7 @@ Project::Project(QString project_name,
     // std::cout << "PARENT PATH: " << project_parent_dir.currentPath().toStdString() << std::endl;
     if (project_parent_dir.mkdir(project_name)) {
         std::cout << "Project Directory seems to be created successfully!"
-              << std::endl;
+        << std::endl;
     } else {
         std::cout << "Creating Project Directory failed." << std::endl;
     }
@@ -40,7 +40,7 @@ Project::Project(QString project_name,
 }
 
 void Project::RunReconstruction() {
-    const bool readMatchesFromFile = false;
+    const bool readMatchesFromFile = true;
     // google::InitGoogleLogging(argv[0]);
     ReconstructionBuilder reconstruction_builder(*options_);
 
@@ -60,19 +60,20 @@ void Project::RunReconstruction() {
         for (int i = 0; i < image_files.size(); i++) {
             reconstruction_builder.AddImageWithCameraIntrinsicsPrior(
                     image_files[i], camera_intrinsics_prior[i],
-                        intrinsics_group_id);
+                    intrinsics_group_id);
         }
 
 
         for (const auto& match : image_matches) {
             cout << "(" << match.image1 << ", " << match.image2 << ")" << endl;
             CHECK(reconstruction_builder.AddTwoViewMatch(
-                      match.image1, match.image2, match));
+                    match.image1, match.image2, match));
+            cout << match.correspondences.size() << endl;
         }
     } else {
         for (int num = 1; num <= 9; num++) {
             reconstruction_builder.AddImage(theia::StringPrintf(
-                                                "images/image00%d.jpg", num));
+                    "images/image00%d.jpg", num));
         }
         CHECK(reconstruction_builder.ExtractAndMatchFeatures())
         << "Could not extract and match features";
@@ -86,11 +87,21 @@ void Project::RunReconstruction() {
     for (int i = 0; i < reconstructions.size(); i++) {
         string output_file = theia::StringPrintf("%s-%d.txt", "out/model", i);
         cout << "Writing reconstruction " << i << " to " <<
-                output_file << endl;
+        output_file << endl;
         CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
         << "Could not write reconstruction to file";
+
+        theia::ReadReconstruction
+
+        cout << "tracks: " << reconstructions[i]->NumTracks() << endl;
+        cout << "views: " << reconstructions[i]->NumViews() << endl;
+//        reconstructions[i]->View(v_id)->GetFeature(t_id);
     }
     return;
+}
+
+void Project::SearchImage(QString filename) {
+    cout << "Start work with image " << filename.toStdString() << endl;
 }
 
 void Project::ExtractFeatures() {
@@ -155,7 +166,7 @@ bool Project::ReadConfigurationFile() {
         temp_line = stream.readLine();
         if (temp_line != "PROJECT_CONFIG_VERSION v1.0") {
             std::cerr << "Reading config failed: wrong file version."
-                      << std::endl;
+            << std::endl;
             configFile.close();
             return false;
         }
@@ -163,7 +174,7 @@ bool Project::ReadConfigurationFile() {
         stream >> temp_line;
         if (temp_line != "PROJECT_NAME") {
             std::cerr << "Wrong config file format. No PROJECT_NAME attribute."
-                      << std::endl;
+            << std::endl;
             configFile.close();
             return false;
         }
@@ -173,7 +184,7 @@ bool Project::ReadConfigurationFile() {
         stream >> temp_line;
         if (temp_line != "IMAGES_LOCATION") {
             std::cerr << "Wrong config file format. No IMAGES_LOCATION attribute."
-                      << std::endl;
+            << std::endl;
             configFile.close();
             return false;
         }
@@ -184,7 +195,7 @@ bool Project::ReadConfigurationFile() {
         stream >> temp_line;
         if (temp_line != "NUMBER_OF_IMAGES") {
             std::cerr << "Wrong config file format. No NUMBER_OF_IMAGES attr."
-                      << std::endl;
+            << std::endl;
             configFile.close();
             return false;
         }
@@ -204,7 +215,7 @@ bool Project::ReadConfigurationFile() {
         stream >> temp_line;
         if (temp_line != "OUTPUT_LOCATION") {
             std::cerr << "Wrong config file format. No OUTPUT_LOCATION attr."
-                      << std::endl;
+            << std::endl;
             configFile.close();
             return false;
         }

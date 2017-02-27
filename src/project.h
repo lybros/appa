@@ -62,6 +62,9 @@ class Project {
     // matched.
     void StartReconstruction();
 
+    // Try to find place for image on 3d reconstruction map
+    void SearchImage(QString);
+
     QString GetProjectName();
     QString GetProjectPath();
     QString GetImagesPath();

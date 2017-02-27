@@ -40,7 +40,9 @@ class MainWindow : public QMainWindow {
 
     void on_actionStart_Reconstruction_triggered();
 
- private:
+    void on_actionSearch_Image_triggered();
+
+private:
     Ui::MainWindow* ui;
     Project* active_project_;
 

@@ -82,6 +82,7 @@
    <addaction name="actionExtract_Features"/>
    <addaction name="actionMatch_Features"/>
    <addaction name="actionStart_Reconstruction"/>
+   <addaction name="actionSearch_Image"/>
   </widget>
   <action name="actionNewProject">
    <property name="text">
@@ -149,6 +150,14 @@
    </property>
    <property name="toolTip">
     <string>Start Recostruction</string>
+   </property>
+  </action>
+  <action name="actionSearch_Image">
+   <property name="text">
+    <string>Search Image</string>
+   </property>
+   <property name="toolTip">
+    <string>Search Image</string>
    </property>
   </action>
  </widget>

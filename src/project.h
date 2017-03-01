@@ -74,6 +74,8 @@ public:
 
     bool ReadConfigurationFile();
 
+    QString GetDefaultOutputPath();
+
     ~Project();
 
 private:
@@ -89,8 +91,6 @@ private:
     Storage* storage_;
 
     QString GetConfigurationFilePath();
-
-    QString GetDefaultOutputPath();
 };
 
 #endif  // SRC_PROJECT_H_

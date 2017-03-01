@@ -22,6 +22,11 @@ INCLUDE_DIRECTORIES(Qt5Widgets_INCLUDE_DIRS)
 add_definitions(${Qt5Widgets_DEFINITIONS})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 
+# A binary file with Theia's view_reconstruction.
+# Allows us to run simple visualization from GUI.
+# A temporary solution; may be used then to compare with embedded visualization.
+file(COPY 3rdparty/view_reconstruction DESTINATION 3rdparty)
+
 # The order below is important:
 add_subdirectory(libs/QtAwesome/QtAwesome)
 add_subdirectory(src)

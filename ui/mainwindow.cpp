@@ -21,6 +21,7 @@ void MainWindow::set_icons(QtAwesome* awesome) {
     ui->actionBuildToBinary->setIcon(awesome->icon(fa::filetext, options));
     options.insert("color", QColor(255, 102, 102));
     ui->actionVisualizeBinary->setIcon(awesome->icon(fa::image, options));
+    options.insert("color", QColor(153, 153, 255));
     ui->actionRunExampleReconstruction->setIcon(
                 awesome->icon(fa::windowrestore, options));
     options.insert("color", QColor(255, 175, 24));
@@ -161,7 +162,7 @@ void MainWindow::on_actionRunExampleReconstruction_triggered()
      }
 
      QProcess view_reconstruction_process(this);
-     view_reconstruction_process.start("3rdparty/view_reconstruction",
+     view_reconstruction_process.start("view_reconstruction",
          QStringList() << "--reconstruction" << output_model_path);
      view_reconstruction_process.waitForFinished();
 }

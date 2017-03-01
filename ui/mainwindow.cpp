@@ -3,9 +3,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget* parent) :
-        QMainWindow(parent),
-        ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
+                                          ui(new Ui::MainWindow) {
     ui->setupUi(this);
     active_project_ = new Project();
 
@@ -16,29 +15,29 @@ MainWindow::MainWindow(QWidget* parent) :
 void MainWindow::set_icons(QtAwesome* awesome) {
     awesome->initFontAwesome();
     QVariantMap options;
+    options.insert("scale-factor", 0.6);
 
     // featuresToolBar
     options.insert("color", QColor(255, 175, 24));
     ui->actionExtract_Features->setIcon(awesome->icon(fa::dotcircleo, options));
     options.insert("color", QColor(235, 78, 78));
-    ui->actionMatch_Features->setIcon(awesome->icon(fa::connectdevelop, options));
+    ui->actionMatch_Features->setIcon(awesome->icon(fa::sharealt, options));
     options.insert("color", QColor(67, 205, 128));
     ui->actionStart_Reconstruction->setIcon(
             awesome->icon(fa::codepen, options));
 
     // visualizationToolBar
     options.insert("color", QColor(31, 72, 165));
-    ui->actionVisualizeBinary->setIcon(awesome->icon(fa::image, options));
+    ui->actionVisualizeBinary->setIcon(awesome->icon(fa::eye, options));
     options.insert("color", QColor(96, 125, 193));
     ui->actionRunExampleReconstruction->setIcon(
             awesome->icon(fa::windowrestore, options));
 
     // mainToolBar
-    ui->actionSearch_Image->setIcon(awesome->icon(fa::search));
+    options.insert("color", QColor(32, 33, 35));
+    ui->actionSearch_Image->setIcon(awesome->icon(fa::search, options));
     options.insert("color", QColor(67, 205, 128));
     ui->actionBuildToBinary->setIcon(awesome->icon(fa::play, options));
-
-
 }
 
 void MainWindow::on_actionBuildToBinary_triggered() {
@@ -99,6 +98,7 @@ void MainWindow::on_actionOpen_triggered() {
     // delete active_project_;
     active_project_ = new Project();
     active_project_->SetProjectPath(projectPathChosen);
+
     if (!active_project_->ReadConfigurationFile()) {
         std::cerr << "[MainWindow] Reading config file failed!" << std::endl;
     }

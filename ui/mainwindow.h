@@ -4,7 +4,10 @@
 #define UI_MAINWINDOW_H_
 
 #include <iostream>
+
 #include <QMainWindow>
+#include <QProcess>
+#include <QFileInfo>
 
 #include "../libs/QtAwesome/QtAwesome/QtAwesome.h"
 
@@ -43,6 +46,8 @@ private slots:
     void on_actionVisualizeBinary_triggered();
 
     void on_actionSearch_Image_triggered();
+
+    void on_actionRunExampleReconstruction_triggered();
 
 private:
     Ui::MainWindow* ui;

@@ -66,6 +66,7 @@
    </attribute>
    <addaction name="actionBuildToBinary"/>
    <addaction name="actionVisualizeBinary"/>
+   <addaction name="actionRunExampleReconstruction"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="toolBar">
@@ -157,7 +158,7 @@
    </property>
    <property name="toolTip">
     <string>Search Image</string>
-    </property>
+   </property>
   </action>
   <action name="actionVisualizeBinary">
    <property name="text">
@@ -165,6 +166,14 @@
    </property>
    <property name="toolTip">
     <string>Visualize a binary (using default path)</string>
+   </property>
+  </action>
+  <action name="actionRunExampleReconstruction">
+   <property name="text">
+    <string>Run Theia's view_reconstruction binary</string>
+   </property>
+   <property name="toolTip">
+    <string>Run Theia's view_reconstruction binary</string>
    </property>
   </action>
  </widget>

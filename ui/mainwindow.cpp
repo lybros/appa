@@ -21,6 +21,9 @@ void MainWindow::set_icons(QtAwesome* awesome) {
     ui->actionBuildToBinary->setIcon(awesome->icon(fa::filetext, options));
     options.insert("color", QColor(255, 102, 102));
     ui->actionVisualizeBinary->setIcon(awesome->icon(fa::image, options));
+    options.insert("color", QColor(153, 153, 255));
+    ui->actionRunExampleReconstruction->setIcon(
+                awesome->icon(fa::windowrestore, options));
     options.insert("color", QColor(255, 175, 24));
     ui->actionExtract_Features->setIcon(awesome->icon(fa::crosshairs, options));
     options.insert("color", QColor(147, 205, 255));
@@ -147,4 +150,19 @@ void MainWindow::on_actionVisualizeBinary_triggered() {
 void MainWindow::on_actionSearch_Image_triggered() {
     std::cout << "Start search image..." << std::endl;
     active_project_->SearchImage(QString("images/image005.jpg"));
+}
+
+void MainWindow::on_actionRunExampleReconstruction_triggered()
+{
+     QString output_path = active_project_->GetDefaultOutputPath();
+     QString output_model_path = QDir(output_path).filePath("model-0.binary");
+     if (!QFileInfo(output_model_path).exists()) {
+         std::cerr << "No Model binary found" << std::endl;
+         return;
+     }
+
+     QProcess view_reconstruction_process(this);
+     view_reconstruction_process.start("view_reconstruction",
+         QStringList() << "--reconstruction" << output_model_path);
+     view_reconstruction_process.waitForFinished();
 }

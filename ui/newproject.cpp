@@ -100,23 +100,21 @@ NewProjectDialog::~NewProjectDialog() {
 }
 
 void NewProjectDialog::on_locate_project_button_clicked() {
-    QString dir =
-            QFileDialog::getExistingDirectory(this,
-                                              tr("Choose the directory"),
-                                              QDir::homePath(),
-                                              QFileDialog::ShowDirsOnly
-                                              |
-                                              QFileDialog::DontResolveSymlinks);
+    QString dir = QFileDialog::getExistingDirectory(
+            this,
+            tr("Choose the directory"),
+            QDir::homePath(),
+            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+    );
     ui->project_parent_path->setText(dir);
 }
 
 void NewProjectDialog::on_locate_images_button_clicked() {
-    QString dir =
-            QFileDialog::getExistingDirectory(this,
-                                              tr("Choose the directory"),
-                                              QDir::homePath(),
-                                              QFileDialog::ShowDirsOnly
-                                              |
-                                              QFileDialog::DontResolveSymlinks);
+    QString dir = QFileDialog::getExistingDirectory(
+            this,
+            tr("Choose the directory"),
+            QDir::homePath(),
+            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+    );
     ui->images_path->setText(dir);
 }

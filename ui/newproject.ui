@@ -73,7 +73,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QLabel" name="project_parent_path">
         <property name="text">
-         <string>/home/user/projects</string>
+         <string>/Users/Drapegnik/projects/uiip/projects/work</string>
         </property>
        </widget>
       </item>
@@ -98,7 +98,7 @@ p, li { white-space: pre-wrap; }
       <item>
        <widget class="QLabel" name="images_path">
         <property name="text">
-         <string>/home/user/dataset0</string>
+         <string>/Users/Drapegnik/projects/uiip/cw-code/images</string>
         </property>
        </widget>
       </item>

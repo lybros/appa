@@ -17,21 +17,28 @@ void MainWindow::set_icons(QtAwesome* awesome) {
     awesome->initFontAwesome();
     QVariantMap options;
 
-    options.insert("color", QColor(67, 205, 128));
-    ui->actionBuildToBinary->setIcon(awesome->icon(fa::filetext, options));
-    options.insert("color", QColor(255, 102, 102));
-    ui->actionVisualizeBinary->setIcon(awesome->icon(fa::image, options));
-    options.insert("color", QColor(153, 153, 255));
-    ui->actionRunExampleReconstruction->setIcon(
-                awesome->icon(fa::windowrestore, options));
+    // featuresToolBar
     options.insert("color", QColor(255, 175, 24));
-    ui->actionExtract_Features->setIcon(awesome->icon(fa::crosshairs, options));
-    options.insert("color", QColor(147, 205, 255));
-    ui->actionMatch_Features->setIcon(awesome->icon(fa::filepictureo, options));
-    options.insert("color", QColor(255, 102, 102));
+    ui->actionExtract_Features->setIcon(awesome->icon(fa::dotcircleo, options));
+    options.insert("color", QColor(235, 78, 78));
+    ui->actionMatch_Features->setIcon(awesome->icon(fa::connectdevelop, options));
+    options.insert("color", QColor(67, 205, 128));
     ui->actionStart_Reconstruction->setIcon(
-            awesome->icon(fa::forward, options));
+            awesome->icon(fa::codepen, options));
+
+    // visualizationToolBar
+    options.insert("color", QColor(31, 72, 165));
+    ui->actionVisualizeBinary->setIcon(awesome->icon(fa::image, options));
+    options.insert("color", QColor(96, 125, 193));
+    ui->actionRunExampleReconstruction->setIcon(
+            awesome->icon(fa::windowrestore, options));
+
+    // mainToolBar
     ui->actionSearch_Image->setIcon(awesome->icon(fa::search));
+    options.insert("color", QColor(67, 205, 128));
+    ui->actionBuildToBinary->setIcon(awesome->icon(fa::play, options));
+
+
 }
 
 void MainWindow::on_actionBuildToBinary_triggered() {
@@ -54,8 +61,9 @@ void MainWindow::on_actionNewProject_triggered() {
         << std::endl;
         std::cout << "\t" << project_options->images_path.toStdString()
         << std::endl;
-        std::cout << "----------------------------------------------" <<
-        std::endl;
+        std::cout <<
+        "-------------------------------------------------------------"
+        << std::endl;
 
         if (active_project_) {
             delete active_project_;
@@ -97,13 +105,14 @@ void MainWindow::on_actionOpen_triggered() {
 
     // To check the data read from config file.
     std::cout << "[MainWindow] project READ!" << std::endl;
-    std::cout << active_project_->GetProjectName().toStdString()
+    std::cout << "\t" << active_project_->GetProjectName().toStdString()
     << std::endl;
-    std::cout << active_project_->GetProjectPath().toStdString()
+    std::cout << "\t" << active_project_->GetProjectPath().toStdString()
     << std::endl;
-    std::cout << active_project_->GetImagesPath().toStdString()
+    std::cout << "\t" << active_project_->GetImagesPath().toStdString()
     << std::endl;
-    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "-------------------------------------------------------------"
+    << std::endl;
 }
 
 void MainWindow::on_actionExtract_Features_triggered() {
@@ -152,17 +161,19 @@ void MainWindow::on_actionSearch_Image_triggered() {
     active_project_->SearchImage(QString("images/image005.jpg"));
 }
 
-void MainWindow::on_actionRunExampleReconstruction_triggered()
-{
-     QString output_path = active_project_->GetDefaultOutputPath();
-     QString output_model_path = QDir(output_path).filePath("model-0.binary");
-     if (!QFileInfo(output_model_path).exists()) {
-         std::cerr << "No Model binary found" << std::endl;
-         return;
-     }
+void MainWindow::on_actionRunExampleReconstruction_triggered() {
+    QString output_path = active_project_->GetDefaultOutputPath();
+    QString output_model_path = QDir(output_path).filePath("model-0.binary");
 
-     QProcess view_reconstruction_process(this);
-     view_reconstruction_process.start("view_reconstruction",
-         QStringList() << "--reconstruction" << output_model_path);
-     view_reconstruction_process.waitForFinished();
+    if (!QFileInfo(output_model_path).exists()) {
+        std::cerr << "No Model binary found" << std::endl;
+        return;
+    }
+
+    QProcess view_reconstruction_process(this);
+    view_reconstruction_process.start(
+            "view_reconstruction",
+            QStringList() << "--reconstruction" << output_model_path
+    );
+    view_reconstruction_process.waitForFinished();
 }

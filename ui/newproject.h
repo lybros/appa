@@ -12,35 +12,39 @@
 #include "../src/project.h"
 
 namespace Ui {
-class NewProjectDialog;
+    class NewProjectDialog;
 }
 
 struct NewProjectOptions;
 
 class NewProjectDialog : public QDialog {
-    Q_OBJECT
+Q_OBJECT
 
- public:
-    explicit NewProjectDialog(QWidget *parent = 0);
+public:
+    explicit NewProjectDialog(QWidget* parent = 0);
 
     void SetProjectOptions(NewProjectOptions* project_options);
 
     ~NewProjectDialog();
 
- private slots:
+private slots:
+
     void accept();
 
     void on_locate_project_button_clicked();
 
     void on_locate_images_button_clicked();
 
- private:
-    Ui::NewProjectDialog *ui;
-    NewProjectOptions *project_options_;
+private:
+    Ui::NewProjectDialog* ui;
+    NewProjectOptions* project_options_;
 
     bool create_new_project();
+
     bool verify_new_project_options();
+
     bool initialize_new_project();
+
     void show_warning(QString& error);
 };
 

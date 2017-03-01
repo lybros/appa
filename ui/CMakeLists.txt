@@ -1,11 +1,13 @@
 set(SRC_UI
     mainwindow.cpp
     newproject.cpp
+    reconstruction_window.cpp
     )
 
 set(HEADERS_UI
     mainwindow.h
     newproject.h
+    reconstruction_window.h
     )
 
 set(FORMS_UI

@@ -8,31 +8,32 @@ MainWindow::MainWindow(QWidget* parent) :
         ui(new Ui::MainWindow) {
     ui->setupUi(this);
     active_project_ = new Project();
+
+    view_ = new ReconstructionWindow(this);
+    ui->sceneLayout->addWidget(view_);
 }
 
 void MainWindow::set_icons(QtAwesome* awesome) {
     awesome->initFontAwesome();
     QVariantMap options;
 
-    options.insert("color", QColor(0, 189, 58));
-    ui->actionRun_Reconstruction->setIcon(
-            awesome->icon(fa::play, options));
+    options.insert("color", QColor(67, 205, 128));
+    ui->actionBuildToBinary->setIcon(awesome->icon(fa::filetext, options));
+    options.insert("color", QColor(255, 102, 102));
+    ui->actionVisualizeBinary->setIcon(awesome->icon(fa::image, options));
     options.insert("color", QColor(255, 175, 24));
-    ui->actionExtract_Features->setIcon(
-            awesome->icon(fa::crosshairs, options));
+    ui->actionExtract_Features->setIcon(awesome->icon(fa::crosshairs, options));
     options.insert("color", QColor(147, 205, 255));
-    ui->actionMatch_Features->setIcon(
-            awesome->icon(fa::filepictureo, options));
+    ui->actionMatch_Features->setIcon(awesome->icon(fa::filepictureo, options));
     options.insert("color", QColor(255, 102, 102));
     ui->actionStart_Reconstruction->setIcon(
             awesome->icon(fa::forward, options));
-    ui->actionSearch_Image->setIcon(
-            awesome->icon(fa::search));
+    ui->actionSearch_Image->setIcon(awesome->icon(fa::search));
 }
 
-void MainWindow::on_actionRun_Reconstruction_triggered() {
+void MainWindow::on_actionBuildToBinary_triggered() {
     std::cout << "Reconstruction started..." << std::endl;
-    active_project_->RunReconstruction();
+    active_project_->BuildModelToBinary();
 }
 
 void MainWindow::on_actionNewProject_triggered() {
@@ -44,13 +45,14 @@ void MainWindow::on_actionNewProject_triggered() {
         // Checking if we've initialized new project.
         std::cout << "[MainWindow] New project basic parameteres:"
         << std::endl;
-        std::cout << project_options->project_name.toStdString()
+        std::cout << "\t" << project_options->project_name.toStdString()
         << std::endl;
-        std::cout << project_options->project_path.toStdString()
+        std::cout << "\t" << project_options->project_path.toStdString()
         << std::endl;
-        std::cout << project_options->images_path.toStdString()
+        std::cout << "\t" << project_options->images_path.toStdString()
         << std::endl;
-        std::cout << "-------------------------------------" << std::endl;
+        std::cout << "----------------------------------------------" <<
+        std::endl;
 
         if (active_project_) {
             delete active_project_;
@@ -68,12 +70,12 @@ void MainWindow::on_actionNewProject_triggered() {
 }
 
 void MainWindow::on_actionOpen_triggered() {
-    QString projectPathChosen =
-            QFileDialog::getExistingDirectory(this,
-                                              tr("Choose the directory"),
-                                              QDir::homePath(),
-                                              QFileDialog::ShowDirsOnly |
-                                              QFileDialog::DontResolveSymlinks);
+    QString projectPathChosen = QFileDialog::getExistingDirectory(
+            this,
+            tr("Choose the directory"),
+            QDir::homePath(),
+            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+    );
 
     if (!isProjectDirectory(projectPathChosen)) {
         QMessageBox warningBox;
@@ -86,19 +88,19 @@ void MainWindow::on_actionOpen_triggered() {
     // delete active_project_;
     active_project_ = new Project();
     active_project_->SetProjectPath(projectPathChosen);
-    if (active_project_->ReadConfigurationFile()) {
-        // To check the data read from config file.
-        std::cout << "[MainWindow] project READ!" << std::endl;
-        std::cout << active_project_->GetProjectName().toStdString()
-        << std::endl;
-        std::cout << active_project_->GetProjectPath().toStdString()
-        << std::endl;
-        std::cout << active_project_->GetImagesPath().toStdString()
-        << std::endl;
-        std::cout << "-------------------------------------" << std::endl;
-    } else {
+    if (!active_project_->ReadConfigurationFile()) {
         std::cerr << "[MainWindow] Reading config file failed!" << std::endl;
     }
+
+    // To check the data read from config file.
+    std::cout << "[MainWindow] project READ!" << std::endl;
+    std::cout << active_project_->GetProjectName().toStdString()
+    << std::endl;
+    std::cout << active_project_->GetProjectPath().toStdString()
+    << std::endl;
+    std::cout << active_project_->GetImagesPath().toStdString()
+    << std::endl;
+    std::cout << "-------------------------------------" << std::endl;
 }
 
 void MainWindow::on_actionExtract_Features_triggered() {
@@ -116,7 +118,8 @@ void MainWindow::on_actionStart_Reconstruction_triggered() {
 bool MainWindow::isProjectDirectory(QString& project_path) {
     QFileInfo projectDir(project_path);
     if (!projectDir.exists()) {
-        std::cerr << "[MainWindow] Failed to open the project: directory does not exist."
+        std::cerr <<
+        "[MainWindow] Failed to open the project: directory does not exist."
         << std::endl;
         return false;
     }
@@ -134,6 +137,11 @@ bool MainWindow::isProjectDirectory(QString& project_path) {
 MainWindow::~MainWindow() {
     delete ui;
     delete active_project_;
+    delete view_;
+}
+
+void MainWindow::on_actionVisualizeBinary_triggered() {
+    view_->BuildWithDefaultParameters(active_project_);
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {

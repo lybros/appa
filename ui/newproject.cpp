@@ -3,13 +3,13 @@
 #include "newproject.h"
 #include "ui_newproject.h"
 
-NewProjectDialog::NewProjectDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::NewProjectDialog) {
+NewProjectDialog::NewProjectDialog(QWidget* parent) :
+        QDialog(parent),
+        ui(new Ui::NewProjectDialog) {
     ui->setupUi(this);
 }
 
-void NewProjectDialog::SetProjectOptions(NewProjectOptions *project_options) {
+void NewProjectDialog::SetProjectOptions(NewProjectOptions* project_options) {
     project_options_ = project_options;
 }
 
@@ -19,7 +19,7 @@ void NewProjectDialog::accept() {
         QDialog::accept();
     } else {
         std::cout << "[NewProjectDialog]: failed to create new project"
-                  << std::endl;
+        << std::endl;
     }
 }
 
@@ -77,11 +77,15 @@ bool NewProjectDialog::initialize_new_project() {
             QDir(project_parent_path).filePath(project_options_->project_name);
 
     project_options_->images_path = ui->images_path->text();
-    std::cout << "[NewProjectDialog] Parameters to be returned back from NewProjectDialog: "
-              << std::endl
-              << project_options_->project_name.toStdString() << " "
-              << project_options_->project_path.toStdString() << " "
-              << project_options_->images_path.toStdString() << std::endl;
+    std::cout <<
+    "[NewProjectDialog] Parameters to be returned back from NewProjectDialog: " <<
+    std::endl;
+    std::cout << "\t" << project_options_->project_name.toStdString() <<
+    std::endl;
+    std::cout << "\t" << project_options_->project_path.toStdString() <<
+    std::endl;
+    std::cout << "\t" << project_options_->images_path.toStdString() <<
+    std::endl;
     return true;
 }
 
@@ -101,16 +105,18 @@ void NewProjectDialog::on_locate_project_button_clicked() {
                                               tr("Choose the directory"),
                                               QDir::homePath(),
                                               QFileDialog::ShowDirsOnly
-                                              | QFileDialog::DontResolveSymlinks);
+                                              |
+                                              QFileDialog::DontResolveSymlinks);
     ui->project_parent_path->setText(dir);
 }
 
 void NewProjectDialog::on_locate_images_button_clicked() {
     QString dir =
             QFileDialog::getExistingDirectory(this,
-                                             tr("Choose the directory"),
-                                             QDir::homePath(),
-                                             QFileDialog::ShowDirsOnly
-                                             | QFileDialog::DontResolveSymlinks);
+                                              tr("Choose the directory"),
+                                              QDir::homePath(),
+                                              QFileDialog::ShowDirsOnly
+                                              |
+                                              QFileDialog::DontResolveSymlinks);
     ui->images_path->setText(dir);
 }

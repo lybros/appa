@@ -13,8 +13,7 @@
  * "name0.jpg"
  * ...
  * "nameN.jpg"
- * OUTPUT_LOCATION "~/models/model0" // if "DEFAULT"
- *     "out/" directory is used.
+ * OUTPUT_LOCATION "~/project0/out"
  * --------------------------------------------- */
 
 #ifndef SRC_PROJECT_H_
@@ -32,27 +31,21 @@
 #include <QDir>
 #include <QTextStream>
 
-using namespace std;
 using theia::Reconstruction;
 using theia::ReconstructionBuilder;
 using theia::ReconstructionBuilderOptions;
 
-// DEPRECATED.
-// TODO(uladbohdan/drapegnik): to replace all usages with output_location_ path.
-const string out_matches_file = "out/matches.txt";
-
 const QString CONFIG_FILE_NAME = "project-config";
 const QString DEFAULT_OUTPUT_LOCATION_POSTFIX = "out/";
+const QString DEFAULT_MODEL_BINARY_FILENAME = "model-0.binary";
 
 class Project {
- public:
+public:
     Project();
 
     Project(QString project_name, QString project_path, QString images_path);
 
-    // The method is aimed to start with raw data and finish with ready-to-use
-    // model. TODO: to rename.
-    void RunReconstruction();
+    void BuildModelToBinary();
 
     void ExtractFeatures();
 
@@ -66,20 +59,25 @@ class Project {
     void SearchImage(QString);
 
     QString GetProjectName();
+
     QString GetProjectPath();
+
     QString GetImagesPath();
 
     void SetProjectName(QString);
+
     void SetProjectPath(QString);
+
     void SetImagesPath(QString);
 
     bool WriteConfigurationFile();
+
     bool ReadConfigurationFile();
 
     ~Project();
 
- private:
-    ReconstructionBuilderOptions *options_;
+private:
+    ReconstructionBuilderOptions* options_;
 
     QString project_name_;
     // project_path_ contains the full way to the project.
@@ -91,6 +89,7 @@ class Project {
     Storage* storage_;
 
     QString GetConfigurationFilePath();
+
     QString GetDefaultOutputPath();
 };
 

@@ -4,31 +4,31 @@
 #define UI_MAINWINDOW_H_
 
 #include <iostream>
-
 #include <QMainWindow>
-#include <QPushButton>
+
 #include "../libs/QtAwesome/QtAwesome/QtAwesome.h"
 
 #include "newproject.h"
-
+#include "reconstruction_window.h"
 #include "../src/project.h"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT
+Q_OBJECT
 
- public:
+public:
     explicit MainWindow(QWidget* parent = 0);
 
     void set_icons(QtAwesome* awesome = 0);
 
     ~MainWindow();
 
- private slots:
-    void on_actionRun_Reconstruction_triggered();
+private slots:
+
+    void on_actionBuildToBinary_triggered();
 
     void on_actionNewProject_triggered();
 
@@ -40,11 +40,16 @@ class MainWindow : public QMainWindow {
 
     void on_actionStart_Reconstruction_triggered();
 
+    void on_actionVisualizeBinary_triggered();
+
     void on_actionSearch_Image_triggered();
 
 private:
     Ui::MainWindow* ui;
     Project* active_project_;
+
+    // Interaction with window rendering the model.
+    ReconstructionWindow* view_;
 
     bool isProjectDirectory(QString& project_path);
 };

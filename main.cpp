@@ -7,6 +7,7 @@ int main(int argc, char* argv[]) {
     awesome->initFontAwesome();
 
     google::InitGoogleLogging(argv[0]);
+    LOG(INFO) << "Hello world!";
 
     MainWindow w;
     w.set_icons(awesome);

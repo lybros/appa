@@ -41,7 +41,7 @@ void MainWindow::set_icons(QtAwesome* awesome) {
 }
 
 void MainWindow::on_actionBuildToBinary_triggered() {
-    std::cout << "Reconstruction started..." << std::endl;
+    LOG(INFO) << "Reconstruction started...";
     active_project_->BuildModelToBinary();
 }
 
@@ -52,7 +52,7 @@ void MainWindow::on_actionNewProject_triggered() {
 
     if (new_project_dialog.exec()) {
         // Checking if we've initialized new project.
-        std::cout << "[MainWindow] New project basic parameteres:"
+        LOG(INFO) << "New project basic parameteres:"
         << std::endl;
         std::cout << "\t" << project_options->project_name.toStdString()
         << std::endl;
@@ -100,11 +100,11 @@ void MainWindow::on_actionOpen_triggered() {
     active_project_->SetProjectPath(projectPathChosen);
 
     if (!active_project_->ReadConfigurationFile()) {
-        std::cerr << "[MainWindow] Reading config file failed!" << std::endl;
+        LOG(ERROR) << "Reading config file failed!";
     }
 
     // To check the data read from config file.
-    std::cout << "[MainWindow] project READ!" << std::endl;
+    LOG(INFO) << "Project read!";
     std::cout << "\t" << active_project_->GetProjectName().toStdString()
     << std::endl;
     std::cout << "\t" << active_project_->GetProjectPath().toStdString()
@@ -130,16 +130,13 @@ void MainWindow::on_actionStart_Reconstruction_triggered() {
 bool MainWindow::isProjectDirectory(QString& project_path) {
     QFileInfo projectDir(project_path);
     if (!projectDir.exists()) {
-        std::cerr <<
-        "[MainWindow] Failed to open the project: directory does not exist."
-        << std::endl;
+        LOG(ERROR) << "Failed to open the project: directory does not exist";
         return false;
     }
 
     QFileInfo configFileInfo(QDir(project_path).filePath("project-config"));
     if (!configFileInfo.exists()) {
-        std::cerr << "[MainWindow] Failed to open the project: no config file."
-        << std::endl;
+        LOG(ERROR) << "Failed to open the project: no config file";
         return false;
     }
 
@@ -157,7 +154,7 @@ void MainWindow::on_actionVisualizeBinary_triggered() {
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {
-    std::cout << "Start search image..." << std::endl;
+    LOG(INFO) << "Start search image...";
     active_project_->SearchImage(QString("images/image005.jpg"));
 }
 
@@ -166,7 +163,7 @@ void MainWindow::on_actionRunExampleReconstruction_triggered() {
     QString output_model_path = QDir(output_path).filePath("model-0.binary");
 
     if (!QFileInfo(output_model_path).exists()) {
-        std::cerr << "No Model binary found" << std::endl;
+        LOG(ERROR) << "No Model binary found";
         return;
     }
 

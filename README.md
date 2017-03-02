@@ -23,3 +23,4 @@ git submodule update
 
 ### development:
 * use `bash view.sh path/to/model` or just `. view.sh` for view default model from `out/model-0.txt`
+* use `LOG(INFO)` from [glog](http://rpg.ifi.uzh.ch/docs/glog.html) instead `std::cout`. set `GLOG_logtostderr=1` env var to enable logging

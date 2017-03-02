@@ -8,7 +8,6 @@ Storage::Storage() {
 }
 
 Storage::Storage(QString images_path) : images_path_(images_path) {
-    std::cout << images_path_.toStdString() << std::endl;
     Storage();
 }
 
@@ -25,9 +24,8 @@ bool Storage::ForceInitialize(QString images_path, QVector<QString>& images) {
     // Verifying if "images" are still in filesystem and accessible.
     for (QString& image : images) {
         if (!QFileInfo(image).exists()) {
-            std::cerr << "Image \"" << image.toStdString()
-            << "\" used to be in filesystem but not any more."
-            << std::endl;
+            LOG(ERROR) << "Image \"" << image.toStdString()
+            << "\" not found";
             return false;
         }
     }
@@ -36,8 +34,8 @@ bool Storage::ForceInitialize(QString images_path, QVector<QString>& images) {
     images_path_ = images_path;
     images_ = new QVector<QString>(images);
 
-    std::cout << "Force initialization: success. " << images_->length() <<
-    " read." << std::endl;
+    LOG(INFO) << "Force initialization: success. " << images_->length()
+    << " read";
 
     return true;
 }
@@ -45,19 +43,20 @@ bool Storage::ForceInitialize(QString images_path, QVector<QString>& images) {
 int Storage::ParseImageFolder() {
     images_ = new QVector<QString>();
     QDirIterator it(images_path_, QDirIterator::Subdirectories);
-    std::cout << "Reading images..." << std::endl;
+
+    LOG(INFO) << "Reading images...";
     QRegExp rx(IMAGE_FILENAME_PATTERN);
     while (it.hasNext()) {
         QString next_image;
         next_image = it.next();
 
         if (rx.indexIn(next_image) == -1) {
-            std::cout << "\t" << next_image.toStdString() <<
-            "- \"does not match the regex.\"" << std::endl;
+            LOG(WARNING) << "\t" << next_image.toStdString() <<
+            "- \"does not match the regex.\"";
             continue;
         }
 
-        std::cout << "\t" << next_image.toStdString() << std::endl;
+        LOG(INFO) << "\t" << next_image.toStdString();
         images_->push_back(next_image);
     }
     return images_->length();

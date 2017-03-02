@@ -14,13 +14,13 @@ void NewProjectDialog::SetProjectOptions(NewProjectOptions* project_options) {
 }
 
 void NewProjectDialog::accept() {
-    if (create_new_project()) {
-        std::cout << "[NewProjectDialog]: created successfully!" << std::endl;
-        QDialog::accept();
-    } else {
-        std::cout << "[NewProjectDialog]: failed to create new project"
-        << std::endl;
+    if (!create_new_project()) {
+        LOG(ERROR) << "Failed to create new project";
+        return;
     }
+
+    LOG(INFO) << "Created successfully!";
+    QDialog::accept();
 }
 
 bool NewProjectDialog::create_new_project() {
@@ -77,9 +77,7 @@ bool NewProjectDialog::initialize_new_project() {
             QDir(project_parent_path).filePath(project_options_->project_name);
 
     project_options_->images_path = ui->images_path->text();
-    std::cout <<
-    "[NewProjectDialog] Parameters to be returned back from NewProjectDialog: " <<
-    std::endl;
+    LOG(INFO) << "Parameters to be returned back from NewProjectDialog:";
     std::cout << "\t" << project_options_->project_name.toStdString() <<
     std::endl;
     std::cout << "\t" << project_options_->project_path.toStdString() <<

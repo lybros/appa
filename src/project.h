@@ -20,6 +20,7 @@
 #define SRC_PROJECT_H_
 
 #include "storage.h"
+#include "features.h"
 
 #include <iostream>
 #include <string>
@@ -89,6 +90,7 @@ private:
 
     // images_path_ is stored inside of Storage object.
     Storage* storage_;
+    Features* features_;
 
     QString GetConfigurationFilePath();
 };

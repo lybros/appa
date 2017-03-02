@@ -9,11 +9,11 @@ Project::Project() {
 
 Project::Project(QString project_name,
                  QString project_path,
-                 QString images_path) :
-        project_name_(project_name),
-        project_path_(project_path) {
+                 QString images_path) : project_name_(project_name),
+                                        project_path_(project_path) {
     Project();
     storage_->UpdateImagesPath(images_path);
+    features_ = new Features(GetDefaultOutputPath());
 
     // Creating a Project in filesystem.
     // TODO(uladbohdan): to handle the situation when creating a folder fails.
@@ -43,7 +43,7 @@ void Project::BuildModelToBinary() {
     options_->matching_options.match_out_of_core = true;
     options_->matching_options.perform_geometric_verification = false;
     options_->matching_options.keypoints_and_descriptors_output_dir =
-            QDir(output_location_).filePath("matches").toStdString();
+            QDir(output_location_).filePath("features").toStdString();
 
     ReconstructionBuilder reconstruction_builder(*options_);
 
@@ -78,6 +78,7 @@ void Project::SearchImage(QString filename) {
 }
 
 void Project::ExtractFeatures() {
+    features_->ForceExtract(storage_->GetImages());
 }
 
 void Project::MatchFeatures() {
@@ -200,6 +201,7 @@ bool Project::ReadConfigurationFile() {
 
     stream >> temp_line;
     output_location_ = temp_line;
+    features_ = new Features(output_location_);
 
     configFile.close();
     return true;
@@ -215,5 +217,6 @@ QString Project::GetDefaultOutputPath() {
 
 Project::~Project() {
     delete options_;
-    // delete storage_;
+    delete storage_;
+    delete features_;
 }

@@ -15,6 +15,7 @@ QString Storage::GetImagesPath() {
     return images_path_;
 }
 
+//TODO(uladbohdan): clean up out/ when dataset was changed
 int Storage::UpdateImagesPath(QString images_path) {
     images_path_ = images_path;
     return ParseImageFolder();

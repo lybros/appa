@@ -9,11 +9,11 @@ Project::Project() {
 
 Project::Project(QString project_name,
                  QString project_path,
-                 QString images_path) :
-        project_name_(project_name),
-        project_path_(project_path) {
-    storage_ = new Storage();
+                 QString images_path) : project_name_(project_name),
+                                        project_path_(project_path) {
+    Project();
     storage_->UpdateImagesPath(images_path);
+    features_ = new Features(storage_, GetDefaultOutputPath());
 
     // Creating a Project in filesystem.
     // TODO(uladbohdan): to handle the situation when creating a folder fails.
@@ -75,6 +75,7 @@ void Project::SearchImage(QString filename) {
 }
 
 void Project::ExtractFeatures() {
+    features_->ForceExtract();
 }
 
 void Project::MatchFeatures() {
@@ -197,6 +198,7 @@ bool Project::ReadConfigurationFile() {
 
     stream >> temp_line;
     output_location_ = temp_line;
+    features_ = new Features(storage_, output_location_);
 
     configFile.close();
     return true;
@@ -212,5 +214,6 @@ QString Project::GetDefaultOutputPath() {
 
 Project::~Project() {
     delete options_;
-    // delete storage_;
+    delete storage_;
+    delete features_;
 }

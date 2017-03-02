@@ -23,7 +23,7 @@ Options::GetReconstructionBuilderOptions() {
     options->matching_options.perform_geometric_verification =
             perform_geometric_verification_;
     options->matching_options.keypoints_and_descriptors_output_dir =
-            QDir(output_location_).filePath("matches").toStdString();
+            QDir(output_location_).filePath("features").toStdString();
 
     return options;
 }

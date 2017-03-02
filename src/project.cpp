@@ -3,7 +3,7 @@
 #include "project.h"
 
 Project::Project() {
-    options_ = new ReconstructionBuilderOptions();
+    options_ = new Options();
     storage_ = new Storage();
 }
 
@@ -33,19 +33,16 @@ Project::Project(QString project_name,
 
     // Creating out/ directory.
     QDir(project_path).mkdir("out");
+
+    options_ = new Options(output_location_);
 }
 
 // Simple build from scratch and save into a binary file.
 void Project::BuildModelToBinary() {
-    options_->descriptor_type = theia::DescriptorExtractorType::SIFT;
-    options_->output_matches_file =
-            QDir(output_location_).filePath("matches.binary").toStdString();
-    options_->matching_options.match_out_of_core = true;
-    options_->matching_options.perform_geometric_verification = false;
-    options_->matching_options.keypoints_and_descriptors_output_dir =
-            QDir(output_location_).filePath("features").toStdString();
+    ReconstructionBuilderOptions *options =
+            options_->GetReconstructionBuilderOptions();
 
-    ReconstructionBuilder reconstruction_builder(*options_);
+    ReconstructionBuilder reconstruction_builder(*options);
 
     for (QString image_path : storage_->GetImages()) {
         reconstruction_builder.AddImage(image_path.toStdString());

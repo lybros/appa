@@ -6,7 +6,10 @@ set(SOURCE_FILES
         featuresx.cpp
         featuresx.h
         utils.cpp
-        utils.h)
+        utils.h
+        options.cpp
+        options.h
+)
 
 add_library(src ${SOURCE_FILES})
 

@@ -1,9 +1,12 @@
 set(SOURCE_FILES
-    project.h
-    project.cpp
-    storage.h
-    storage.cpp
-    )
+        project.cpp
+        project.h
+        storage.cpp
+        storage.h
+        featuresx.cpp
+        featuresx.h
+        utils.cpp
+        utils.h)
 
 add_library(src ${SOURCE_FILES})
 

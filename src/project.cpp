@@ -20,15 +20,15 @@ Project::Project(QString project_name,
     QDir project_parent_dir(project_path);
 
     if (!project_parent_dir.cdUp()) {
-        std::cerr << "cdUp failed" << std::endl;
+        LOG(ERROR) << "cdUp failed" << std::endl;
     }
 
     if (!project_parent_dir.mkdir(project_name)) {
-        std::cout << "Creating Project Directory failed." << std::endl;
+        LOG(ERROR) << "Creating Project Directory failed." << std::endl;
     }
 
-    std::cout << "Project Directory seems to be created successfully!"
-    << std::endl;
+    LOG(INFO) << "Project Directory seems to be created successfully!" <<
+    std::endl;
     WriteConfigurationFile();
 
     // Creating out/ directory.
@@ -64,8 +64,8 @@ void Project::BuildModelToBinary() {
         std::string output_file =
                 theia::StringPrintf("%s-%d.binary",
                                     output_file_template.c_str(), i);
-        std::cout << "Writing reconstruction " << i << " to " <<
-        output_file << std::endl;
+        LOG(INFO) << "Writing reconstruction " << i << " to "
+        << output_file;
         CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
         << "Could not write reconstruction to file";
     }

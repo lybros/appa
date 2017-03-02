@@ -13,14 +13,17 @@
 #include <QFileInfo>
 
 #include "utils.h"
+#include "storage.h"
 
 class Features {
 public:
-    Features(QString out_path);
+    Features(Storage* storage, QString out_path);
 
-    void Extract(QVector<QString>& images);
+    // extract features only if doesn't find *.features files
+    void Extract();
 
-    void ForceExtract(QVector<QString>& images);
+    // rewrite all *.features files
+    void ForceExtract();
 
     void Match();
 
@@ -29,12 +32,16 @@ public:
     ~Features();
 
 protected:
-    void _extract(QVector<QString>& images, bool is_force);
+    void _extract(bool is_force);
 
     void _match();
 
 private:
     QString out_path_;
+    QVector<QString> images_;
+    Storage* storage_;
+    theia::FeatureExtractor::Options options_;
+    theia::FeatureExtractor* extractor_;
 };
 
 #endif //CW_CODE_FEATURES_H

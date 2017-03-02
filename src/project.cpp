@@ -13,7 +13,7 @@ Project::Project(QString project_name,
                                         project_path_(project_path) {
     Project();
     storage_->UpdateImagesPath(images_path);
-    features_ = new Features(GetDefaultOutputPath());
+    features_ = new Features(storage_, GetDefaultOutputPath());
 
     // Creating a Project in filesystem.
     // TODO(uladbohdan): to handle the situation when creating a folder fails.
@@ -78,7 +78,7 @@ void Project::SearchImage(QString filename) {
 }
 
 void Project::ExtractFeatures() {
-    features_->ForceExtract(storage_->GetImages());
+    features_->ForceExtract();
 }
 
 void Project::MatchFeatures() {
@@ -201,7 +201,7 @@ bool Project::ReadConfigurationFile() {
 
     stream >> temp_line;
     output_location_ = temp_line;
-    features_ = new Features(output_location_);
+    features_ = new Features(storage_, output_location_);
 
     configFile.close();
     return true;

@@ -5,21 +5,26 @@
 #include "features.h"
 
 // TODO(drapegnik): pass to constructor options object
-Features::Features(QString out_path) : out_path_(out_path) { };
-
-void Features::Extract(QVector<QString>& images) {
-    return _extract(images, false);
-}
-
-void Features::ForceExtract(QVector<QString>& images) {
-    return _extract(images, true);
+Features::Features(Storage* storage, QString out_path) : out_path_(out_path),
+                                                         storage_(storage) {
+    images_ = storage_->GetImages();
+    options_.output_directory = (out_path_ + "features/").toStdString();
+    extractor_ = new theia::FeatureExtractor(options_);
 };
 
-void Features::_extract(QVector<QString>& images, bool is_force) {
+void Features::Extract() {
+    return _extract(false);
+}
+
+void Features::ForceExtract() {
+    return _extract(true);
+};
+
+void Features::_extract(bool is_force) {
     LOG(INFO) << "Start processing:";
     std::vector<std::string> processing_images;
 
-    for (QString image_path : images) {
+    for (QString image_path : images_) {
         QString feature_file = FeatureFilenameFromImage(out_path_, image_path);
 
         if (!QFileInfo::exists(feature_file) or is_force) {
@@ -28,14 +33,9 @@ void Features::_extract(QVector<QString>& images, bool is_force) {
         }
     }
 
-    // TODO(drapegnik): replace with global options config
-    theia::FeatureExtractor::Options options;
-    options.output_directory = (out_path_ + "features/").toStdString();
-    theia::FeatureExtractor extractor(options);
-
     // Extract features from all images.
     theia::Timer timer;
-    CHECK(extractor.ExtractToDisk(processing_images))
+    CHECK(extractor_->ExtractToDisk(processing_images))
     << "Feature extraction failed!";
     const double time_to_extract_features = timer.ElapsedTimeInSeconds();
 
@@ -45,5 +45,6 @@ void Features::_extract(QVector<QString>& images, bool is_force) {
 };
 
 Features::~Features() {
-
+    delete storage_;
+    delete extractor_;
 };

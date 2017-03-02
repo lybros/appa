@@ -1,9 +1,7 @@
-//
 // Created by Ivan Pazhitnykh on 02.03.17.
-//
 
-#ifndef CW_CODE_FEATURES_H
-#define CW_CODE_FEATURES_H
+#ifndef SRC_FEATURES_H_
+#define SRC_FEATURES_H_
 
 #include <iostream>
 #include <theia/theia.h>
@@ -19,13 +17,13 @@ class Features {
 public:
     Features(Storage* storage, QString out_path);
 
-    // extract features only if doesn't find *.features files
+    // Extract features only if doesn't find *.features files.
     void Extract();
 
-    // rewrite all *.features files
+    // Rewrite all *.features files.
     void ForceExtract();
 
-    // extract features for single image. doesn't wotk with disc
+    // Extract features for single image. Doesn't work with disc.
     void Extract(
             QString filename,
             std::vector<theia::Keypoint>* keypoints,
@@ -51,4 +49,4 @@ private:
     theia::FeatureExtractor* extractor_;
 };
 
-#endif //CW_CODE_FEATURES_H
+#endif  // SRC_FEATURES_H_

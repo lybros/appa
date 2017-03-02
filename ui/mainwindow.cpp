@@ -15,7 +15,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
 void MainWindow::set_icons(QtAwesome* awesome) {
     awesome->initFontAwesome();
     QVariantMap options;
+// For some reasons icons with default scale-factor does not look good
+// on macOS devices.
+#ifdef __APPLE__
     options.insert("scale-factor", 0.6);
+#endif
 
     // featuresToolBar
     options.insert("color", QColor(255, 175, 24));

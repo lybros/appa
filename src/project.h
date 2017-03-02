@@ -20,6 +20,7 @@
 #define SRC_PROJECT_H_
 
 #include "storage.h"
+#include "options.h"
 
 #include <iostream>
 #include <string>
@@ -79,7 +80,7 @@ public:
     ~Project();
 
 private:
-    ReconstructionBuilderOptions* options_;
+    Options *options_;
 
     QString project_name_;
     // project_path_ contains the full way to the project.

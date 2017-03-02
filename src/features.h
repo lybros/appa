@@ -6,6 +6,7 @@
 #define CW_CODE_FEATURES_H
 
 #include <iostream>
+#include <theia/theia.h>
 
 #include <QString>
 #include <QVector>

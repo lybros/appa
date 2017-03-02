@@ -25,6 +25,13 @@ public:
     // rewrite all *.features files
     void ForceExtract();
 
+    // extract features for single image. doesn't wotk with disc
+    void Extract(
+            QString filename,
+            std::vector<theia::Keypoint>* keypoints,
+            std::vector<Eigen::VectorXf>* descriptors
+    );
+
     void Match();
 
     void ForceMatch();

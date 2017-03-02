@@ -16,6 +16,30 @@ void Features::Extract() {
     return _extract(false);
 }
 
+void Features::Extract(
+        QString filename,
+        std::vector<theia::Keypoint>* keypoints,
+        std::vector<Eigen::VectorXf>* descriptors
+) {
+    LOG(INFO) << "Start process " << filename.toStdString();
+    std::vector<std::string> filenames;
+    std::vector<std::vector<theia::Keypoint> > keypoints_vector;
+    std::vector<std::vector<Eigen::VectorXf> > descriptors_vector;
+    filenames.push_back(filename.toStdString());
+
+    theia::Timer timer;
+    CHECK(extractor_->Extract(
+            filenames, &keypoints_vector, &descriptors_vector
+    )) << "Feature extraction failed!";
+    const double time = timer.ElapsedTimeInSeconds();
+
+    LOG(INFO) << "It took " << time << " seconds to extract features";
+
+    *keypoints = keypoints_vector.back();
+    *descriptors = descriptors_vector.back();
+    return;;
+};
+
 void Features::ForceExtract() {
     return _extract(true);
 };
@@ -33,15 +57,13 @@ void Features::_extract(bool is_force) {
         }
     }
 
-    // Extract features from all images.
     theia::Timer timer;
     CHECK(extractor_->ExtractToDisk(processing_images))
     << "Feature extraction failed!";
-    const double time_to_extract_features = timer.ElapsedTimeInSeconds();
+    const double time = timer.ElapsedTimeInSeconds();
 
-    LOG(INFO) << "It took " << time_to_extract_features
-    << " seconds to extract descriptors from " << processing_images.size()
-    << " images";
+    LOG(INFO) << "It took " << time << " seconds to extract descriptors from "
+    << processing_images.size() << " images";
 };
 
 Features::~Features() {

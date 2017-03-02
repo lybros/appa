@@ -2,7 +2,7 @@
 // Created by Ivan Pazhitnykh on 02.03.17.
 //
 
-#include "features.h"
+#include "featuresx.h"
 
 // TODO(drapegnik): pass to constructor options object
 Features::Features(Storage* storage, QString out_path) : out_path_(out_path),

@@ -3,8 +3,8 @@ set(SOURCE_FILES
         project.h
         storage.cpp
         storage.h
-        features.cpp
-        features.h
+        featuresx.cpp
+        featuresx.h
         utils.cpp
         utils.h)
 

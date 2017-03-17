@@ -12,7 +12,7 @@ git submodule update
 * [OpenImageIO](https://sites.google.com/site/openimageio/home) ~ [`v1.7.11`](https://github.com/OpenImageIO/oiio/tree/Release-1.7.11)
 * [TheiaSfM](http://www.theia-sfm.org/) ~ [`v0.7`](https://github.com/sweeneychris/TheiaSfM/tree/v0.7)
 * [Qt](https://www.qt.io/) ~ `v5.7`
-* [QGLViewer](https://libqglviewer.com/)
+* [QGLViewer](https://libqglviewer.com/). Seems that you need OpenGL installed on your computer too.
 
 ### setup:
 * set `DYLD_LIBRARY_PATH` environment variable to `path/to/openimageio/lib`

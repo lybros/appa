@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
     ui->setupUi(this);
     active_project_ = new Project();
 
-    view_ = new ReconstructionWindow(this);
+    view_ = new ReconstructionWindow();
     ui->sceneLayout->addWidget(view_);
 }
 

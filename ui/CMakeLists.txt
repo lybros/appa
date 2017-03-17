@@ -1,7 +1,12 @@
 # The Qt5OpenGL and Qt5Xml packages are required to avoid "QDomElement: no such
 # file ot directory" error when compiling the project with QGlViewer library.
-find_package(Qt5OpenGL REQUIRED)
 find_package(Qt5Xml REQUIRED)
+find_package(Qt5OpenGL REQUIRED)
+
+# TODO(uladbohdan): to remove before PR.
+#set(QGLViewer_INCLUDE_DIRS $ENV{QGLViewer_INCLUDE_DIRS})
+#set(QGLViewer_INCLUDE_DIRS /usr/local/include)
+#INCLUDE_DIRECTORIES(QGLViewer_INCLUDE_DIRS)
 
 set(SRC_UI
     mainwindow.cpp
@@ -31,5 +36,4 @@ add_library(ui
 # We're building the ui library on top of src library,
 # that's why need to mention it here.
 # (and we will never specify ui target as a dependency of src target)
-target_link_libraries(ui src QGLViewer
-    Qt5::Xml Qt5::OpenGL Qt5::Core Qt5::Widgets)
+target_link_libraries(ui src GL Qt5::Xml Qt5::OpenGL Qt5::Widgets QGLViewer)

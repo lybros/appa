@@ -3,32 +3,23 @@
 #ifndef UI_RECONSTRUCTION_WINDOW_H_
 #define UI_RECONSTRUCTION_WINDOW_H_
 
-#include <vector>
-
 #include <QGLViewer/qglviewer.h>
-
-#include <QOpenGLWidget>
-#include <QOpenGLFunctions>
 
 #include <Eigen/Core>
 #include <theia/theia.h>
 
 #include "../src/project.h"
 
-class ReconstructionWindow : public QOpenGLWidget, protected QOpenGLFunctions {
+class ReconstructionWindow : public QGLViewer {
  public:
-    ReconstructionWindow(QWidget *parent);
-
     void BuildWithDefaultParameters(Project *project);
 
     ~ReconstructionWindow();
 
  protected:
-    void initializeGL();
-    void resizeGL(int w, int h);
-    void paintGL();
+    virtual void init() override;
 
- private:
+    virtual void draw() override;
 };
 
 #endif  // UI_RECONSTRUCTION_WINDOW_H_

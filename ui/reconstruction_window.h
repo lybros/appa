@@ -5,21 +5,30 @@
 
 #include <QGLViewer/qglviewer.h>
 
-#include <Eigen/Core>
+#include <QVector3D>
+
 #include <theia/theia.h>
 
 #include "../src/project.h"
 
 class ReconstructionWindow : public QGLViewer {
  public:
-    void BuildWithDefaultParameters(Project *project);
+    ReconstructionWindow();
+
+    ReconstructionWindow(Project *project);
+
+    void BuildFromDefaultPath();
 
     ~ReconstructionWindow();
 
  protected:
     virtual void init() override;
-
     virtual void draw() override;
+
+ private:
+    std::shared_ptr<Project> project_;
+
+    std::vector<QVector3D> world_points_;
 };
 
 #endif  // UI_RECONSTRUCTION_WINDOW_H_

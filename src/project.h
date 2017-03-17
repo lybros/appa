@@ -66,6 +66,8 @@ public:
 
     QString GetImagesPath();
 
+    QString GetOutputLocation();
+
     void SetProjectName(QString);
 
     void SetProjectPath(QString);
@@ -77,6 +79,8 @@ public:
     bool ReadConfigurationFile();
 
     QString GetDefaultOutputPath();
+
+    std::vector<std::shared_ptr<theia::Reconstruction>>& GetReconstructions();
 
     ~Project();
 
@@ -94,6 +98,8 @@ private:
     Features* features_;
 
     QString GetConfigurationFilePath();
+
+    std::vector<std::shared_ptr<theia::Reconstruction>> reconstructions_;
 };
 
 #endif  // SRC_PROJECT_H_

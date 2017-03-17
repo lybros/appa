@@ -175,10 +175,10 @@
   </action>
   <action name="actionVisualizeBinary">
    <property name="text">
-    <string>Visualize a binary (using default path)</string>
+    <string>Visualize a binary (default - out/model-0.binary)</string>
    </property>
    <property name="toolTip">
-    <string>Visualize a binary (using default path)</string>
+    <string>Visualize a binary (default - out/model-0.binary)</string>
    </property>
   </action>
   <action name="actionRunExampleReconstruction">

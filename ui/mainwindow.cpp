@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
     ui->setupUi(this);
     active_project_ = new Project();
 
-    view_ = new ReconstructionWindow();
+    view_ = new ReconstructionWindow(active_project_);
     ui->sceneLayout->addWidget(view_);
 }
 
@@ -54,10 +54,10 @@ void MainWindow::on_actionNewProject_triggered() {
     NewProjectOptions* project_options = new NewProjectOptions();
     new_project_dialog.SetProjectOptions(project_options);
 
+    std::cout << "ok calling new project dialog" << std::endl;
     if (new_project_dialog.exec()) {
         // Checking if we've initialized new project.
-        LOG(INFO) << "New project basic parameteres:"
-        << std::endl;
+        LOG(INFO) << "New project basic parameteres:" << std::endl;
         std::cout << "\t" << project_options->project_name.toStdString()
         << std::endl;
         std::cout << "\t" << project_options->project_path.toStdString()
@@ -68,9 +68,10 @@ void MainWindow::on_actionNewProject_triggered() {
         "-------------------------------------------------------------"
         << std::endl;
 
-        if (active_project_) {
+        /*if (active_project_) {
             delete active_project_;
-        }
+        }*/
+
         // Try/catch section here to understand if constructor failed
         // to create a Project instance. (?)
         active_project_ = new Project(
@@ -80,7 +81,9 @@ void MainWindow::on_actionNewProject_triggered() {
     } else {
     }
 
-    delete project_options;
+    std::cout << "trololo" << std::endl;
+
+//    delete project_options;
 }
 
 void MainWindow::on_actionOpen_triggered() {
@@ -154,7 +157,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_actionVisualizeBinary_triggered() {
-    view_->BuildWithDefaultParameters(active_project_);
+    view_->BuildFromDefaultPath();
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {

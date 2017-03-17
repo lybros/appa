@@ -2,16 +2,15 @@
 
 #include "project.h"
 
-Project::Project() {
-    options_ = new Options();
-    storage_ = new Storage();
+Project::Project() : options_(new Options()), storage_(new Storage()) {
 }
 
 Project::Project(QString project_name,
                  QString project_path,
                  QString images_path) : project_name_(project_name),
-                                        project_path_(project_path) {
-    Project();
+                                        project_path_(project_path),
+                                        options_(new Options()),
+                                        storage_(new Storage()) {
     storage_->UpdateImagesPath(images_path);
     features_ = new Features(storage_, GetDefaultOutputPath());
 
@@ -33,6 +32,7 @@ Project::Project(QString project_name,
 
     // Creating out/ directory.
     QDir(project_path).mkdir("out");
+    output_location_ = GetDefaultOutputPath();
 
     options_ = new Options(output_location_);
 }
@@ -50,12 +50,17 @@ void Project::BuildModelToBinary() {
     CHECK(reconstruction_builder.ExtractAndMatchFeatures())
     << "Could not extract and match features";
 
-    std::vector<Reconstruction*> reconstructions;
+    std::vector<theia::Reconstruction*> reconstructions;
     CHECK(reconstruction_builder.BuildReconstruction(&reconstructions))
     << "Could not create a reconstruction";
 
     std::string output_file_template =
             QDir(output_location_).filePath("model").toStdString();
+
+    reconstructions_.resize(reconstructions.size());
+    for (int i = 0; i < reconstructions_.size(); i++) {
+        reconstructions_[i].reset(reconstructions[i]);
+    }
 
     for (int i = 0; i < reconstructions.size(); i++) {
         std::string output_file =
@@ -210,6 +215,15 @@ QString Project::GetConfigurationFilePath() {
 
 QString Project::GetDefaultOutputPath() {
     return QDir(project_path_).filePath(DEFAULT_OUTPUT_LOCATION_POSTFIX);
+}
+
+QString Project::GetOutputLocation() {
+    return output_location_;
+}
+
+std::vector<std::shared_ptr<theia::Reconstruction>>&
+Project::GetReconstructions() {
+    return reconstructions_;
 }
 
 Project::~Project() {

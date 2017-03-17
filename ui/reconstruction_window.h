@@ -5,6 +5,8 @@
 
 #include <vector>
 
+#include <QGLViewer/qglviewer.h>
+
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 

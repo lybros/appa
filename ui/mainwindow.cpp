@@ -56,7 +56,6 @@ void MainWindow::on_actionNewProject_triggered() {
     NewProjectOptions* project_options = new NewProjectOptions();
     new_project_dialog.SetProjectOptions(project_options);
 
-    std::cout << "ok calling new project dialog" << std::endl;
     if (new_project_dialog.exec()) {
         // Checking if we've initialized new project.
         LOG(INFO) << "New project basic parameteres:" << std::endl;
@@ -76,12 +75,11 @@ void MainWindow::on_actionNewProject_triggered() {
                 project_options->project_name,
                 project_options->project_path,
                 project_options->images_path);
+        UpdateActiveProjectInfo();
     } else {
     }
 
     delete project_options;
-
-    UpdateActiveProjectInfo();
 }
 
 void MainWindow::on_actionOpen_triggered() {

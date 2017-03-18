@@ -3,11 +3,6 @@
 find_package(Qt5Xml REQUIRED)
 find_package(Qt5OpenGL REQUIRED)
 
-# TODO(uladbohdan): to remove before PR.
-#set(QGLViewer_INCLUDE_DIRS $ENV{QGLViewer_INCLUDE_DIRS})
-#set(QGLViewer_INCLUDE_DIRS /usr/local/include)
-#INCLUDE_DIRECTORIES(QGLViewer_INCLUDE_DIRS)
-
 set(SRC_UI
     mainwindow.cpp
     newproject.cpp

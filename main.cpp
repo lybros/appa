@@ -6,7 +6,7 @@ int main(int argc, char* argv[]) {
     QtAwesome* awesome = new QtAwesome(&a);
     awesome->initFontAwesome();
 
-   // google::InitGoogleLogging(argv[0]);
+    google::InitGoogleLogging(argv[0]);
     LOG(INFO) << "Hello world!";
 
     MainWindow w;

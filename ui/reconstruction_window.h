@@ -7,6 +7,7 @@
 
 #include <QVector3D>
 
+#include <Eigen/Core>
 #include <theia/theia.h>
 
 #include "../src/project.h"
@@ -31,6 +32,9 @@ class ReconstructionWindow : public QGLViewer {
     Project *project_;
 
     std::vector<QVector3D> world_points_;
+    std::vector<theia::Camera> cameras_;
+
+    void DrawCamera(const theia::Camera&);
 };
 
 #endif  // UI_RECONSTRUCTION_WINDOW_H_

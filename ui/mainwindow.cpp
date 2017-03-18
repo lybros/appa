@@ -178,9 +178,10 @@ void MainWindow::on_actionRunExampleReconstruction_triggered() {
     }
 
     QProcess view_reconstruction_process(this);
-    // TODO(uladbohdan): make it work both on Linux and macOS.
+    // We assume the view_reconstruction build from Theia library is in your
+    // PATH.
     view_reconstruction_process.start(
-            "3rdparty/view_reconstruction",
+            "view_reconstruction",
             QStringList() << "--reconstruction" << output_model_path
     );
     view_reconstruction_process.waitForFinished();

@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
 
     view_ = new ReconstructionWindow(active_project_);
     ui->sceneLayout->addWidget(view_);
+
+    ui->activeProjectInfo->setVisible(false);
 }
 
 void MainWindow::set_icons(QtAwesome* awesome) {
@@ -78,6 +80,8 @@ void MainWindow::on_actionNewProject_triggered() {
     }
 
     delete project_options;
+
+    UpdateActiveProjectInfo();
 }
 
 void MainWindow::on_actionOpen_triggered() {
@@ -116,6 +120,8 @@ void MainWindow::on_actionOpen_triggered() {
     << std::endl;
 
     view_->UpdateActiveProject(active_project_);
+
+    UpdateActiveProjectInfo();
 }
 
 void MainWindow::on_actionExtract_Features_triggered() {
@@ -178,4 +184,23 @@ void MainWindow::on_actionRunExampleReconstruction_triggered() {
             QStringList() << "--reconstruction" << output_model_path
     );
     view_reconstruction_process.waitForFinished();
+}
+
+void MainWindow::UpdateActiveProjectInfo() {
+    if (!active_project_) {
+        return;
+    }
+
+    ui->project_name_label->setText("PROJECT NAME: " +
+                                    active_project_->GetProjectName());
+    ui->project_location_label->setText("PROJECT LOCATION: " +
+                                        active_project_->GetProjectPath());
+    ui->output_location_label->setText("OUTPUT LOCATION: " +
+                                       active_project_->GetOutputLocation());
+    ui->images_location_label->setText("IMAGES LOCATION: " +
+                                       active_project_->GetImagesPath());
+    ui->number_images_label->setText("NUMBER OF IMAGES: " + QString::number(
+                    active_project_->GetStorage()->NumberOfImages()));
+
+    ui->activeProjectInfo->setVisible(true);
 }

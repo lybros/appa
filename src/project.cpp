@@ -226,6 +226,10 @@ Project::GetReconstructions() {
     return reconstructions_;
 }
 
+Storage* Project::GetStorage() {
+    return storage_;
+}
+
 Project::~Project() {
     delete options_;
     delete storage_;

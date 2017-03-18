@@ -57,6 +57,8 @@ private:
     ReconstructionWindow* view_;
 
     bool isProjectDirectory(QString& project_path);
+
+    void UpdateActiveProjectInfo();
 };
 
 #endif  // UI_MAINWINDOW_H_

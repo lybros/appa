@@ -80,6 +80,8 @@ public:
 
     QString GetDefaultOutputPath();
 
+    Storage* GetStorage();
+
     std::vector<std::shared_ptr<theia::Reconstruction>>& GetReconstructions();
 
     ~Project();

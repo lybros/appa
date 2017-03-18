@@ -8,7 +8,11 @@ ReconstructionWindow::ReconstructionWindow() {
 
 ReconstructionWindow::ReconstructionWindow(Project *project) {
     ReconstructionWindow();
-    project_.reset(project);
+    project_ = project;
+}
+
+void ReconstructionWindow::UpdateActiveProject(Project *project) {
+    project_ = project;
 }
 
 void ReconstructionWindow::BuildFromDefaultPath() {
@@ -59,7 +63,7 @@ void ReconstructionWindow::draw() {
 
     glColor3f(1.0f,0,0);
     // Red lines from (0,0,0) to understand the scale.
-    for (float i = 0; i < 1000; i++) {
+    for (float i = 0; i < 1000; i+=0.2) {
         glVertex3f(i,i,i);
         glVertex3f(-i,i,i);
         glVertex3f(i,-i,i);

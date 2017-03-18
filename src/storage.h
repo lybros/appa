@@ -11,7 +11,7 @@
 #include <QDirIterator>
 
 // TODO(uladbohdan): to improve the regex.
-const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|png)";
+const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|JPG|jpeg|JPEG|png|PNG)";
 
 class Storage {
 public:

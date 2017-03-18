@@ -17,6 +17,8 @@ class ReconstructionWindow : public QGLViewer {
 
     ReconstructionWindow(Project *project);
 
+    void UpdateActiveProject(Project *project);
+
     void BuildFromDefaultPath();
 
     ~ReconstructionWindow();
@@ -26,7 +28,7 @@ class ReconstructionWindow : public QGLViewer {
     virtual void draw() override;
 
  private:
-    std::shared_ptr<Project> project_;
+    Project *project_;
 
     std::vector<QVector3D> world_points_;
 };

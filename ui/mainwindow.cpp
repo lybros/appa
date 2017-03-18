@@ -68,10 +68,6 @@ void MainWindow::on_actionNewProject_triggered() {
         "-------------------------------------------------------------"
         << std::endl;
 
-        /*if (active_project_) {
-            delete active_project_;
-        }*/
-
         // Try/catch section here to understand if constructor failed
         // to create a Project instance. (?)
         active_project_ = new Project(
@@ -81,9 +77,7 @@ void MainWindow::on_actionNewProject_triggered() {
     } else {
     }
 
-    std::cout << "trololo" << std::endl;
-
-//    delete project_options;
+    delete project_options;
 }
 
 void MainWindow::on_actionOpen_triggered() {
@@ -120,6 +114,8 @@ void MainWindow::on_actionOpen_triggered() {
     << std::endl;
     std::cout << "-------------------------------------------------------------"
     << std::endl;
+
+    view_->UpdateActiveProject(active_project_);
 }
 
 void MainWindow::on_actionExtract_Features_triggered() {
@@ -167,7 +163,8 @@ void MainWindow::on_actionSearch_Image_triggered() {
 
 void MainWindow::on_actionRunExampleReconstruction_triggered() {
     QString output_path = active_project_->GetDefaultOutputPath();
-    QString output_model_path = QDir(output_path).filePath("model-0.binary");
+    QString output_model_path =
+            QDir(output_path).filePath(DEFAULT_MODEL_BINARY_FILENAME);
 
     if (!QFileInfo(output_model_path).exists()) {
         LOG(ERROR) << "No Model binary found";
@@ -175,8 +172,9 @@ void MainWindow::on_actionRunExampleReconstruction_triggered() {
     }
 
     QProcess view_reconstruction_process(this);
+    // TODO(uladbohdan): make it work both on Linux and macOS.
     view_reconstruction_process.start(
-            "view_reconstruction",
+            "3rdparty/view_reconstruction",
             QStringList() << "--reconstruction" << output_model_path
     );
     view_reconstruction_process.waitForFinished();

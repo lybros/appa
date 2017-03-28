@@ -59,6 +59,8 @@ private:
     bool isProjectDirectory(QString& project_path);
 
     void UpdateActiveProjectInfo();
+
+    void EnableActions();
 };
 
 #endif  // UI_MAINWINDOW_H_

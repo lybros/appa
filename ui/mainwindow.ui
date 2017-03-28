@@ -213,11 +213,17 @@
    </property>
   </action>
   <action name="actionBuildToBinary">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Build into a binary file</string>
    </property>
   </action>
   <action name="actionExtract_Features">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Extract Features</string>
    </property>
@@ -226,6 +232,9 @@
    </property>
   </action>
   <action name="actionMatch_Features">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Match Features</string>
    </property>
@@ -234,6 +243,9 @@
    </property>
   </action>
   <action name="actionStart_Reconstruction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Start Reconstruction</string>
    </property>
@@ -242,6 +254,9 @@
    </property>
   </action>
   <action name="actionSearch_Image">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Search Image</string>
    </property>
@@ -250,6 +265,9 @@
    </property>
   </action>
   <action name="actionVisualizeBinary">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Visualize a binary (default - out/model-0.binary)</string>
    </property>
@@ -258,6 +276,9 @@
    </property>
   </action>
   <action name="actionRunExampleReconstruction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Run Theia's view_reconstruction binary</string>
    </property>

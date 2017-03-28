@@ -76,6 +76,7 @@ void MainWindow::on_actionNewProject_triggered() {
                 project_options->project_path,
                 project_options->images_path);
         UpdateActiveProjectInfo();
+        EnableActions();
     } else {
     }
 
@@ -120,6 +121,7 @@ void MainWindow::on_actionOpen_triggered() {
     view_->UpdateActiveProject(active_project_);
 
     UpdateActiveProjectInfo();
+    EnableActions();
 }
 
 void MainWindow::on_actionExtract_Features_triggered() {
@@ -202,4 +204,15 @@ void MainWindow::UpdateActiveProjectInfo() {
                     active_project_->GetStorage()->NumberOfImages()));
 
     ui->activeProjectInfo->setVisible(true);
+}
+
+// We're enabling action buttons in case of project is loaded.
+void MainWindow::EnableActions() {
+    ui->actionBuildToBinary->setEnabled(true);
+    ui->actionExtract_Features->setEnabled(true);
+    ui->actionMatch_Features->setEnabled(true);
+    ui->actionRunExampleReconstruction->setEnabled(true);
+    ui->actionSearch_Image->setEnabled(true);
+    ui->actionStart_Reconstruction->setEnabled(true);
+    ui->actionVisualizeBinary->setEnabled(true);
 }

@@ -81,6 +81,9 @@ void ReconstructionWindow::BuildFromDefaultPath() {
                  world_points_.size() << std::endl;
     std::cout << "DRAWING: num cameras: " << cameras_.size() << std::endl;
     draw();
+
+    // To render the reconstruction without waiting to mouse click on widget.
+    update();
 }
 
 void ReconstructionWindow::init() {

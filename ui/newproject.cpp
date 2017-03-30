@@ -78,8 +78,11 @@ bool NewProjectDialog::initialize_new_project() {
     QString project_parent_path = ui->project_parent_path->text();
     project_options_->project_path =
             QDir(project_parent_path).filePath(project_options_->project_name);
+    EnsureTrailingSlash(project_options_->project_path);
 
     project_options_->images_path = ui->images_path->text();
+    EnsureTrailingSlash(project_options_->images_path);
+
     LOG(INFO) << "Parameters to be returned back from NewProjectDialog:";
     std::cout << "\t" << project_options_->project_name.toStdString() <<
     std::endl;

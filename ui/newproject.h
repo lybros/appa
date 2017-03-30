@@ -10,6 +10,7 @@
 #include <QFileInfo>
 
 #include "../src/project.h"
+#include "../src/utils.h"
 
 namespace Ui {
     class NewProjectDialog;

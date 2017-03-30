@@ -8,3 +8,9 @@ QString FeatureFilenameFromImage(QString output_dir, QString image_path) {
                              image_path.lastIndexOf("/")) + ".features";
     return QDir(output_dir).filePath("features/" + image_name);
 }
+
+void EnsureTrailingSlash(QString& path) {
+    if (path[path.length()-1] != "/") {
+        path += "/";
+    }
+}

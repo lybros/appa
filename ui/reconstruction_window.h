@@ -12,6 +12,11 @@
 
 #include "../src/project.h"
 
+struct WorldPoint {
+    QVector3D coords;
+    QColor color;
+};
+
 class ReconstructionWindow : public QGLViewer {
  public:
     ReconstructionWindow();
@@ -31,7 +36,7 @@ class ReconstructionWindow : public QGLViewer {
  private:
     Project *project_;
 
-    std::vector<QVector3D> world_points_;
+    std::vector<WorldPoint> world_points_;
     std::vector<theia::Camera> cameras_;
 
     void DrawCamera(const theia::Camera&);

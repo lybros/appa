@@ -30,6 +30,12 @@ void ReconstructionWindow::BuildFromDefaultPath() {
 
     LOG(INFO) << "Read successfully from file.";
 
+    // Colorizing the reconstruction using the raw image data.
+    theia::ColorizeReconstruction(project_->GetImagesPath().toStdString(), 1,
+                                  reconstruction.get());
+
+    LOG(INFO) << "Reconstruction colorized successfully!";
+
     // Centers the reconstruction based on the absolute deviation of 3D points.
     reconstruction->Normalize();
 
@@ -42,11 +48,22 @@ void ReconstructionWindow::BuildFromDefaultPath() {
         if (track == nullptr || !track->IsEstimated()) {
             continue;
         }
-        world_points_.emplace_back(QVector3D(
+
+        QVector3D point_coords = QVector3D(
                     track->Point().hnormalized().x(),
                     track->Point().hnormalized().y(),
-                    track->Point().hnormalized().z()
-                                       ));
+                    track->Point().hnormalized().z());
+
+        QColor point_color = QColor(
+                    (int)track->Color()(0,0),
+                    (int)track->Color()(1,0),
+                    (int)track->Color()(2,0));
+
+        WorldPoint world_point;
+        world_point.coords = point_coords;
+        world_point.color = point_color;
+
+        world_points_.emplace_back(world_point);
     }
 
     cameras_.reserve(reconstruction->NumViews());
@@ -68,6 +85,8 @@ void ReconstructionWindow::BuildFromDefaultPath() {
 
 void ReconstructionWindow::init() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glDisable(GL_LIGHTING);
+
     setSceneRadius(100.0);          // scene has a 100 OpenGL units radius
     camera()->showEntireScene();
 }
@@ -75,9 +94,12 @@ void ReconstructionWindow::init() {
 void ReconstructionWindow::draw() {
     glBegin(GL_POINTS);
 
-    glColor3f(0,0,0);
-    for (QVector3D point : world_points_) {
-        glVertex3i(point.x(), point.y(), point.z());
+    for (WorldPoint point : world_points_) {
+        auto coords = point.coords;
+        auto color = point.color;
+
+        glColor3f(color.redF(), color.greenF(), color.blueF());
+        glVertex3i(coords.x(), coords.y(), coords.z());
     }
 
     for (theia::Camera camera : cameras_) {

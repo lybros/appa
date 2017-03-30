@@ -7,6 +7,9 @@ NewProjectDialog::NewProjectDialog(QWidget* parent) :
         QDialog(parent),
         ui(new Ui::NewProjectDialog) {
     ui->setupUi(this);
+
+    ui->project_parent_path->setText(QDir::homePath());
+    ui->images_path->setText(QDir::homePath());
 }
 
 void NewProjectDialog::SetProjectOptions(NewProjectOptions* project_options) {
@@ -104,7 +107,9 @@ void NewProjectDialog::on_locate_project_button_clicked() {
             QDir::homePath(),
             QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
     );
-    ui->project_parent_path->setText(dir);
+    if (dir != "") {
+        ui->project_parent_path->setText(dir);
+    }
 }
 
 void NewProjectDialog::on_locate_images_button_clicked() {
@@ -114,5 +119,7 @@ void NewProjectDialog::on_locate_images_button_clicked() {
             QDir::homePath(),
             QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
     );
-    ui->images_path->setText(dir);
+    if (dir != "") {
+        ui->images_path->setText(dir);
+    }
 }

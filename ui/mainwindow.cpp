@@ -8,8 +8,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
     ui->setupUi(this);
     active_project_ = new Project();
 
-    view_ = new ReconstructionWindow(this);
+    view_ = new ReconstructionWindow(active_project_);
     ui->sceneLayout->addWidget(view_);
+
+    ui->activeProjectInfo->setVisible(false);
 }
 
 void MainWindow::set_icons(QtAwesome* awesome) {
@@ -56,8 +58,7 @@ void MainWindow::on_actionNewProject_triggered() {
 
     if (new_project_dialog.exec()) {
         // Checking if we've initialized new project.
-        LOG(INFO) << "New project basic parameteres:"
-        << std::endl;
+        LOG(INFO) << "New project basic parameteres:" << std::endl;
         std::cout << "\t" << project_options->project_name.toStdString()
         << std::endl;
         std::cout << "\t" << project_options->project_path.toStdString()
@@ -68,15 +69,14 @@ void MainWindow::on_actionNewProject_triggered() {
         "-------------------------------------------------------------"
         << std::endl;
 
-        if (active_project_) {
-            delete active_project_;
-        }
         // Try/catch section here to understand if constructor failed
         // to create a Project instance. (?)
         active_project_ = new Project(
                 project_options->project_name,
                 project_options->project_path,
                 project_options->images_path);
+        UpdateActiveProjectInfo();
+        EnableActions();
     } else {
     }
 
@@ -117,6 +117,11 @@ void MainWindow::on_actionOpen_triggered() {
     << std::endl;
     std::cout << "-------------------------------------------------------------"
     << std::endl;
+
+    view_->UpdateActiveProject(active_project_);
+
+    UpdateActiveProjectInfo();
+    EnableActions();
 }
 
 void MainWindow::on_actionExtract_Features_triggered() {
@@ -154,7 +159,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_actionVisualizeBinary_triggered() {
-    view_->BuildWithDefaultParameters(active_project_);
+    view_->BuildFromDefaultPath();
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {
@@ -164,7 +169,8 @@ void MainWindow::on_actionSearch_Image_triggered() {
 
 void MainWindow::on_actionRunExampleReconstruction_triggered() {
     QString output_path = active_project_->GetDefaultOutputPath();
-    QString output_model_path = QDir(output_path).filePath("model-0.binary");
+    QString output_model_path =
+            QDir(output_path).filePath(DEFAULT_MODEL_BINARY_FILENAME);
 
     if (!QFileInfo(output_model_path).exists()) {
         LOG(ERROR) << "No Model binary found";
@@ -172,9 +178,41 @@ void MainWindow::on_actionRunExampleReconstruction_triggered() {
     }
 
     QProcess view_reconstruction_process(this);
+    // We assume the view_reconstruction build from Theia library is in your
+    // PATH.
     view_reconstruction_process.start(
             "view_reconstruction",
             QStringList() << "--reconstruction" << output_model_path
     );
     view_reconstruction_process.waitForFinished();
+}
+
+void MainWindow::UpdateActiveProjectInfo() {
+    if (!active_project_) {
+        return;
+    }
+
+    ui->project_name_label->setText("PROJECT NAME: " +
+                                    active_project_->GetProjectName());
+    ui->project_location_label->setText("PROJECT LOCATION: " +
+                                        active_project_->GetProjectPath());
+    ui->output_location_label->setText("OUTPUT LOCATION: " +
+                                       active_project_->GetOutputLocation());
+    ui->images_location_label->setText("IMAGES LOCATION: " +
+                                       active_project_->GetImagesPath());
+    ui->number_images_label->setText("NUMBER OF IMAGES: " + QString::number(
+                    active_project_->GetStorage()->NumberOfImages()));
+
+    ui->activeProjectInfo->setVisible(true);
+}
+
+// We're enabling action buttons in case of project is loaded.
+void MainWindow::EnableActions() {
+    ui->actionBuildToBinary->setEnabled(true);
+    ui->actionExtract_Features->setEnabled(true);
+    ui->actionMatch_Features->setEnabled(true);
+    ui->actionRunExampleReconstruction->setEnabled(true);
+    ui->actionSearch_Image->setEnabled(true);
+    ui->actionStart_Reconstruction->setEnabled(true);
+    ui->actionVisualizeBinary->setEnabled(true);
 }

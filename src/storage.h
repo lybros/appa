@@ -10,8 +10,9 @@
 #include <QFileInfo>
 #include <QDirIterator>
 
-// TODO(uladbohdan): to improve the regex.
-const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|png)";
+// The pattern may be extended with image extensions which are supported
+// by Theia.
+const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|JPG|jpeg|JPEG|png|PNG)";
 
 class Storage {
 public:

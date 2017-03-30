@@ -53,10 +53,14 @@ private:
     Ui::MainWindow* ui;
     Project* active_project_;
 
-    // Interaction with window rendering the model.
+    // Interaction with widget which renders the model.
     ReconstructionWindow* view_;
 
     bool isProjectDirectory(QString& project_path);
+
+    void UpdateActiveProjectInfo();
+
+    void EnableActions();
 };
 
 #endif  // UI_MAINWINDOW_H_

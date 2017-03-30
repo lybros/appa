@@ -7,37 +7,113 @@
     <x>0</x>
     <y>0</y>
     <width>1067</width>
-    <height>618</height>
+    <height>723</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>141</width>
-      <height>521</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Active project info</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>10</y>
-      <width>891</width>
-      <height>511</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="sceneLayout"/>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QGroupBox" name="activeProjectInfo">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>110</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>110</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Active project info</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="project_name_label">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Project Name: PROJECT_NAME</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="output_location_label">
+           <property name="text">
+            <string>Output: OUTPUT_LOCATION</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="project_location_label">
+           <property name="text">
+            <string>Project Location: PROJECT_LOCATION</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="images_location_label">
+           <property name="text">
+            <string>Images: IMAGE_LOCATION</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="number_images_label">
+           <property name="text">
+            <string>Number of images:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="sceneLayout"/>
+    </item>
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Press 'A' key to show/hide the axis.</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -137,11 +213,17 @@
    </property>
   </action>
   <action name="actionBuildToBinary">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Build into a binary file</string>
    </property>
   </action>
   <action name="actionExtract_Features">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Extract Features</string>
    </property>
@@ -150,6 +232,9 @@
    </property>
   </action>
   <action name="actionMatch_Features">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Match Features</string>
    </property>
@@ -158,6 +243,9 @@
    </property>
   </action>
   <action name="actionStart_Reconstruction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Start Reconstruction</string>
    </property>
@@ -166,6 +254,9 @@
    </property>
   </action>
   <action name="actionSearch_Image">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Search Image</string>
    </property>
@@ -174,14 +265,20 @@
    </property>
   </action>
   <action name="actionVisualizeBinary">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
-    <string>Visualize a binary (using default path)</string>
+    <string>Visualize a binary (default - out/model-0.binary)</string>
    </property>
    <property name="toolTip">
-    <string>Visualize a binary (using default path)</string>
+    <string>Visualize a binary (default - out/model-0.binary)</string>
    </property>
   </action>
   <action name="actionRunExampleReconstruction">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Run Theia's view_reconstruction binary</string>
    </property>

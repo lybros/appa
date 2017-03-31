@@ -60,6 +60,10 @@ int Storage::ParseImageFolder() {
         LOG(INFO) << "\t" << next_image.toStdString();
         images_->push_back(next_image);
     }
+
+    // Sorting images once and for all.
+    qSort(*images_);
+
     return images_->length();
 }
 

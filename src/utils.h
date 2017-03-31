@@ -10,4 +10,6 @@ QString FeatureFilenameFromImage(QString output_dir, QString image_path);
 
 void EnsureTrailingSlash(QString& path);
 
+QString ImageNameFromPath(QString& path);
+
 #endif  // SRC_UTILS_H_

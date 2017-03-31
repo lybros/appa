@@ -4,6 +4,7 @@
 #define UI_MAINWINDOW_H_
 
 #include <iostream>
+#include <memory>
 
 #include <QFileInfo>
 #include <QMainWindow>
@@ -57,6 +58,10 @@ private:
     ReconstructionWindow* view_;
 
     bool isProjectDirectory(QString& project_path);
+
+    // Loads Images thumbnails to Image Preview Area.
+    void LoadImagesPreview();
+    QWidget* CreateImageThumbnail(QString &image_path);
 
     void UpdateActiveProjectInfo();
 

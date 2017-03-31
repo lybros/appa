@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
     ui->sceneLayout->addWidget(view_);
 
     ui->activeProjectInfo->setVisible(false);
+    ui->imagesPreviewScrollArea->setVisible(false);
 }
 
 void MainWindow::set_icons(QtAwesome* awesome) {
@@ -203,7 +204,36 @@ void MainWindow::UpdateActiveProjectInfo() {
     ui->number_images_label->setText("NUMBER OF IMAGES: " + QString::number(
                     active_project_->GetStorage()->NumberOfImages()));
 
+    // TODO(uladbohdan): to load in a separate thread.
+    LoadImagesPreview();
+
     ui->activeProjectInfo->setVisible(true);
+    ui->imagesPreviewScrollArea->setVisible(true);
+}
+
+void MainWindow::LoadImagesPreview() {
+    QVector<QString>& images = active_project_->GetStorage()->GetImages();
+
+    if (images.empty()) {
+        return;
+    }
+
+    for (QString& image : images) {
+        ui->imagesPreviewArea->addWidget(CreateImageThumbnail(image));
+    }
+}
+
+QWidget* MainWindow::CreateImageThumbnail(QString &image_path) {
+    // TODO(uladbohdan): to make the width non-constant.
+    int PREVIEW_AREA_WIDTH = 160;
+    int INF = 99999999;
+
+    // A LEAK OF MEMORY. how to avoid correctly?
+    QLabel* image_label = new QLabel(image_path, this);
+    image_label->setPixmap(QPixmap::fromImage(
+                    QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
+                                              Qt::KeepAspectRatio)));
+    return image_label;
 }
 
 // We're enabling action buttons in case of project is loaded.

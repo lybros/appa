@@ -5,6 +5,7 @@
 
 #include <iostream>
 
+#include <QtAlgorithms>
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QVector>

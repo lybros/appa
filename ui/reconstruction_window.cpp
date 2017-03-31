@@ -31,7 +31,7 @@ void ReconstructionWindow::BuildFromDefaultPath() {
     LOG(INFO) << "Read successfully from file.";
 
     // Colorizing the reconstruction using the raw image data.
-    theia::ColorizeReconstruction(project_->GetImagesPath().toStdString(), 1,
+    theia::ColorizeReconstruction(project_->GetImagesPath().toStdString(), 2,
                                   reconstruction.get());
 
     LOG(INFO) << "Reconstruction colorized successfully!";

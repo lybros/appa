@@ -4,11 +4,12 @@
 #define SRC_STORAGE_H_
 
 #include <iostream>
-#include <glog/logging.h>
 
-#include <QVector>
-#include <QFileInfo>
 #include <QDirIterator>
+#include <QFileInfo>
+#include <QVector>
+
+#include <glog/logging.h>
 
 // The pattern may be extended with image extensions which are supported
 // by Theia.

@@ -19,19 +19,19 @@
 #ifndef SRC_PROJECT_H_
 #define SRC_PROJECT_H_
 
-#include "storage.h"
-#include "options.h"
-#include "featuresx.h"
-
 #include <iostream>
 #include <string>
 #include <vector>
 
+#include <QDir>
+#include <QString>
+#include <QTextStream>
+
 #include <theia/theia.h>
 
-#include <QString>
-#include <QDir>
-#include <QTextStream>
+#include "featuresx.h"
+#include "options.h"
+#include "storage.h"
 
 using theia::Reconstruction;
 using theia::ReconstructionBuilder;

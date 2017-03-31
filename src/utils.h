@@ -1,10 +1,10 @@
-// Created by Ivan Pazhitnykh on 02.03.17.
+// Copyright 2017 Lybros.
 
 #ifndef SRC_UTILS_H_
 #define SRC_UTILS_H_
 
-#include <QString>
 #include <QDir>
+#include <QString>
 
 QString FeatureFilenameFromImage(QString output_dir, QString image_path);
 

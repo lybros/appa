@@ -1,17 +1,18 @@
-// Created by Ivan Pazhitnykh on 02.03.17.
+// Copyright 2017 Lybros.
 
 #ifndef SRC_FEATURES_H_
 #define SRC_FEATURES_H_
 
 #include <iostream>
-#include <theia/theia.h>
 
+#include <QFileInfo>
 #include <QString>
 #include <QVector>
-#include <QFileInfo>
 
-#include "utils.h"
+#include <theia/theia.h>
+
 #include "storage.h"
+#include "utils.h"
 
 class Features {
 public:

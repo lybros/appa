@@ -3,11 +3,10 @@
 #ifndef UI_RECONSTRUCTION_WINDOW_H_
 #define UI_RECONSTRUCTION_WINDOW_H_
 
-#include <QGLViewer/qglviewer.h>
-
 #include <QVector3D>
 
 #include <Eigen/Core>
+#include <QGLViewer/qglviewer.h>
 #include <theia/theia.h>
 
 #include "../src/project.h"

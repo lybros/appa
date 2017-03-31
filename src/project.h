@@ -97,6 +97,7 @@ private:
 
     // images_path_ is stored inside of Storage object.
     Storage* storage_;
+
     Features* features_;
 
     QString GetConfigurationFilePath();

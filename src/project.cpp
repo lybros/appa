@@ -38,6 +38,14 @@ Project::Project(QString project_name,
 }
 
 // Simple build from scratch and save into a binary file.
+// Covers all stages all together:
+// * Extracting features, saving them into a filesystem.
+// * Matching features.
+// * Building a 3D model and saving it into a binary file in filesystem.
+//
+// May take plenty of time to finish processing.
+//
+// The recommendation is to run every stage separately.
 void Project::BuildModelToBinary() {
     ReconstructionBuilderOptions *options =
             options_->GetReconstructionBuilderOptions();
@@ -47,12 +55,19 @@ void Project::BuildModelToBinary() {
     for (QString image_path : storage_->GetImages()) {
         reconstruction_builder.AddImage(image_path.toStdString());
     }
+    LOG(INFO) << "All images are added to the builder.";
+    LOG(INFO) << "Starting extracting and matching";
+
     CHECK(reconstruction_builder.ExtractAndMatchFeatures())
     << "Could not extract and match features";
+
+    LOG(INFO) << "Extracted and matched successfully!";
 
     std::vector<theia::Reconstruction*> reconstructions;
     CHECK(reconstruction_builder.BuildReconstruction(&reconstructions))
     << "Could not create a reconstruction";
+
+    LOG(INFO) << "Reconstruction has been created.";
 
     std::string output_file_template =
             QDir(output_location_).filePath("model").toStdString();
@@ -71,6 +86,9 @@ void Project::BuildModelToBinary() {
         CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
         << "Could not write reconstruction to file";
     }
+
+    LOG(INFO) << "Reconstruction has been saved to filesystem.";
+
     return;
 }
 

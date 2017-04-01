@@ -1,5 +1,6 @@
 // Copyright 2017 Lybros.
 
+#include <iostream>
 #include "utils.h"
 
 QString FeatureFilenameFromImage(QString output_dir, QString image_path) {
@@ -9,12 +10,12 @@ QString FeatureFilenameFromImage(QString output_dir, QString image_path) {
     return QDir(output_dir).filePath("features/" + image_name);
 }
 
-void EnsureTrailingSlash(QString &path) {
-    if (path[path.length()-1] != "/") {
+void EnsureTrailingSlash(QString& path) {
+    if (path.toStdString()[path.length() - 1] != '/') {
         path += "/";
     }
 }
 
-QString FileNameFromPath(QString &path) {
+QString FileNameFromPath(QString& path) {
     return path.mid(path.lastIndexOf("/", -2) + 1);
 }

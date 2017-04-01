@@ -157,6 +157,10 @@ MainWindow::~MainWindow() {
     delete ui;
     delete active_project_;
     delete view_;
+
+    for (QWidget* thumbnail : thumbnails_) {
+        delete thumbnail;
+    }
 }
 
 void MainWindow::on_actionVisualizeBinary_triggered() {
@@ -218,8 +222,12 @@ void MainWindow::LoadImagesPreview() {
         return;
     }
 
+    thumbnails_.reserve(images.size());
+
     for (QString& image : images) {
-        ui->imagesPreviewArea->addWidget(CreateImageThumbnail(image));
+        QWidget* thumbnail = CreateImageThumbnail(image);
+        thumbnails_.push_back(thumbnail);
+        ui->imagesPreviewArea->addWidget(thumbnail);
     }
 }
 
@@ -228,7 +236,6 @@ QWidget* MainWindow::CreateImageThumbnail(QString &image_path) {
     int PREVIEW_AREA_WIDTH = 160;
     int INF = 99999999;
 
-    // A LEAK OF MEMORY. how to avoid correctly?
     QLabel* image_label = new QLabel(image_path, this);
     image_label->setPixmap(QPixmap::fromImage(
                     QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,

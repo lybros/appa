@@ -62,6 +62,7 @@ private:
     // Loads Images thumbnails to Image Preview Area.
     void LoadImagesPreview();
     QWidget* CreateImageThumbnail(QString &image_path);
+    QVector<QWidget*> thumbnails_;
 
     void UpdateActiveProjectInfo();
 

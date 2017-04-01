@@ -4,7 +4,6 @@
 #define UI_MAINWINDOW_H_
 
 #include <iostream>
-#include <memory>
 
 #include <QFileInfo>
 #include <QMainWindow>
@@ -62,7 +61,6 @@ private:
     // Loads Images thumbnails to Image Preview Area.
     void LoadImagesPreview();
     QWidget* CreateImageThumbnail(QString &image_path);
-    QVector<QWidget*> thumbnails_;
 
     void UpdateActiveProjectInfo();
 

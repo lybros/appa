@@ -157,10 +157,6 @@ MainWindow::~MainWindow() {
     delete ui;
     delete active_project_;
     delete view_;
-
-    for (QWidget* thumbnail : thumbnails_) {
-        delete thumbnail;
-    }
 }
 
 void MainWindow::on_actionVisualizeBinary_triggered() {
@@ -222,25 +218,39 @@ void MainWindow::LoadImagesPreview() {
         return;
     }
 
-    thumbnails_.reserve(images.size());
-
     for (QString& image : images) {
-        QWidget* thumbnail = CreateImageThumbnail(image);
-        thumbnails_.push_back(thumbnail);
-        ui->imagesPreviewArea->addWidget(thumbnail);
+        ui->imagesPreviewArea->addWidget(CreateImageThumbnail(image));
     }
 }
 
+// TODO(uladbohdan): to handle the situation when we have small amount of
+// images (2-3) as they're expanding and does not look good.
 QWidget* MainWindow::CreateImageThumbnail(QString &image_path) {
-    // TODO(uladbohdan): to make the width non-constant.
-    int PREVIEW_AREA_WIDTH = 160;
+    // TODO(uladbohdan): to make sure this magic number is good for every
+    // screen or to replace it with something else.
+    int PREVIEW_AREA_WIDTH = ui->imagesPreviewScrollArea->size().width() - 25;
     int INF = 99999999;
 
-    QLabel* image_label = new QLabel(image_path, this);
+    QWidget* image_box = new QWidget(this);
+
+    QVBoxLayout* box_layout = new QVBoxLayout(image_box);
+    box_layout->setMargin(0);
+    image_box->setLayout(box_layout);
+
+    QLabel* image_label = new QLabel(image_box);
     image_label->setPixmap(QPixmap::fromImage(
                     QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
                                               Qt::KeepAspectRatio)));
-    return image_label;
+    box_layout->addWidget(image_label);
+    box_layout->setAlignment(image_label, Qt::AlignHCenter);
+
+    QLabel* image_title_label =
+            new QLabel(FileNameFromPath(image_path), image_box);
+    box_layout->addWidget(image_title_label);
+    box_layout->setAlignment(image_title_label, Qt::AlignHCenter);
+
+    ui->imagesPreviewArea->setAlignment(image_box, Qt::AlignHCenter);
+    return image_box;
 }
 
 // We're enabling action buttons in case of project is loaded.

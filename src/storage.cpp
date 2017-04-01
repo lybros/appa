@@ -35,6 +35,13 @@ bool Storage::ForceInitialize(QString images_path, QVector<QString>& images) {
     images_path_ = images_path;
     images_ = new QVector<QString>(images);
 
+    // This sort is redundant, as we're sorting images_ once and for all in
+    // Storage::ParseImageFolder().
+    // Anyway, we need to sort the images_ here too for projects which were
+    // created before we added sorting during parsing.
+    // TODO(uladbohdan): may be removed if no old-styled project configs exist.
+    qSort(*images_);
+
     LOG(INFO) << "Force initialization: success. " << images_->length()
     << " read";
 

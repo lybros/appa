@@ -15,6 +15,6 @@ void EnsureTrailingSlash(QString &path) {
     }
 }
 
-QString ImageNameFromPath(QString &path) {
-    return path.mid(path.lastIndexOf("/", -2));
+QString FileNameFromPath(QString &path) {
+    return path.mid(path.lastIndexOf("/", -2) + 1);
 }

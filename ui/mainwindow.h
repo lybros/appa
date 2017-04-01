@@ -5,6 +5,7 @@
 
 #include <iostream>
 
+#include <QtAlgorithms>
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QProcess>
@@ -14,6 +15,7 @@
 #include "newproject.h"
 #include "reconstruction_window.h"
 #include "../src/project.h"
+#include "../src/utils.h"
 
 namespace Ui {
     class MainWindow;
@@ -65,6 +67,10 @@ private:
     void UpdateActiveProjectInfo();
 
     void EnableActions();
+
+    void UpdateListOfHighlightedViews(QString &view_name);
+    // The vector stores names of highlighted images.
+    QVector<QString> highlighted_views_;
 };
 
 #endif  // UI_MAINWINDOW_H_

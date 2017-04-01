@@ -26,6 +26,10 @@ class ReconstructionWindow : public QGLViewer {
 
     void BuildFromDefaultPath();
 
+    // Passing a vector of names of views to be highlighted on a map.
+    // The name of the View is the same with Image name (not the full path).
+    void SetHighlightedViewNames(QVector<QString>& views);
+
     ~ReconstructionWindow();
 
  protected:

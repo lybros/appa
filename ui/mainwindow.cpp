@@ -237,6 +237,23 @@ QWidget* MainWindow::CreateImageThumbnail(QString &image_path) {
     int INF = 99999999;
 
     QWidget* image_box = new QWidget(ui->imagesPreviewScrollAreaContents);
+    QAction* action_thumbnail_triggered = new QAction(image_box);
+    connect(action_thumbnail_triggered, &QAction::triggered, [=](){
+        std::cout << "TROLOLO " << image_box << std::endl;/*
+        QString view_name = image_path;// FileNameFromPath(image_path);
+        int index = highlighted_views_.indexOf(view_name);
+        if (index == -1) {
+            highlighted_views_.push_back(view_name);
+            qSort(highlighted_views_);
+        } else {
+            highlighted_views_.erase(highlighted_views_.begin() + index);
+        }*/
+        image_box->setStyleSheet("background-color:red;");
+    });
+    image_box->addAction(action_thumbnail_triggered);
+
+    //connect(action_thumbnail_triggered, &QAction::triggered, this,
+    //        &MainWindow::UpdateListOfHighlightedViews);
 
     QVBoxLayout* box_layout = new QVBoxLayout(image_box);
     box_layout->setMargin(0);
@@ -256,6 +273,16 @@ QWidget* MainWindow::CreateImageThumbnail(QString &image_path) {
 
     ui->imagesPreviewArea->setAlignment(image_box, Qt::AlignHCenter);
     return image_box;
+}
+
+void MainWindow::UpdateListOfHighlightedViews(QString &view_name) {
+    int index = highlighted_views_.indexOf(view_name);
+    if (index == -1) {
+        highlighted_views_.push_back(view_name);
+        qSort(highlighted_views_);
+    } else {
+        highlighted_views_.erase(highlighted_views_.begin() + index);
+    }
 }
 
 // We're enabling action buttons in case of project is loaded.

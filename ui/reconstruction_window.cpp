@@ -80,6 +80,7 @@ void ReconstructionWindow::BuildFromDefaultPath() {
     std::cout << "DRAWING: num world points: " <<
                  world_points_.size() << std::endl;
     std::cout << "DRAWING: num cameras: " << cameras_.size() << std::endl;
+
     draw();
 
     // To render the reconstruction without waiting to mouse click on widget.
@@ -163,6 +164,10 @@ void ReconstructionWindow::DrawCamera(const theia::Camera& camera) {
     glVertex3f(top_right[0], top_right[1], top_right[2]);
     glEnd();
     glPopMatrix();
+}
+
+void ReconstructionWindow::SetHighlightedViewNames(QVector<QString>& views) {
+    return;
 }
 
 ReconstructionWindow::~ReconstructionWindow() {

@@ -212,6 +212,11 @@ void MainWindow::UpdateActiveProjectInfo() {
 }
 
 void MainWindow::LoadImagesPreview() {
+    for (QWidget* child : ui->imagesPreviewScrollAreaContents->
+         findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly)) {
+        delete child;
+    }
+
     QVector<QString>& images = active_project_->GetStorage()->GetImages();
 
     if (images.empty()) {
@@ -231,7 +236,7 @@ QWidget* MainWindow::CreateImageThumbnail(QString &image_path) {
     int PREVIEW_AREA_WIDTH = ui->imagesPreviewScrollArea->size().width() - 25;
     int INF = 99999999;
 
-    QWidget* image_box = new QWidget(this);
+    QWidget* image_box = new QWidget(ui->imagesPreviewScrollAreaContents);
 
     QVBoxLayout* box_layout = new QVBoxLayout(image_box);
     box_layout->setMargin(0);

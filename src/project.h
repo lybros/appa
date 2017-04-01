@@ -5,7 +5,7 @@
  * |--"project-config"
  *
  * project-config file is:
- * ---------------------------------------------
+ * ----------------------------------------------------------------------------
  * PROJECT_CONFIG_VERSION v1.0
  * PROJECT_NAME "project-name"
  * IMAGES_LOCATION "~/datasets/dataset0/"
@@ -14,24 +14,28 @@
  * ...
  * "nameN.jpg"
  * OUTPUT_LOCATION "~/project0/out"
- * --------------------------------------------- */
+ * -------------------------------------------------------------------------
+ * Notice: names of images should be sorted in ascending order. Images are
+ * automatically sorted during the parsing, but you should keep that in mind if
+ * you're creating a project config manually.
+ */
 
 #ifndef SRC_PROJECT_H_
 #define SRC_PROJECT_H_
-
-#include "storage.h"
-#include "options.h"
-#include "featuresx.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
 
+#include <QDir>
+#include <QString>
+#include <QTextStream>
+
 #include <theia/theia.h>
 
-#include <QString>
-#include <QDir>
-#include <QTextStream>
+#include "featuresx.h"
+#include "options.h"
+#include "storage.h"
 
 using theia::Reconstruction;
 using theia::ReconstructionBuilder;
@@ -66,6 +70,8 @@ public:
 
     QString GetImagesPath();
 
+    QString GetOutputLocation();
+
     void SetProjectName(QString);
 
     void SetProjectPath(QString);
@@ -77,6 +83,10 @@ public:
     bool ReadConfigurationFile();
 
     QString GetDefaultOutputPath();
+
+    Storage* GetStorage();
+
+    std::vector<std::shared_ptr<theia::Reconstruction>>& GetReconstructions();
 
     ~Project();
 
@@ -91,9 +101,12 @@ private:
 
     // images_path_ is stored inside of Storage object.
     Storage* storage_;
+
     Features* features_;
 
     QString GetConfigurationFilePath();
+
+    std::vector<std::shared_ptr<theia::Reconstruction>> reconstructions_;
 };
 
 #endif  // SRC_PROJECT_H_

@@ -24,8 +24,8 @@
  *
 ******************************************************************************/
 
-#include <QString>
 #include <QDir>
+#include <QString>
 
 #include <theia/theia.h>
 

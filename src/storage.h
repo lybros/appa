@@ -4,14 +4,17 @@
 #define SRC_STORAGE_H_
 
 #include <iostream>
+
+#include <QtAlgorithms>
+#include <QDirIterator>
+#include <QFileInfo>
+#include <QVector>
+
 #include <glog/logging.h>
 
-#include <QVector>
-#include <QFileInfo>
-#include <QDirIterator>
-
-// TODO(uladbohdan): to improve the regex.
-const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|png)";
+// The pattern may be extended with image extensions which are supported
+// by Theia.
+const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|JPG|jpeg|JPEG|png|PNG)";
 
 class Storage {
 public:

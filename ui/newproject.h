@@ -4,12 +4,13 @@
 #define UI_NEWPROJECT_H_
 
 #include <QDialog>
-#include <QMessageBox>
-#include <QFileDialog>
 #include <QDir>
+#include <QFileDialog>
 #include <QFileInfo>
+#include <QMessageBox>
 
 #include "../src/project.h"
+#include "../src/utils.h"
 
 namespace Ui {
     class NewProjectDialog;

@@ -5,9 +5,9 @@
 
 #include <iostream>
 
+#include <QFileInfo>
 #include <QMainWindow>
 #include <QProcess>
-#include <QFileInfo>
 
 #include "../libs/QtAwesome/QtAwesome/QtAwesome.h"
 
@@ -53,10 +53,18 @@ private:
     Ui::MainWindow* ui;
     Project* active_project_;
 
-    // Interaction with window rendering the model.
+    // Interaction with widget which renders the model.
     ReconstructionWindow* view_;
 
     bool isProjectDirectory(QString& project_path);
+
+    // Loads Images thumbnails to Image Preview Area.
+    void LoadImagesPreview();
+    QWidget* CreateImageThumbnail(QString &image_path);
+
+    void UpdateActiveProjectInfo();
+
+    void EnableActions();
 };
 
 #endif  // UI_MAINWINDOW_H_

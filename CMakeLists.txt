@@ -8,6 +8,9 @@ project(${PROJECT_NAME})
 set(OPENIMAGEIO_LIBRARY $ENV{OPENIMAGEIO_LIBRARY})
 set(OPENIMAGEIO_INCLUDE_DIR $ENV{OPENIMAGEIO_INCLUDE_DIR})
 
+set(QGLVIEWER_INCLUDE_DIRS /usr/local/include/QGLViewer)
+include_directories(${QGLVIEWER_INCLUDE_DIRS})
+
 find_package(Theia REQUIRED)
 include_directories(${THEIA_INCLUDE_DIRS})
 
@@ -18,7 +21,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt5Widgets REQUIRED)
-INCLUDE_DIRECTORIES(Qt5Widgets_INCLUDE_DIRS)
+include_directories(Qt5Widgets_INCLUDE_DIRS)
 add_definitions(${Qt5Widgets_DEFINITIONS})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 

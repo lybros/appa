@@ -224,55 +224,11 @@ void MainWindow::LoadImagesPreview() {
     }
 
     for (QString& image : images) {
-        ui->imagesPreviewArea->addWidget(CreateImageThumbnail(image));
+        QWidget* thumbnail = new ThumbnailWidget(
+                    ui->imagesPreviewScrollAreaContents, image);
+        ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
+        ui->imagesPreviewArea->addWidget(thumbnail);
     }
-}
-
-// TODO(uladbohdan): to handle the situation when we have small amount of
-// images (2-3) as they're expanding and does not look good.
-QWidget* MainWindow::CreateImageThumbnail(QString &image_path) {
-    // TODO(uladbohdan): to make sure this magic number is good for every
-    // screen or to replace it with something else.
-    int PREVIEW_AREA_WIDTH = ui->imagesPreviewScrollArea->size().width() - 25;
-    int INF = 99999999;
-
-    QWidget* image_box = new QWidget(ui->imagesPreviewScrollAreaContents);
-    QAction* action_thumbnail_triggered = new QAction(image_box);
-    connect(action_thumbnail_triggered, &QAction::triggered, [=](){
-        std::cout << "TROLOLO " << image_box << std::endl;/*
-        QString view_name = image_path;// FileNameFromPath(image_path);
-        int index = highlighted_views_.indexOf(view_name);
-        if (index == -1) {
-            highlighted_views_.push_back(view_name);
-            qSort(highlighted_views_);
-        } else {
-            highlighted_views_.erase(highlighted_views_.begin() + index);
-        }*/
-        image_box->setStyleSheet("background-color:red;");
-    });
-    image_box->addAction(action_thumbnail_triggered);
-
-    //connect(action_thumbnail_triggered, &QAction::triggered, this,
-    //        &MainWindow::UpdateListOfHighlightedViews);
-
-    QVBoxLayout* box_layout = new QVBoxLayout(image_box);
-    box_layout->setMargin(0);
-    image_box->setLayout(box_layout);
-
-    QLabel* image_label = new QLabel(image_box);
-    image_label->setPixmap(QPixmap::fromImage(
-                    QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
-                                              Qt::KeepAspectRatio)));
-    box_layout->addWidget(image_label);
-    box_layout->setAlignment(image_label, Qt::AlignHCenter);
-
-    QLabel* image_title_label =
-            new QLabel(FileNameFromPath(image_path), image_box);
-    box_layout->addWidget(image_title_label);
-    box_layout->setAlignment(image_title_label, Qt::AlignHCenter);
-
-    ui->imagesPreviewArea->setAlignment(image_box, Qt::AlignHCenter);
-    return image_box;
 }
 
 void MainWindow::UpdateListOfHighlightedViews(QString &view_name) {

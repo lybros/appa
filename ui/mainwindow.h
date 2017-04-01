@@ -14,6 +14,7 @@
 
 #include "newproject.h"
 #include "reconstruction_window.h"
+#include "thumbnail_widget.h"
 #include "../src/project.h"
 #include "../src/utils.h"
 
@@ -62,7 +63,6 @@ private:
 
     // Loads Images thumbnails to Image Preview Area.
     void LoadImagesPreview();
-    QWidget* CreateImageThumbnail(QString &image_path);
 
     void UpdateActiveProjectInfo();
 

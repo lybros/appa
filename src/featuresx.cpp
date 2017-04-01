@@ -15,6 +15,31 @@ void Features::Extract() {
 }
 
 void Features::Extract(
+        std::vector<std::vector<theia::Keypoint> >* keypoints_vector,
+        std::vector<std::vector<Eigen::VectorXf> >* descriptors_vector
+) {
+    _extract(false);
+
+    for (QString image_path : images_) {
+        std::vector<theia::Keypoint> keypoints;
+        std::vector<Eigen::VectorXf> descriptors;
+
+        std::string feature_file =
+                FeatureFilenameFromImage(out_path_, image_path).toStdString();
+        CHECK(ReadKeypointsAndDescriptors(
+                feature_file,
+                &keypoints,
+                &descriptors)
+        ) << "Feature reading from " << feature_file << " failed!";
+        LOG(INFO) << feature_file << " " << descriptors.size();
+        keypoints_vector->push_back(keypoints);
+        descriptors_vector->push_back(descriptors);
+    }
+
+    return;
+}
+
+void Features::ExtractFeature(
         QString filename,
         std::vector<theia::Keypoint>* keypoints,
         std::vector<Eigen::VectorXf>* descriptors
@@ -35,16 +60,45 @@ void Features::Extract(
 
     *keypoints = keypoints_vector.back();
     *descriptors = descriptors_vector.back();
-    return;;
+    return;
 }
 
 void Features::ForceExtract() {
     return _extract(true);
 }
 
+void Features::GetDescriptor(
+        const std::string image_name,
+        const theia::Feature* feature,
+        Eigen::VectorXf* descriptor
+) {
+    std::string image_path =
+            storage_->GetImagesPath().toStdString() + image_name;
+
+    Keypoint keypoint((*feature)[0],
+                      (*feature)[1],
+                      Keypoint::KeypointType::SIFT);
+
+    LOG(INFO) << "Start process " << image_path;
+    theia::FloatImage image(image_path);
+    DescriptorExtractor* extractor = new theia::SiftDescriptorExtractor();
+    CHECK(extractor->Initialize()) << "Could not initialize extractor";
+
+    LOG(INFO) << "Count descriptor from "
+    << keypoint.x() << " " << keypoint.y();
+
+    theia::Timer timer;
+    CHECK(extractor->ComputeDescriptor(image, keypoint, descriptor))
+    << "Could not extract descriptors for: " << image_path;
+    const double time = timer.ElapsedTimeInSeconds();
+    LOG(INFO) << "It took " << time << " seconds to extract descriptor";
+    return;
+}
+
 void Features::_extract(bool is_force) {
     LOG(INFO) << "Start processing:";
     std::vector<std::string> processing_images;
+    images_ = storage_->GetImages();
 
     for (QString image_path : images_) {
         QString feature_file = FeatureFilenameFromImage(out_path_, image_path);
@@ -55,6 +109,8 @@ void Features::_extract(bool is_force) {
         }
     }
 
+    if (processing_images.size() == 0) { return; }
+
     theia::Timer timer;
     CHECK(extractor_->ExtractToDisk(processing_images))
     << "Feature extraction failed!";
@@ -62,6 +118,7 @@ void Features::_extract(bool is_force) {
 
     LOG(INFO) << "It took " << time << " seconds to extract descriptors from "
     << processing_images.size() << " images";
+    return;
 }
 
 Features::~Features() {

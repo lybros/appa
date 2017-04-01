@@ -1,6 +1,5 @@
 // Copyright 2017 Lybros.
 
-#include <iostream>
 #include "utils.h"
 
 QString FeatureFilenameFromImage(QString output_dir, QString image_path) {

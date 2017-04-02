@@ -20,6 +20,9 @@ using theia::Keypoint;
 
 class Features {
 public:
+    typedef std::pair<double, double> Pair;
+    typedef std::unordered_map<Pair, Eigen::VectorXf> FeaturesMap;
+
     Features(Storage* storage, QString out_path);
 
     // Extract features only if doesn't find *.features files.
@@ -48,6 +51,12 @@ public:
             const std::string image_name,
             const theia::Feature* feature,
             Eigen::VectorXf* descriptor);
+
+    // Load features and descriptors,
+    // return map with <image name> as key and <another map> as value:
+    // <another map>: with Feature coordinates as key
+    //                and corresponding Descriptor as value
+    void GetFeaturesMap(std::unordered_map<std::string, FeaturesMap>*);
 
     void Match();
 

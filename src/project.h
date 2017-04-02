@@ -23,15 +23,15 @@
 #ifndef SRC_PROJECT_H_
 #define SRC_PROJECT_H_
 
+#include <iostream>
+#include <string>
+#include <vector>
+
 #include <QDir>
 #include <QString>
 #include <QTextStream>
 
 #include <theia/theia.h>
-
-#include <iostream>
-#include <string>
-#include <vector>
 
 #include "featuresx.h"
 #include "options.h"

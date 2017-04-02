@@ -3,16 +3,16 @@
 #ifndef SRC_FEATURESX_H_
 #define SRC_FEATURESX_H_
 
+#include <iostream>
+#include <string>
+#include <vector>
+#include <utility>
+
 #include <QFileInfo>
 #include <QString>
 #include <QVector>
 
 #include <theia/theia.h>
-
-#include <iostream>
-#include <string>
-#include <vector>
-#include <utility>
 
 #include "storage.h"
 #include "utils.h"

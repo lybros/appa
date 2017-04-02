@@ -3,13 +3,14 @@
 #ifndef SRC_STORAGE_H_
 #define SRC_STORAGE_H_
 
+#include <iostream>
+
 #include <QtAlgorithms>
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QVector>
 
 #include <glog/logging.h>
-#include <iostream>
 
 // The pattern may be extended with image extensions which are supported
 // by Theia.

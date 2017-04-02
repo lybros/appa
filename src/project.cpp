@@ -47,7 +47,7 @@ Project::Project(QString project_name,
 //
 // The recommendation is to run every stage separately.
 void Project::BuildModelToBinary() {
-    ReconstructionBuilderOptions *options =
+    ReconstructionBuilderOptions* options =
             options_->GetReconstructionBuilderOptions();
 
     ReconstructionBuilder reconstruction_builder(*options);
@@ -92,9 +92,75 @@ void Project::BuildModelToBinary() {
     return;
 }
 
-void Project::SearchImage(QString filename) {
-    std::cout << "Start work with image: " << filename.toStdString() <<
-    std::endl;
+void Project::SearchImage(QString file_path, QString model_name) {
+
+    std::string model_path = QDir(output_location_)
+            .filePath(model_name).toStdString();
+
+    Reconstruction model;
+    CHECK(theia::ReadReconstruction(model_path, &model))
+    << "Could not read reconstruction from file: " << model_path;
+    LOG(INFO) << "Successfully read model " << model_name.toStdString();
+
+    std::vector<theia::Keypoint> keypoints;
+    std::vector<Eigen::VectorXf> descriptors;
+
+    features_->ExtractFeature(file_path, &keypoints, &descriptors);
+    LOG(INFO) << "Successfully extract " << descriptors.size() << " features";
+
+    std::unordered_map<std::string, Features::FeaturesMap> feature_to_descriptor;
+    features_->GetFeaturesMap(&feature_to_descriptor);
+
+    theia::Timer timer;
+    theia::L2 norm;
+    std::vector<theia::TrackId> tracks_ids = model.TrackIds();
+    int counter = 0;
+
+    for (auto t_id : tracks_ids) {
+        theia::Track* track = model.MutableTrack(t_id);
+        std::unordered_set<theia::ViewId> views_ids = track->ViewIds();
+        Eigen::Vector3f red_color(255, 0, 0);
+        bool match = false;
+
+        for (auto v_id : views_ids) {
+            theia::View* view = model.MutableView(v_id);
+            const theia::Feature feature = *(view->GetFeature(t_id));
+            const Features::Pair key = std::make_pair(feature[0], feature[1]);
+            Features::FeaturesMap::const_iterator got =
+                    feature_to_descriptor[view->Name()].find(key);
+
+            if (got == feature_to_descriptor[view->Name()].end()) {
+                LOG(INFO) << "Feature not found [" << view->Name()
+                << "]: (" << feature[0] << ", " << feature[1] << ")";
+                continue;
+            }
+
+            Eigen::VectorXf track_descriptor = got->second;
+            for (auto feature_descriptor : descriptors) {
+                float distance = norm(track_descriptor, feature_descriptor);
+                if (distance <= 0.1) {
+                    LOG(INFO) << distance << " " << view->Name();
+                    match = true;
+                    counter++;
+                    break;
+                }
+            }
+
+            if (match) { break; }
+        }
+
+        if (match) { *track->MutableColor() = red_color.cast<uint8_t>(); }
+    }
+    const double time = timer.ElapsedTimeInSeconds();
+    LOG(INFO) << "It took " << time << " seconds to compare descriptors";
+    LOG(INFO) << "Match " << counter << "/" << model.NumTracks() << " tracks";
+
+    const std::string out_model_path =
+            output_location_.toStdString() + "model-1.binary";
+    CHECK(theia::WriteReconstruction(model, out_model_path))
+    << "Could not write reconstruction to file";
+    LOG(INFO) << "Writing reconstruction to: " << out_model_path;
+    return;
 }
 
 void Project::ExtractFeatures() {
@@ -163,7 +229,8 @@ bool Project::ReadConfigurationFile() {
 
     temp_line = stream.readLine();
     if (temp_line != "PROJECT_CONFIG_VERSION v1.0") {
-        std::cerr << "Reading config failed: wrong file version." << std::endl;
+        std::cerr << "Reading config failed: wrong file version." <<
+        std::endl;
         configFile.close();
         return false;
     }
@@ -181,7 +248,8 @@ bool Project::ReadConfigurationFile() {
     stream >> temp_line;
     if (temp_line != "IMAGES_LOCATION") {
         std::cerr <<
-        "Wrong config file format. No IMAGES_LOCATION attribute." << std::endl;
+        "Wrong config file format. No IMAGES_LOCATION attribute." <<
+        std::endl;
         configFile.close();
         return false;
     }

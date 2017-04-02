@@ -169,8 +169,11 @@ void MainWindow::on_actionVisualizeBinary_triggered() {
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {
-    LOG(INFO) << "Start search image...";
-    active_project_->SearchImage(QString("images/image005.jpg"));
+    //TODO(drapegnik): replace hardcode with variables from dialog
+    active_project_->SearchImage(
+            QString("images/image005.jpg"),
+            QString("model-0.binary")
+    );
 }
 
 void MainWindow::on_actionRunExampleReconstruction_triggered() {
@@ -232,7 +235,7 @@ void MainWindow::LoadImagesPreview() {
 
     for (QString& image : images) {
         ThumbnailWidget* thumbnail = new ThumbnailWidget(
-                    this, ui->imagesPreviewScrollAreaContents, image);
+                this, ui->imagesPreviewScrollAreaContents, image);
         thumbnails_.push_back(thumbnail);
         ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
         ui->imagesPreviewArea->addWidget(thumbnail);

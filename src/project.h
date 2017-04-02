@@ -32,6 +32,7 @@
 #include <QTextStream>
 
 #include <theia/theia.h>
+#include <theia/matching/distance.h>
 
 #include "featuresx.h"
 #include "options.h"
@@ -49,7 +50,7 @@ class Project {
 public:
     Project();
 
-    Project(QString project_name, QString project_path, QString images_path);
+    Project(QString project_name, QString project_path, QString images_name);
 
     void BuildModelToBinary();
 
@@ -62,7 +63,7 @@ public:
     void StartReconstruction();
 
     // Try to find place for image on 3d reconstruction map
-    void SearchImage(QString);
+    void SearchImage(QString file_path, QString model_path);
 
     QString GetProjectName();
 

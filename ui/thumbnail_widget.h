@@ -1,4 +1,4 @@
-// Copyright Lybros 2017.
+// Copyright 2017 Lybros.
 
 #ifndef UI_THUMBNAIL_WIDGET_H_
 #define UI_THUMBNAIL_WIDGET_H_
@@ -16,25 +16,25 @@
 class MainWindow;
 
 class ThumbnailWidget : public QWidget {
+ public:
+  ThumbnailWidget(MainWindow* main_window,
+                  QWidget* parent,
+                  const QString& image_path);
 
-public:
-    ThumbnailWidget(MainWindow* main_window, QWidget* parent,
-                    QString& image_path);
+  QString& GetName();
 
-    QString& GetName();
+  bool IsSelected();
 
-    bool IsSelected();
+  ~ThumbnailWidget();
 
-    ~ThumbnailWidget();
+ protected:
+  void mouseReleaseEvent(QMouseEvent* event) override;
 
-protected:
-    void mouseReleaseEvent(QMouseEvent *event) override;
-
-private:
-    QString name_;
-    QString path_;
-    bool selected_;
-    MainWindow* main_window_;
+ private:
+  QString name_;
+  QString path_;
+  bool selected_;
+  MainWindow* main_window_;
 };
 
 #endif  // UI_THUMBNAIL_WIDGET_H_

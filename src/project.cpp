@@ -229,8 +229,7 @@ bool Project::ReadConfigurationFile() {
 
   temp_line = stream.readLine();
   if (temp_line != "PROJECT_CONFIG_VERSION v1.0") {
-    std::cerr << "Reading config failed: wrong file version." <<
-    std::endl;
+    std::cerr << "Reading config failed: wrong file version." << std::endl;
     configFile.close();
     return false;
   }
@@ -248,8 +247,7 @@ bool Project::ReadConfigurationFile() {
   stream >> temp_line;
   if (temp_line != "IMAGES_LOCATION") {
     std::cerr <<
-    "Wrong config file format. No IMAGES_LOCATION attribute." <<
-    std::endl;
+    "Wrong config file format. No IMAGES_LOCATION attribute." << std::endl;
     configFile.close();
     return false;
   }

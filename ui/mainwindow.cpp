@@ -94,8 +94,7 @@ void MainWindow::on_actionOpen_triggered() {
       this,
       tr("Choose the directory"),
       QDir::homePath(),
-      QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
-  );
+      QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
   if (!isProjectDirectory(projectPathChosen)) {
     QMessageBox warningBox;
@@ -142,7 +141,7 @@ void MainWindow::on_actionStart_Reconstruction_triggered() {
   active_project_->StartReconstruction();
 }
 
-bool MainWindow::isProjectDirectory(QString& project_path) {
+bool MainWindow::isProjectDirectory(const QString& project_path) {
   QFileInfo projectDir(project_path);
   if (!projectDir.exists()) {
     LOG(ERROR) << "Failed to open the project: directory does not exist";
@@ -191,8 +190,7 @@ void MainWindow::on_actionRunExampleReconstruction_triggered() {
   // PATH.
   view_reconstruction_process.start(
       "view_reconstruction",
-      QStringList() << "--reconstruction" << output_model_path
-  );
+      QStringList() << "--reconstruction" << output_model_path);
   view_reconstruction_process.waitForFinished();
 }
 

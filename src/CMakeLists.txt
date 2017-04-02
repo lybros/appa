@@ -9,7 +9,7 @@ set(SOURCE_FILES
         utils.h
         options.cpp
         options.h
-)
+        )
 
 add_library(src ${SOURCE_FILES})
 

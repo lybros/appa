@@ -8,8 +8,8 @@
 
 QString FeatureFilenameFromImage(QString output_dir, QString image_path);
 
-void EnsureTrailingSlash(QString& path);
+void EnsureTrailingSlash(QString* path);
 
-QString FileNameFromPath(QString& path);
+QString FileNameFromPath(const QString& path);
 
 #endif  // SRC_UTILS_H_

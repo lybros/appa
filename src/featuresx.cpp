@@ -29,8 +29,8 @@ void Features::Extract(
     CHECK(ReadKeypointsAndDescriptors(
         feature_file,
         &keypoints,
-        &descriptors)
-    ) << "Feature reading from " << feature_file << " failed!";
+        &descriptors))
+    << "Feature reading from " << feature_file << " failed!";
     LOG(INFO) << feature_file << " " << descriptors.size();
     keypoints_vector->push_back(keypoints);
     descriptors_vector->push_back(descriptors);
@@ -52,8 +52,8 @@ void Features::ExtractFeature(
 
   theia::Timer timer;
   CHECK(extractor_->Extract(
-      filenames, &keypoints_vector, &descriptors_vector
-  )) << "Feature extraction failed!";
+      filenames, &keypoints_vector, &descriptors_vector))
+  << "Feature extraction failed!";
   const double time = timer.ElapsedTimeInSeconds();
 
   LOG(INFO) << "It took " << time << " seconds to extract features";
@@ -108,14 +108,12 @@ void Features::GetFeaturesMap(
   int counter = 0;
   theia::Timer timer;
   for (int i = 0; i < images_.size(); i++) {
-
     FeaturesMap f_map;
     std::string image_name = FileNameFromPath(images_[i]).toStdString();
     for (int j = 0; j < keypoints_vector[i].size(); j++) {
       Keypoint kp = keypoints_vector[i][j];
       Pair key = std::make_pair(kp.x(), kp.y());
       f_map[key] = descriptors_vector[i][j];
-
     }
     counter += f_map.size();
     ftd_map[image_name] = f_map;
@@ -137,7 +135,7 @@ void Features::_extract(bool is_force) {
   for (QString image_path : images_) {
     QString feature_file = FeatureFilenameFromImage(out_path_, image_path);
 
-    if (!QFileInfo::exists(feature_file) or is_force) {
+    if (!QFileInfo::exists(feature_file) || is_force) {
       std::cout << "\t+ " << image_path.toStdString() << std::endl;
       processing_images.push_back(image_path.toStdString());
     }

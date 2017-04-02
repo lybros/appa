@@ -167,11 +167,8 @@ void MainWindow::on_actionVisualizeBinary_triggered() {
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {
-    //TODO(drapegnik): replace hardcode with variables from dialog
-    active_project_->SearchImage(
-            QString("images/image005.jpg"),
-            QString("model-0.binary")
-    );
+    LOG(INFO) << "Start search image...";
+    active_project_->SearchImage(QString("images/image005.jpg"));
 }
 
 void MainWindow::on_actionRunExampleReconstruction_triggered() {

@@ -1,3 +1,5 @@
+// Copyright 2017 Lybros.
+
 #include "thumbnail_widget.h"
 
 #include "mainwindow.h"
@@ -5,12 +7,14 @@
 // TODO(uladbohdan): to handle the situation when we have small amount of
 // images (2-3) as they're expanding and does not look good.
 
-ThumbnailWidget::ThumbnailWidget(MainWindow* main_window, QWidget* parent,
-                                 QString& image_path) :
-        QWidget(parent), main_window_(main_window),
-        path_(image_path), name_(FileNameFromPath(image_path)),
+ThumbnailWidget::ThumbnailWidget(MainWindow* main_window,
+                                 QWidget* parent,
+                                 const QString& image_path) :
+        QWidget(parent),
+        main_window_(main_window),
+        path_(image_path),
+        name_(FileNameFromPath(image_path)),
         selected_(false) {
-
     // TODO(uladbohdan): to make sure this magic number is good for every
     // screen or to replace it with something else.
     int PREVIEW_AREA_WIDTH = parent->size().width() - 25;

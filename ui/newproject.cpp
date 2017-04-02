@@ -52,9 +52,9 @@ bool NewProjectDialog::verify_new_project_options() {
     }
 
     QDir projectParentDir(projectParentPath);
-
     if (QFileInfo::exists(projectParentDir.filePath(projectName))) {
-        error = "You have to choose another name for your project! It's already exist.";
+        error = "You have to choose another name for your project! "
+                "It's already exist.";
     }
 
     QString imagePath = ui->images_path->text();
@@ -93,7 +93,7 @@ bool NewProjectDialog::initialize_new_project() {
     return true;
 }
 
-void NewProjectDialog::show_warning(QString& error) {
+void NewProjectDialog::show_warning(const QString& error) {
     QMessageBox warningBox;
     warningBox.setText(error);
     warningBox.exec();
@@ -108,11 +108,9 @@ void NewProjectDialog::on_locate_project_button_clicked() {
             this,
             tr("Choose the directory"),
             QDir::homePath(),
-            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
-    );
-    if (dir != "") {
-        ui->project_parent_path->setText(dir);
-    }
+            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+    if (dir != "") { ui->project_parent_path->setText(dir); }
 }
 
 void NewProjectDialog::on_locate_images_button_clicked() {
@@ -120,9 +118,7 @@ void NewProjectDialog::on_locate_images_button_clicked() {
             this,
             tr("Choose the directory"),
             QDir::homePath(),
-            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
-    );
-    if (dir != "") {
-        ui->images_path->setText(dir);
-    }
+            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+    if (dir != "") { ui->images_path->setText(dir); }
 }

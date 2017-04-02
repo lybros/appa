@@ -12,9 +12,7 @@
 #include "../src/project.h"
 #include "../src/utils.h"
 
-namespace Ui {
-    class NewProjectDialog;
-}
+namespace Ui { class NewProjectDialog; }
 
 struct NewProjectOptions;
 
@@ -46,7 +44,7 @@ class NewProjectDialog : public QDialog {
 
     bool initialize_new_project();
 
-    void show_warning(QString& error);
+    void show_warning(const QString& error);
 };
 
 struct NewProjectOptions {

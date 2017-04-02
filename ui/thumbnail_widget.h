@@ -1,4 +1,4 @@
-// Copyright Lybros 2017.
+// Copyright 2017 Lybros.
 
 #ifndef UI_THUMBNAIL_WIDGET_H_
 #define UI_THUMBNAIL_WIDGET_H_
@@ -16,10 +16,10 @@
 class MainWindow;
 
 class ThumbnailWidget : public QWidget {
-
  public:
-    ThumbnailWidget(MainWindow* main_window, QWidget* parent,
-                    QString& image_path);
+    ThumbnailWidget(MainWindow* main_window,
+                    QWidget* parent,
+                    const QString& image_path);
 
     QString& GetName();
 

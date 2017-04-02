@@ -20,9 +20,7 @@
 
 class ThumbnailWidget;
 
-namespace Ui {
-    class MainWindow;
-}
+namespace Ui { class MainWindow; }
 
 class MainWindow : public QMainWindow {
  Q_OBJECT
@@ -63,7 +61,7 @@ class MainWindow : public QMainWindow {
     // Interaction with widget which renders the model.
     ReconstructionWindow* view_;
 
-    bool isProjectDirectory(QString& project_path);
+    bool isProjectDirectory(const QString& project_path);
 
     // Loads Images thumbnails to Image Preview Area.
     void LoadImagesPreview();

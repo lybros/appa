@@ -3,6 +3,9 @@
 #ifndef UI_RECONSTRUCTION_WINDOW_H_
 #define UI_RECONSTRUCTION_WINDOW_H_
 
+#include <string>
+#include <vector>
+
 #include <QVector3D>
 
 #include <Eigen/Core>
@@ -18,8 +21,8 @@ struct WorldPoint {
 
 class ModifiedCamera : public theia::Camera {
  public:
-    ModifiedCamera(theia::Camera camera) :
-            theia::Camera(camera), highlighted_(false) { }
+    explicit ModifiedCamera(theia::Camera camera) : theia::Camera(camera),
+                                                    highlighted_(false) { }
 
     bool IsHighlighted() const { return highlighted_; }
 
@@ -38,7 +41,7 @@ class ReconstructionWindow : public QGLViewer {
  public:
     ReconstructionWindow();
 
-    ReconstructionWindow(Project* project);
+    explicit ReconstructionWindow(Project* project);
 
     void UpdateActiveProject(Project* project);
 
@@ -46,14 +49,14 @@ class ReconstructionWindow : public QGLViewer {
 
     // Passing a vector of names of views to be highlighted on a map.
     // The name of the View is the same with Image name (not the full path).
-    void SetHighlightedViewNames(QVector<QString>& views);
+    void SetHighlightedViewNames(const QVector<QString>& views);
 
     ~ReconstructionWindow();
 
  protected:
-    virtual void init() override;
+    void init() override;
 
-    virtual void draw() override;
+    void draw() override;
 
  private:
     Project* project_;

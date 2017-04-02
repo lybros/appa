@@ -54,9 +54,9 @@ void ReconstructionWindow::BuildFromDefaultPath() {
                 track->Point().hnormalized().z());
 
         QColor point_color = QColor(
-                (int) track->Color()(0, 0),
-                (int) track->Color()(1, 0),
-                (int) track->Color()(2, 0));
+                static_cast<int>(track->Color()(0, 0)),
+                static_cast<int>(track->Color()(1, 0)),
+                static_cast<int>(track->Color()(2, 0)));
 
         WorldPoint world_point;
         world_point.coords = point_coords;
@@ -191,11 +191,11 @@ void ReconstructionWindow::DrawCamera(const ModifiedCamera& camera) {
     glPopMatrix();
 }
 
-void ReconstructionWindow::SetHighlightedViewNames(QVector<QString>& views) {
+void ReconstructionWindow::SetHighlightedViewNames(
+        const QVector<QString>& views) {
     highlighted_views_ = views;
     UpdateHighlightedCameras();
     update();
 }
 
-ReconstructionWindow::~ReconstructionWindow() {
-}
+ReconstructionWindow::~ReconstructionWindow() { }

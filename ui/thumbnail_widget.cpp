@@ -1,10 +1,14 @@
 #include "thumbnail_widget.h"
 
+#include "mainwindow.h"
+
 // TODO(uladbohdan): to handle the situation when we have small amount of
 // images (2-3) as they're expanding and does not look good.
 
-ThumbnailWidget::ThumbnailWidget(QWidget* parent, QString& image_path) :
-    QWidget(parent), name_(image_path), selected_(false) {
+ThumbnailWidget::ThumbnailWidget(MainWindow* main_window, QWidget* parent,
+                                 QString& image_path) :
+    QWidget(parent), main_window_(main_window),
+    path_(image_path), name_(FileNameFromPath(image_path)), selected_(false) {
 
     // TODO(uladbohdan): to make sure this magic number is good for every
     // screen or to replace it with something else.
@@ -22,13 +26,20 @@ ThumbnailWidget::ThumbnailWidget(QWidget* parent, QString& image_path) :
     box_layout->addWidget(image_label);
     box_layout->setAlignment(image_label, Qt::AlignHCenter);
 
-    QLabel* image_title_label =
-            new QLabel(FileNameFromPath(image_path), this);
+    QLabel* image_title_label = new QLabel(name_, this);
     box_layout->addWidget(image_title_label);
     box_layout->setAlignment(image_title_label, Qt::AlignHCenter);
 }
 
 ThumbnailWidget::~ThumbnailWidget() {
+}
+
+bool ThumbnailWidget::IsSelected() {
+    return selected_;
+}
+
+QString& ThumbnailWidget::GetName() {
+    return name_;
 }
 
 void ThumbnailWidget::mouseReleaseEvent(QMouseEvent* event) {
@@ -39,4 +50,6 @@ void ThumbnailWidget::mouseReleaseEvent(QMouseEvent* event) {
     } else {
         setStyleSheet("");
     }
+
+    main_window_->UpdateSelectedThumbnails();
 }

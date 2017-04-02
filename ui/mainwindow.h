@@ -14,9 +14,11 @@
 
 #include "newproject.h"
 #include "reconstruction_window.h"
-#include "thumbnail_widget.h"
+
 #include "../src/project.h"
 #include "../src/utils.h"
+
+class ThumbnailWidget;
 
 namespace Ui {
     class MainWindow;
@@ -29,6 +31,8 @@ public:
     explicit MainWindow(QWidget* parent = 0);
 
     void set_icons(QtAwesome* awesome = 0);
+
+    void UpdateSelectedThumbnails();
 
     ~MainWindow();
 
@@ -63,14 +67,11 @@ private:
 
     // Loads Images thumbnails to Image Preview Area.
     void LoadImagesPreview();
+    QVector<ThumbnailWidget*> thumbnails_;
 
     void UpdateActiveProjectInfo();
 
     void EnableActions();
-
-    void UpdateListOfHighlightedViews(QString &view_name);
-    // The vector stores names of highlighted images.
-    QVector<QString> highlighted_views_;
 };
 
 #endif  // UI_MAINWINDOW_H_

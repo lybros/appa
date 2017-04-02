@@ -3,6 +3,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "thumbnail_widget.h"
+
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -223,22 +225,25 @@ void MainWindow::LoadImagesPreview() {
         return;
     }
 
+    thumbnails_.reserve(images.size());
+
     for (QString& image : images) {
-        QWidget* thumbnail = new ThumbnailWidget(
-                    ui->imagesPreviewScrollAreaContents, image);
+        ThumbnailWidget* thumbnail = new ThumbnailWidget(
+                    this, ui->imagesPreviewScrollAreaContents, image);
+        thumbnails_.push_back(thumbnail);
         ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
         ui->imagesPreviewArea->addWidget(thumbnail);
     }
 }
 
-void MainWindow::UpdateListOfHighlightedViews(QString &view_name) {
-    int index = highlighted_views_.indexOf(view_name);
-    if (index == -1) {
-        highlighted_views_.push_back(view_name);
-        qSort(highlighted_views_);
-    } else {
-        highlighted_views_.erase(highlighted_views_.begin() + index);
+void MainWindow::UpdateSelectedThumbnails() {
+    std::cout << "SELECTED:" << std::endl;
+    for (auto* thumbnail : thumbnails_) {
+        if (thumbnail->IsSelected()) {
+            std::cout << thumbnail->GetName().toStdString() << std::endl;
+        }
     }
+    std::cout << "-----------------" << std::endl;
 }
 
 // We're enabling action buttons in case of project is loaded.

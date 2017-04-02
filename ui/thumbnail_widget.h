@@ -6,16 +6,24 @@
 #include <iostream>
 
 #include <QLabel>
+#include <QMainWindow>
+#include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "mainwindow.h"
 #include "../src/utils.h"
+
+class MainWindow;
 
 class ThumbnailWidget : public QWidget {
 
 public:
-    ThumbnailWidget(QWidget* parent, QString& image_path);
+    ThumbnailWidget(MainWindow* main_window, QWidget* parent,
+                    QString& image_path);
+
+    QString& GetName();
+
+    bool IsSelected();
 
     ~ThumbnailWidget();
 
@@ -24,7 +32,9 @@ protected:
 
 private:
     QString name_;
+    QString path_;
     bool selected_;
+    MainWindow* main_window_;
 };
 
 #endif  // UI_THUMBNAIL_WIDGET_H_

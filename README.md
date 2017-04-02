@@ -13,6 +13,7 @@ git submodule update
 * [TheiaSfM](http://www.theia-sfm.org/) ~ [`v0.7`](https://github.com/sweeneychris/TheiaSfM/tree/v0.7)
 * [Qt](https://www.qt.io/) ~ `v5.7`
 * [QGLViewer](https://libqglviewer.com/) ~ `v2.6.4` - seems that you need OpenGL installed on your computer too.
+* [`cpplint`](https://github.com/cpplint/cpplint) (*optional*)
 
 ### setup:
 * set `DYLD_LIBRARY_PATH` environment variable to `path/to/openimageio/lib`
@@ -25,3 +26,4 @@ git submodule update
 ### development:
 * use `bash view.sh path/to/model` or just `. view.sh` for view default model from `out/model-0.txt`
 * use `LOG(INFO)` from [glog](http://rpg.ifi.uzh.ch/docs/glog.html) instead `std::cout`. set `GLOG_logtostderr=1` env var to enable logging
+* use `bash cpplint_mac_os.sh` for checking style guide

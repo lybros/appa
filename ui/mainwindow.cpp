@@ -237,13 +237,13 @@ void MainWindow::LoadImagesPreview() {
 }
 
 void MainWindow::UpdateSelectedThumbnails() {
-    std::cout << "SELECTED:" << std::endl;
+    QVector<QString> view_names;
     for (auto* thumbnail : thumbnails_) {
         if (thumbnail->IsSelected()) {
-            std::cout << thumbnail->GetName().toStdString() << std::endl;
+            view_names.push_back(thumbnail->GetName());
         }
     }
-    std::cout << "-----------------" << std::endl;
+    view_->SetHighlightedViewNames(view_names);
 }
 
 // We're enabling action buttons in case of project is loaded.

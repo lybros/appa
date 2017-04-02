@@ -3,6 +3,9 @@
 #ifndef UI_RECONSTRUCTION_WINDOW_H_
 #define UI_RECONSTRUCTION_WINDOW_H_
 
+#include <string>
+#include <vector>
+
 #include <QVector3D>
 
 #include <Eigen/Core>
@@ -12,56 +15,64 @@
 #include "../src/project.h"
 
 struct WorldPoint {
-    QVector3D coords;
-    QColor color;
+  QVector3D coords;
+  QColor color;
 };
 
 class ModifiedCamera : public theia::Camera {
-public:
-    ModifiedCamera(theia::Camera camera) :
-        theia::Camera(camera), highlighted_(false) {}
-    bool IsHighlighted() const { return highlighted_; }
-    void SetHighlighted(bool highlighted) { highlighted_ = highlighted; }
-    QString GetViewName() const { return view_name_; }
-    void SetViewName(QString view_name) { view_name_ = view_name; }
-private:
-    bool highlighted_;
-    QString view_name_;
+ public:
+  explicit ModifiedCamera(theia::Camera camera) : theia::Camera(camera),
+                                                  highlighted_(false) { }
+
+  bool IsHighlighted() const { return highlighted_; }
+
+  void SetHighlighted(bool highlighted) { highlighted_ = highlighted; }
+
+  QString GetViewName() const { return view_name_; }
+
+  void SetViewName(QString view_name) { view_name_ = view_name; }
+
+ private:
+  bool highlighted_;
+  QString view_name_;
 };
 
 class ReconstructionWindow : public QGLViewer {
  public:
-    ReconstructionWindow();
+  ReconstructionWindow();
 
-    ReconstructionWindow(Project *project);
+  explicit ReconstructionWindow(Project* project);
 
-    void UpdateActiveProject(Project *project);
+  void UpdateActiveProject(Project* project);
 
-    void BuildFromDefaultPath();
+  void BuildFromDefaultPath();
 
-    // Passing a vector of names of views to be highlighted on a map.
-    // The name of the View is the same with Image name (not the full path).
-    void SetHighlightedViewNames(QVector<QString>& views);
+  // Passing a vector of names of views to be highlighted on a map.
+  // The name of the View is the same with Image name (not the full path).
+  void SetHighlightedViewNames(const QVector<QString>& views);
 
-    ~ReconstructionWindow();
+  ~ReconstructionWindow();
 
  protected:
-    virtual void init() override;
-    virtual void draw() override;
+  void init() override;
+
+  void draw() override;
 
  private:
-    Project *project_;
+  Project* project_;
 
-    // TODO(uladbohdan): to manage the inconsistency: to use either std::vector
-    // ot QVector.
-    std::vector<WorldPoint> world_points_;
-    std::vector<ModifiedCamera> cameras_;
+  // TODO(uladbohdan): to manage the inconsistency: to use either std::vector
+  // ot QVector.
+  std::vector<WorldPoint> world_points_;
+  std::vector<ModifiedCamera> cameras_;
 
-    QVector<QString> highlighted_views_;
+  QVector<QString> highlighted_views_;
 
-    void InitCameras(theia::Reconstruction* reconstruction);
-    void UpdateHighlightedCameras();
-    void DrawCamera(const ModifiedCamera&);
+  void InitCameras(theia::Reconstruction* reconstruction);
+
+  void UpdateHighlightedCameras();
+
+  void DrawCamera(const ModifiedCamera&);
 };
 
 #endif  // UI_RECONSTRUCTION_WINDOW_H_

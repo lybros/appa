@@ -31,26 +31,27 @@
 
 class Options {
  public:
-    Options();
-    Options(QString output_location);
+  Options();
 
-    theia::ReconstructionBuilderOptions* GetReconstructionBuilderOptions();
+  explicit Options(QString output_location);
 
-    ~Options();
+  theia::ReconstructionBuilderOptions* GetReconstructionBuilderOptions();
+
+  ~Options();
 
  private:
-    // The parameters of the related Project object.
-    QString output_location_;
+  // The parameters of the related Project object.
+  QString output_location_;
 
-    // THEIA's OPTIONS.
+  // THEIA's OPTIONS.
 
-    // Feature Extraction.
-    theia::DescriptorExtractorType descriptor_type_ =
-            theia::DescriptorExtractorType::SIFT;
+  // Feature Extraction.
+  theia::DescriptorExtractorType descriptor_type_ =
+      theia::DescriptorExtractorType::SIFT;
 
-    // Feature Matching.
-    bool match_out_of_core_ = true;
-    bool perform_geometric_verification_ = false;
+  // Feature Matching.
+  bool match_out_of_core_ = true;
+  bool perform_geometric_verification_ = false;
 };
 
 #endif  // SRC_OPTIONS_H_

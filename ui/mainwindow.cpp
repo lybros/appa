@@ -23,6 +23,9 @@ void MainWindow::set_icons(QtAwesome* awesome) {
 #ifdef __APPLE__
     options.insert("scale-factor", 0.5);
 #endif
+    // projectToolBar
+    ui->actionNewProject->setIcon(awesome->icon(fa::foldero, options));
+    ui->actionOpen->setIcon(awesome->icon(fa::folderopeno, options));
 
     // featuresToolBar
     options.insert("color", QColor(255, 175, 24));

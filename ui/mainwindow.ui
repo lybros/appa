@@ -40,7 +40,7 @@
            <x>0</x>
            <y>0</y>
            <width>198</width>
-           <height>673</height>
+           <height>695</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -218,23 +218,18 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1067</width>
-     <height>22</height>
-    </rect>
+  <widget class="QToolBar" name="projectToolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
    </property>
-   <widget class="QMenu" name="project_menu">
-    <property name="title">
-     <string>Project</string>
-    </property>
-    <addaction name="actionNewProject"/>
-    <addaction name="actionOpen"/>
-   </widget>
-   <addaction name="project_menu"/>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNewProject"/>
+   <addaction name="actionOpen"/>
   </widget>
   <widget class="QToolBar" name="featuresToolBar">
    <property name="sizePolicy">

@@ -21,7 +21,7 @@ void MainWindow::set_icons(QtAwesome* awesome) {
 // For some reasons icons with default scale-factor does not look good
 // on macOS devices.
 #ifdef __APPLE__
-    options.insert("scale-factor", 0.6);
+    options.insert("scale-factor", 0.5);
 #endif
 
     // featuresToolBar
@@ -164,8 +164,11 @@ void MainWindow::on_actionVisualizeBinary_triggered() {
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {
-    LOG(INFO) << "Start search image...";
-    active_project_->SearchImage(QString("images/image005.jpg"));
+    //TODO(drapegnik): replace hardcode with variables from dialog
+    active_project_->SearchImage(
+            QString("images/image005.jpg"),
+            QString("model-0.binary")
+    );
 }
 
 void MainWindow::on_actionRunExampleReconstruction_triggered() {
@@ -202,7 +205,7 @@ void MainWindow::UpdateActiveProjectInfo() {
     ui->images_location_label->setText("IMAGES LOCATION: " +
                                        active_project_->GetImagesPath());
     ui->number_images_label->setText("NUMBER OF IMAGES: " + QString::number(
-                    active_project_->GetStorage()->NumberOfImages()));
+            active_project_->GetStorage()->NumberOfImages()));
 
     // TODO(uladbohdan): to load in a separate thread.
     LoadImagesPreview();
@@ -213,7 +216,7 @@ void MainWindow::UpdateActiveProjectInfo() {
 
 void MainWindow::LoadImagesPreview() {
     for (QWidget* child : ui->imagesPreviewScrollAreaContents->
-         findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly)) {
+            findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly)) {
         delete child;
     }
 
@@ -230,7 +233,7 @@ void MainWindow::LoadImagesPreview() {
 
 // TODO(uladbohdan): to handle the situation when we have small amount of
 // images (2-3) as they're expanding and does not look good.
-QWidget* MainWindow::CreateImageThumbnail(QString &image_path) {
+QWidget* MainWindow::CreateImageThumbnail(QString& image_path) {
     // TODO(uladbohdan): to make sure this magic number is good for every
     // screen or to replace it with something else.
     int PREVIEW_AREA_WIDTH = ui->imagesPreviewScrollArea->size().width() - 25;
@@ -244,8 +247,8 @@ QWidget* MainWindow::CreateImageThumbnail(QString &image_path) {
 
     QLabel* image_label = new QLabel(image_box);
     image_label->setPixmap(QPixmap::fromImage(
-                    QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
-                                              Qt::KeepAspectRatio)));
+            QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
+                                      Qt::KeepAspectRatio)));
     box_layout->addWidget(image_label);
     box_layout->setAlignment(image_label, Qt::AlignHCenter);
 

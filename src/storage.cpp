@@ -15,15 +15,16 @@ QString Storage::GetImagesPath() {
     return images_path_;
 }
 
-//TODO(uladbohdan): clean up out/ when dataset was changed
+// TODO(uladbohdan): clean up out/ when dataset was changed
 int Storage::UpdateImagesPath(QString images_path) {
     images_path_ = images_path;
     return ParseImageFolder();
 }
 
-bool Storage::ForceInitialize(QString images_path, QVector<QString>& images) {
+bool Storage::ForceInitialize(QString images_path,
+                              const QVector<QString>& images) {
     // Verifying if "images" are still in filesystem and accessible.
-    for (QString& image : images) {
+    for (const QString& image : images) {
         if (!QFileInfo(image).exists()) {
             LOG(ERROR) << "Image \"" << image.toStdString()
             << "\" not found";

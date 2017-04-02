@@ -23,15 +23,15 @@
 #ifndef SRC_PROJECT_H_
 #define SRC_PROJECT_H_
 
-#include <iostream>
-#include <string>
-#include <vector>
-
 #include <QDir>
 #include <QString>
 #include <QTextStream>
 
 #include <theia/theia.h>
+
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "featuresx.h"
 #include "options.h"
@@ -46,7 +46,7 @@ const QString DEFAULT_OUTPUT_LOCATION_POSTFIX = "out/";
 const QString DEFAULT_MODEL_BINARY_FILENAME = "model-0.binary";
 
 class Project {
-public:
+ public:
     Project();
 
     Project(QString project_name, QString project_path, QString images_path);
@@ -90,8 +90,8 @@ public:
 
     ~Project();
 
-private:
-    Options *options_;
+ private:
+    Options* options_;
 
     QString project_name_;
     // project_path_ contains the full way to the project.

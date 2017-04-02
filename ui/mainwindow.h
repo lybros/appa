@@ -25,9 +25,9 @@ namespace Ui {
 }
 
 class MainWindow : public QMainWindow {
-Q_OBJECT
+ Q_OBJECT
 
-public:
+ public:
     explicit MainWindow(QWidget* parent = 0);
 
     void set_icons(QtAwesome* awesome = 0);
@@ -36,7 +36,7 @@ public:
 
     ~MainWindow();
 
-private slots:
+ private slots:
 
     void on_actionBuildToBinary_triggered();
 
@@ -56,7 +56,7 @@ private slots:
 
     void on_actionRunExampleReconstruction_triggered();
 
-private:
+ private:
     Ui::MainWindow* ui;
     Project* active_project_;
 
@@ -67,6 +67,7 @@ private:
 
     // Loads Images thumbnails to Image Preview Area.
     void LoadImagesPreview();
+
     QVector<ThumbnailWidget*> thumbnails_;
 
     void UpdateActiveProjectInfo();

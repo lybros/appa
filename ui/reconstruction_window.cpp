@@ -6,12 +6,12 @@ ReconstructionWindow::ReconstructionWindow() {
     QGLViewer();
 }
 
-ReconstructionWindow::ReconstructionWindow(Project *project) {
+ReconstructionWindow::ReconstructionWindow(Project* project) {
     ReconstructionWindow();
     project_ = project;
 }
 
-void ReconstructionWindow::UpdateActiveProject(Project *project) {
+void ReconstructionWindow::UpdateActiveProject(Project* project) {
     project_ = project;
 }
 
@@ -20,12 +20,12 @@ void ReconstructionWindow::BuildFromDefaultPath() {
 
     std::string filename =
             QDir(project_->GetOutputLocation()).filePath(
-                DEFAULT_MODEL_BINARY_FILENAME).toStdString();
+                    DEFAULT_MODEL_BINARY_FILENAME).toStdString();
     // Output as a binary file.
     std::unique_ptr<theia::Reconstruction> reconstruction(
-        new theia::Reconstruction());
+            new theia::Reconstruction());
     CHECK(ReadReconstruction(filename, reconstruction.get()))
-        << "Could not read reconstruction file.";
+    << "Could not read reconstruction file.";
 
     LOG(INFO) << "Read successfully from file.";
 
@@ -49,14 +49,14 @@ void ReconstructionWindow::BuildFromDefaultPath() {
         }
 
         QVector3D point_coords = QVector3D(
-                    track->Point().hnormalized().x(),
-                    track->Point().hnormalized().y(),
-                    track->Point().hnormalized().z());
+                track->Point().hnormalized().x(),
+                track->Point().hnormalized().y(),
+                track->Point().hnormalized().z());
 
         QColor point_color = QColor(
-                    (int)track->Color()(0,0),
-                    (int)track->Color()(1,0),
-                    (int)track->Color()(2,0));
+                (int) track->Color()(0, 0),
+                (int) track->Color()(1, 0),
+                (int) track->Color()(2, 0));
 
         WorldPoint world_point;
         world_point.coords = point_coords;
@@ -70,7 +70,7 @@ void ReconstructionWindow::BuildFromDefaultPath() {
     reconstruction.release();
 
     std::cout << "DRAWING: num world points: " <<
-                 world_points_.size() << std::endl;
+    world_points_.size() << std::endl;
     std::cout << "DRAWING: num cameras: " << cameras_.size() << std::endl;
 
     draw();
@@ -79,7 +79,7 @@ void ReconstructionWindow::BuildFromDefaultPath() {
     update();
 }
 
-void ReconstructionWindow::InitCameras(theia::Reconstruction *reconstruction) {
+void ReconstructionWindow::InitCameras(theia::Reconstruction* reconstruction) {
     cameras_.clear();
 
     cameras_.reserve(reconstruction->NumViews());
@@ -100,7 +100,7 @@ void ReconstructionWindow::InitCameras(theia::Reconstruction *reconstruction) {
 void ReconstructionWindow::UpdateHighlightedCameras() {
     for (ModifiedCamera& camera : cameras_) {
         camera.SetHighlighted(
-                    highlighted_views_.contains(camera.GetViewName()));
+                highlighted_views_.contains(camera.GetViewName()));
     }
 }
 
@@ -139,7 +139,7 @@ void ReconstructionWindow::DrawCamera(const ModifiedCamera& camera) {
     glPushMatrix();
     Eigen::Matrix4d transformation_matrix = Eigen::Matrix4d::Zero();
     transformation_matrix.block<3, 3>(0, 0) =
-        camera.GetOrientationAsRotationMatrix().transpose();
+            camera.GetOrientationAsRotationMatrix().transpose();
     transformation_matrix.col(3).head<3>() = camera.GetPosition();
     transformation_matrix(3, 3) = 1.0;
 
@@ -158,24 +158,26 @@ void ReconstructionWindow::DrawCamera(const ModifiedCamera& camera) {
     // Create the camera wireframe. If intrinsic parameters are not set then use
     // the focal length as a guess.
     const float image_width =
-        (camera.ImageWidth() == 0) ? camera.FocalLength() : camera.ImageWidth();
+            (camera.ImageWidth() == 0) ? camera.FocalLength()
+                                       : camera.ImageWidth();
     const float image_height =
-        (camera.ImageHeight() == 0) ? camera.FocalLength() : camera.ImageHeight();
+            (camera.ImageHeight() == 0) ? camera.FocalLength()
+                                        : camera.ImageHeight();
     const float normalized_width = (image_width / 2.0) / camera.FocalLength();
     const float normalized_height = (image_height / 2.0) / camera.FocalLength();
 
     const Eigen::Vector3f top_left =
-        normalized_focal_length *
-        Eigen::Vector3f(-normalized_width, -normalized_height, 1);
+            normalized_focal_length *
+            Eigen::Vector3f(-normalized_width, -normalized_height, 1);
     const Eigen::Vector3f top_right =
-        normalized_focal_length *
-        Eigen::Vector3f(normalized_width, -normalized_height, 1);
+            normalized_focal_length *
+            Eigen::Vector3f(normalized_width, -normalized_height, 1);
     const Eigen::Vector3f bottom_right =
-        normalized_focal_length *
-        Eigen::Vector3f(normalized_width, normalized_height, 1);
+            normalized_focal_length *
+            Eigen::Vector3f(normalized_width, normalized_height, 1);
     const Eigen::Vector3f bottom_left =
-        normalized_focal_length *
-        Eigen::Vector3f(-normalized_width, normalized_height, 1);
+            normalized_focal_length *
+            Eigen::Vector3f(-normalized_width, normalized_height, 1);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_TRIANGLE_FAN);

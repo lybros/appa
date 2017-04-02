@@ -9,12 +9,12 @@ QString FeatureFilenameFromImage(QString output_dir, QString image_path) {
     return QDir(output_dir).filePath("features/" + image_name);
 }
 
-void EnsureTrailingSlash(QString& path) {
-    if (path.toStdString()[path.length() - 1] != '/') {
-        path += "/";
+void EnsureTrailingSlash(QString* path) {
+    if (path->toStdString()[path->length() - 1] != '/') {
+        *path += "/";
     }
 }
 
-QString FileNameFromPath(QString& path) {
+QString FileNameFromPath(const QString& path) {
     return path.mid(path.lastIndexOf("/", -2) + 1);
 }

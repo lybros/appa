@@ -17,14 +17,19 @@ struct WorldPoint {
 };
 
 class ModifiedCamera : public theia::Camera {
-public:
+ public:
     ModifiedCamera(theia::Camera camera) :
-        theia::Camera(camera), highlighted_(false) {}
+            theia::Camera(camera), highlighted_(false) { }
+
     bool IsHighlighted() const { return highlighted_; }
+
     void SetHighlighted(bool highlighted) { highlighted_ = highlighted; }
+
     QString GetViewName() const { return view_name_; }
+
     void SetViewName(QString view_name) { view_name_ = view_name; }
-private:
+
+ private:
     bool highlighted_;
     QString view_name_;
 };
@@ -33,9 +38,9 @@ class ReconstructionWindow : public QGLViewer {
  public:
     ReconstructionWindow();
 
-    ReconstructionWindow(Project *project);
+    ReconstructionWindow(Project* project);
 
-    void UpdateActiveProject(Project *project);
+    void UpdateActiveProject(Project* project);
 
     void BuildFromDefaultPath();
 
@@ -47,10 +52,11 @@ class ReconstructionWindow : public QGLViewer {
 
  protected:
     virtual void init() override;
+
     virtual void draw() override;
 
  private:
-    Project *project_;
+    Project* project_;
 
     // TODO(uladbohdan): to manage the inconsistency: to use either std::vector
     // ot QVector.
@@ -60,7 +66,9 @@ class ReconstructionWindow : public QGLViewer {
     QVector<QString> highlighted_views_;
 
     void InitCameras(theia::Reconstruction* reconstruction);
+
     void UpdateHighlightedCameras();
+
     void DrawCamera(const ModifiedCamera&);
 };
 

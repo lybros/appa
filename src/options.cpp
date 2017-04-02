@@ -6,7 +6,7 @@ Options::Options() {
 }
 
 Options::Options(QString output_location) :
-    output_location_(output_location) {
+        output_location_(output_location) {
 }
 
 theia::ReconstructionBuilderOptions*

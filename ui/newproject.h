@@ -19,16 +19,16 @@ namespace Ui {
 struct NewProjectOptions;
 
 class NewProjectDialog : public QDialog {
-Q_OBJECT
+ Q_OBJECT
 
-public:
+ public:
     explicit NewProjectDialog(QWidget* parent = 0);
 
     void SetProjectOptions(NewProjectOptions* project_options);
 
     ~NewProjectDialog();
 
-private slots:
+ private slots:
 
     void accept();
 
@@ -36,7 +36,7 @@ private slots:
 
     void on_locate_images_button_clicked();
 
-private:
+ private:
     Ui::NewProjectDialog* ui;
     NewProjectOptions* project_options_;
 

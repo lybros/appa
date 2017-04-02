@@ -47,7 +47,7 @@ Project::Project(QString project_name,
 //
 // The recommendation is to run every stage separately.
 void Project::BuildModelToBinary() {
-    ReconstructionBuilderOptions *options =
+    ReconstructionBuilderOptions* options =
             options_->GetReconstructionBuilderOptions();
 
     ReconstructionBuilder reconstruction_builder(*options);

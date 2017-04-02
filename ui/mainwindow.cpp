@@ -232,7 +232,7 @@ void MainWindow::LoadImagesPreview() {
 
     for (QString& image : images) {
         ThumbnailWidget* thumbnail = new ThumbnailWidget(
-                    this, ui->imagesPreviewScrollAreaContents, image);
+                this, ui->imagesPreviewScrollAreaContents, image);
         thumbnails_.push_back(thumbnail);
         ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
         ui->imagesPreviewArea->addWidget(thumbnail);

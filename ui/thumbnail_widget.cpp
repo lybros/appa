@@ -7,8 +7,9 @@
 
 ThumbnailWidget::ThumbnailWidget(MainWindow* main_window, QWidget* parent,
                                  QString& image_path) :
-    QWidget(parent), main_window_(main_window),
-    path_(image_path), name_(FileNameFromPath(image_path)), selected_(false) {
+        QWidget(parent), main_window_(main_window),
+        path_(image_path), name_(FileNameFromPath(image_path)),
+        selected_(false) {
 
     // TODO(uladbohdan): to make sure this magic number is good for every
     // screen or to replace it with something else.
@@ -21,8 +22,8 @@ ThumbnailWidget::ThumbnailWidget(MainWindow* main_window, QWidget* parent,
 
     QLabel* image_label = new QLabel(this);
     image_label->setPixmap(QPixmap::fromImage(
-                    QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
-                                              Qt::KeepAspectRatio)));
+            QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
+                                      Qt::KeepAspectRatio)));
     box_layout->addWidget(image_label);
     box_layout->setAlignment(image_label, Qt::AlignHCenter);
 

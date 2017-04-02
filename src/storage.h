@@ -3,21 +3,20 @@
 #ifndef SRC_STORAGE_H_
 #define SRC_STORAGE_H_
 
-#include <iostream>
-
 #include <QtAlgorithms>
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QVector>
 
 #include <glog/logging.h>
+#include <iostream>
 
 // The pattern may be extended with image extensions which are supported
 // by Theia.
 const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|JPG|jpeg|JPEG|png|PNG)";
 
 class Storage {
-public:
+ public:
     Storage();
 
     explicit Storage(QString images_path);
@@ -31,7 +30,7 @@ public:
     // the images we've had before. This method allows to avoid parsing and
     // put only the images we pass.
     // Verification than will check if the images are still exist.
-    bool ForceInitialize(QString images_path, QVector<QString>& images);
+    bool ForceInitialize(QString images_path, const QVector<QString>& images);
 
     // Returns the number of images parsed.
     int ParseImageFolder();
@@ -42,7 +41,7 @@ public:
 
     ~Storage();
 
-private:
+ private:
     QVector<QString>* images_;
     QString images_path_;
 };

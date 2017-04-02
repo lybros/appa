@@ -1,5 +1,7 @@
-#include "ui/mainwindow.h"
+// Copyright 2017 Lybros.
+
 #include <QApplication>
+#include "ui/mainwindow.h"
 
 int main(int argc, char* argv[]) {
     QApplication a(argc, argv);

@@ -17,7 +17,7 @@ class MainWindow;
 
 class ThumbnailWidget : public QWidget {
 
-public:
+ public:
     ThumbnailWidget(MainWindow* main_window, QWidget* parent,
                     QString& image_path);
 
@@ -27,10 +27,10 @@ public:
 
     ~ThumbnailWidget();
 
-protected:
-    void mouseReleaseEvent(QMouseEvent *event) override;
+ protected:
+    void mouseReleaseEvent(QMouseEvent* event) override;
 
-private:
+ private:
     QString name_;
     QString path_;
     bool selected_;

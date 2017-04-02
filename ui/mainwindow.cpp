@@ -23,8 +23,11 @@ void MainWindow::set_icons(QtAwesome* awesome) {
 // For some reasons icons with default scale-factor does not look good
 // on macOS devices.
 #ifdef __APPLE__
-    options.insert("scale-factor", 0.6);
+    options.insert("scale-factor", 0.5);
 #endif
+    // projectToolBar
+    ui->actionNewProject->setIcon(awesome->icon(fa::foldero, options));
+    ui->actionOpen->setIcon(awesome->icon(fa::folderopeno, options));
 
     // featuresToolBar
     options.insert("color", QColor(255, 175, 24));
@@ -204,7 +207,7 @@ void MainWindow::UpdateActiveProjectInfo() {
     ui->images_location_label->setText("IMAGES LOCATION: " +
                                        active_project_->GetImagesPath());
     ui->number_images_label->setText("NUMBER OF IMAGES: " + QString::number(
-                    active_project_->GetStorage()->NumberOfImages()));
+            active_project_->GetStorage()->NumberOfImages()));
 
     // TODO(uladbohdan): to load in a separate thread.
     LoadImagesPreview();
@@ -215,7 +218,7 @@ void MainWindow::UpdateActiveProjectInfo() {
 
 void MainWindow::LoadImagesPreview() {
     for (QWidget* child : ui->imagesPreviewScrollAreaContents->
-         findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly)) {
+            findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly)) {
         delete child;
     }
 

@@ -6,31 +6,31 @@ find_package(Qt5OpenGL REQUIRED)
 find_library(QGLVIEWER_LIBRARIES QGLViewer)
 
 set(SRC_UI
-    mainwindow.cpp
-    newproject.cpp
-    reconstruction_window.cpp
-    thumbnail_widget.cpp
-    )
+        mainwindow.cpp
+        newproject.cpp
+        reconstruction_window.cpp
+        thumbnail_widget.cpp
+        )
 
 set(HEADERS_UI
-    mainwindow.h
-    newproject.h
-    reconstruction_window.h
-    thumbnail_widget.h
-    )
+        mainwindow.h
+        newproject.h
+        reconstruction_window.h
+        thumbnail_widget.h
+        )
 
 set(FORMS_UI
-    mainwindow.ui
-    newproject.ui
-    )
+        mainwindow.ui
+        newproject.ui
+        )
 
 QT5_WRAP_UI(FORMS_UI_HDRS ${FORMS_UI})
 
 add_library(ui
-    ${SRC_UI}
-    ${HEADERS_UI}
-    ${FORMS_UI_HDRS}
-    )
+        ${SRC_UI}
+        ${HEADERS_UI}
+        ${FORMS_UI_HDRS}
+        )
 
 # We're building the ui library on top of src library,
 # that's why need to mention it here.

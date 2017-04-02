@@ -17,40 +17,40 @@ namespace Ui { class NewProjectDialog; }
 struct NewProjectOptions;
 
 class NewProjectDialog : public QDialog {
- Q_OBJECT
+ Q_OBJECT   // NOLINT(whitespace/indent)
 
  public:
-    explicit NewProjectDialog(QWidget* parent = 0);
+  explicit NewProjectDialog(QWidget* parent = 0);
 
-    void SetProjectOptions(NewProjectOptions* project_options);
+  void SetProjectOptions(NewProjectOptions* project_options);
 
-    ~NewProjectDialog();
+  ~NewProjectDialog();
 
- private slots:
+ private slots:   // NOLINT(whitespace/indent)
 
-    void accept();
+  void accept();
 
-    void on_locate_project_button_clicked();
+  void on_locate_project_button_clicked();
 
-    void on_locate_images_button_clicked();
+  void on_locate_images_button_clicked();
 
  private:
-    Ui::NewProjectDialog* ui;
-    NewProjectOptions* project_options_;
+  Ui::NewProjectDialog* ui;
+  NewProjectOptions* project_options_;
 
-    bool create_new_project();
+  bool create_new_project();
 
-    bool verify_new_project_options();
+  bool verify_new_project_options();
 
-    bool initialize_new_project();
+  bool initialize_new_project();
 
-    void show_warning(const QString& error);
+  void show_warning(const QString& error);
 };
 
 struct NewProjectOptions {
-    QString project_name;
-    QString project_path;
-    QString images_path;
+  QString project_name;
+  QString project_path;
+  QString images_path;
 };
 
 #endif  // UI_NEWPROJECT_H_

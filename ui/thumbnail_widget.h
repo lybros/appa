@@ -17,24 +17,24 @@ class MainWindow;
 
 class ThumbnailWidget : public QWidget {
  public:
-    ThumbnailWidget(MainWindow* main_window,
-                    QWidget* parent,
-                    const QString& image_path);
+  ThumbnailWidget(MainWindow* main_window,
+                  QWidget* parent,
+                  const QString& image_path);
 
-    QString& GetName();
+  QString& GetName();
 
-    bool IsSelected();
+  bool IsSelected();
 
-    ~ThumbnailWidget();
+  ~ThumbnailWidget();
 
  protected:
-    void mouseReleaseEvent(QMouseEvent* event) override;
+  void mouseReleaseEvent(QMouseEvent* event) override;
 
  private:
-    QString name_;
-    QString path_;
-    bool selected_;
-    MainWindow* main_window_;
+  QString name_;
+  QString path_;
+  bool selected_;
+  MainWindow* main_window_;
 };
 
 #endif  // UI_THUMBNAIL_WIDGET_H_

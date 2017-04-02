@@ -3,6 +3,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "thumbnail_widget.h"
+
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -226,39 +228,25 @@ void MainWindow::LoadImagesPreview() {
         return;
     }
 
+    thumbnails_.reserve(images.size());
+
     for (QString& image : images) {
-        ui->imagesPreviewArea->addWidget(CreateImageThumbnail(image));
+        ThumbnailWidget* thumbnail = new ThumbnailWidget(
+                    this, ui->imagesPreviewScrollAreaContents, image);
+        thumbnails_.push_back(thumbnail);
+        ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
+        ui->imagesPreviewArea->addWidget(thumbnail);
     }
 }
 
-// TODO(uladbohdan): to handle the situation when we have small amount of
-// images (2-3) as they're expanding and does not look good.
-QWidget* MainWindow::CreateImageThumbnail(QString& image_path) {
-    // TODO(uladbohdan): to make sure this magic number is good for every
-    // screen or to replace it with something else.
-    int PREVIEW_AREA_WIDTH = ui->imagesPreviewScrollArea->size().width() - 25;
-    int INF = 99999999;
-
-    QWidget* image_box = new QWidget(ui->imagesPreviewScrollAreaContents);
-
-    QVBoxLayout* box_layout = new QVBoxLayout(image_box);
-    box_layout->setMargin(0);
-    image_box->setLayout(box_layout);
-
-    QLabel* image_label = new QLabel(image_box);
-    image_label->setPixmap(QPixmap::fromImage(
-            QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
-                                      Qt::KeepAspectRatio)));
-    box_layout->addWidget(image_label);
-    box_layout->setAlignment(image_label, Qt::AlignHCenter);
-
-    QLabel* image_title_label =
-            new QLabel(FileNameFromPath(image_path), image_box);
-    box_layout->addWidget(image_title_label);
-    box_layout->setAlignment(image_title_label, Qt::AlignHCenter);
-
-    ui->imagesPreviewArea->setAlignment(image_box, Qt::AlignHCenter);
-    return image_box;
+void MainWindow::UpdateSelectedThumbnails() {
+    QVector<QString> view_names;
+    for (auto* thumbnail : thumbnails_) {
+        if (thumbnail->IsSelected()) {
+            view_names.push_back(thumbnail->GetName());
+        }
+    }
+    view_->SetHighlightedViewNames(view_names);
 }
 
 // We're enabling action buttons in case of project is loaded.

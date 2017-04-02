@@ -17,7 +17,6 @@ void ReconstructionWindow::UpdateActiveProject(Project *project) {
 
 void ReconstructionWindow::BuildFromDefaultPath() {
     world_points_.clear();
-    cameras_.clear();
 
     std::string filename =
             QDir(project_->GetOutputLocation()).filePath(
@@ -66,24 +65,43 @@ void ReconstructionWindow::BuildFromDefaultPath() {
         world_points_.emplace_back(world_point);
     }
 
-    cameras_.reserve(reconstruction->NumViews());
-    for (const theia::ViewId view_id : reconstruction->ViewIds()) {
-      const auto* view = reconstruction->View(view_id);
-      if (view == nullptr || !view->IsEstimated()) {
-        continue;
-      }
-      cameras_.emplace_back(view->Camera());
-    }
+    InitCameras(reconstruction.get());
 
     reconstruction.release();
 
     std::cout << "DRAWING: num world points: " <<
                  world_points_.size() << std::endl;
     std::cout << "DRAWING: num cameras: " << cameras_.size() << std::endl;
+
     draw();
 
     // To render the reconstruction without waiting to mouse click on widget.
     update();
+}
+
+void ReconstructionWindow::InitCameras(theia::Reconstruction *reconstruction) {
+    cameras_.clear();
+
+    cameras_.reserve(reconstruction->NumViews());
+
+    for (const theia::ViewId view_id : reconstruction->ViewIds()) {
+        const auto* view = reconstruction->View(view_id);
+        if (view == nullptr || !view->IsEstimated()) {
+            continue;
+        }
+        ModifiedCamera camera(view->Camera());
+        camera.SetViewName(QString::fromStdString(view->Name()));
+        cameras_.emplace_back(camera);
+    }
+
+    UpdateHighlightedCameras();
+}
+
+void ReconstructionWindow::UpdateHighlightedCameras() {
+    for (ModifiedCamera& camera : cameras_) {
+        camera.SetHighlighted(
+                    highlighted_views_.contains(camera.GetViewName()));
+    }
 }
 
 void ReconstructionWindow::init() {
@@ -105,14 +123,14 @@ void ReconstructionWindow::draw() {
         glVertex3i(coords.x(), coords.y(), coords.z());
     }
 
-    for (theia::Camera camera : cameras_) {
+    for (ModifiedCamera camera : cameras_) {
         DrawCamera(camera);
     }
 
     glEnd();
 }
 
-void ReconstructionWindow::DrawCamera(const theia::Camera& camera) {
+void ReconstructionWindow::DrawCamera(const ModifiedCamera& camera) {
     // Copied from view_reconstruction.cc
     // by Chris Sweeney (cmsweeney@cs.ucsb.edu)
 
@@ -129,7 +147,13 @@ void ReconstructionWindow::DrawCamera(const theia::Camera& camera) {
     glMultMatrixd(reinterpret_cast<GLdouble*>(transformation_matrix.data()));
 
     // Draw Cameras.
-    glColor3f(1.0, 0.0, 0.0);
+    if (camera.IsHighlighted()) {
+        // Drawing Highlighted cameras with Blue.
+        glColor3f(0.0, 0.0, 1.0);
+    } else {
+        // The default color for cameras is Red.
+        glColor3f(1.0, 0.0, 0.0);
+    }
 
     // Create the camera wireframe. If intrinsic parameters are not set then use
     // the focal length as a guess.
@@ -163,6 +187,12 @@ void ReconstructionWindow::DrawCamera(const theia::Camera& camera) {
     glVertex3f(top_right[0], top_right[1], top_right[2]);
     glEnd();
     glPopMatrix();
+}
+
+void ReconstructionWindow::SetHighlightedViewNames(QVector<QString>& views) {
+    highlighted_views_ = views;
+    UpdateHighlightedCameras();
+    update();
 }
 
 ReconstructionWindow::~ReconstructionWindow() {

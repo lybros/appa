@@ -5,6 +5,7 @@
 
 #include <iostream>
 
+#include <QtAlgorithms>
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QProcess>
@@ -13,7 +14,11 @@
 
 #include "newproject.h"
 #include "reconstruction_window.h"
+
 #include "../src/project.h"
+#include "../src/utils.h"
+
+class ThumbnailWidget;
 
 namespace Ui {
     class MainWindow;
@@ -26,6 +31,8 @@ public:
     explicit MainWindow(QWidget* parent = 0);
 
     void set_icons(QtAwesome* awesome = 0);
+
+    void UpdateSelectedThumbnails();
 
     ~MainWindow();
 
@@ -60,7 +67,7 @@ private:
 
     // Loads Images thumbnails to Image Preview Area.
     void LoadImagesPreview();
-    QWidget* CreateImageThumbnail(QString &image_path);
+    QVector<ThumbnailWidget*> thumbnails_;
 
     void UpdateActiveProjectInfo();
 

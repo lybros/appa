@@ -18,6 +18,8 @@ void ReconstructionWindow::UpdateActiveProject(Project* project) {
 void ReconstructionWindow::BuildFromDefaultPath() {
   world_points_.clear();
 
+  // TODO: to replace reading from file with visualizing model from project_.
+
   std::string filename =
       QDir(project_->GetOutputLocation()).filePath(
           DEFAULT_MODEL_BINARY_FILENAME).toStdString();
@@ -28,12 +30,6 @@ void ReconstructionWindow::BuildFromDefaultPath() {
   << "Could not read reconstruction file.";
 
   LOG(INFO) << "Read successfully from file.";
-
-  // Colorizing the reconstruction using the raw image data.
-  theia::ColorizeReconstruction(project_->GetImagesPath().toStdString(), 2,
-                                reconstruction.get());
-
-  LOG(INFO) << "Reconstruction colorized successfully!";
 
   // Centers the reconstruction based on the absolute deviation of 3D points.
   reconstruction->Normalize();

@@ -69,14 +69,22 @@ void Project::BuildModelToBinary() {
 
   LOG(INFO) << "Reconstruction has been created.";
 
-  std::string output_file_template =
-      QDir(output_location_).filePath("model").toStdString();
+  // Using raw image data to colorize the reconstructions.
+  // The method is running using 2 threads.
+  for (int i = 0; i < reconstructions.size(); i++) {
+    theia::ColorizeReconstruction(GetImagesPath().toStdString(), 2,
+                                  reconstructions[i]);
+  }
+  LOG(INFO) << "Reconstruction colorized successfully!";
 
   reconstructions_.resize(reconstructions.size());
   for (int i = 0; i < reconstructions_.size(); i++) {
     reconstructions_[i].reset(reconstructions[i]);
   }
   status_ = Options::ReconstructionStatus::LOADED_INTO_MEMORY;
+
+  std::string output_file_template =
+      QDir(output_location_).filePath("model").toStdString();
 
   for (int i = 0; i < reconstructions.size(); i++) {
     std::string output_file =

@@ -40,14 +40,21 @@ class ModifiedCamera : public theia::Camera {
   QString view_name_;
 };
 
+// ReconstructionWindow class contains all methods to visualize data.
+// The data comes from project_ field, which connects us with instance of
+// Project class.
 class ReconstructionWindow : public QGLViewer {
  public:
   ReconstructionWindow();
 
   explicit ReconstructionWindow(Project* project);
 
+  // Sets the active app project. Must be called every time the user switches
+  // the project.
   void UpdateActiveProject(Project* project);
 
+  // TODO(uladbohdan): to remove.
+  // No read from file may be implemented in the ReconstructionWindow class.
   void BuildFromDefaultPath();
 
   // Passing a vector of names of views to be highlighted on a map.

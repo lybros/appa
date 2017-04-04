@@ -27,7 +27,7 @@ Project::Project(QString project_name,
   }
 
   LOG(INFO) << "Project Directory seems to be created successfully!" <<
-  std::endl;
+            std::endl;
   WriteConfigurationFile();
 
   // Creating out/ directory.
@@ -82,7 +82,7 @@ void Project::BuildModelToBinary() {
         theia::StringPrintf("%s-%d.binary",
                             output_file_template.c_str(), i);
     LOG(INFO) << "Writing reconstruction " << i << " to "
-    << output_file;
+              << output_file;
     CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
     << "Could not write reconstruction to file";
   }
@@ -92,8 +92,8 @@ void Project::BuildModelToBinary() {
   return;
 }
 
-void Project::SearchImage(QString file_path, QString model_name) {
-
+void Project::SearchImage(QString file_path, QString model_name,
+                          QSet<theia::TrackId>* h_tracks) {
   std::string model_path = QDir(output_location_)
       .filePath(model_name).toStdString();
 
@@ -111,15 +111,14 @@ void Project::SearchImage(QString file_path, QString model_name) {
   std::unordered_map<std::string, Features::FeaturesMap> feature_to_descriptor;
   features_->GetFeaturesMap(&feature_to_descriptor);
 
-  theia::Timer timer;
   theia::L2 norm;
   std::vector<theia::TrackId> tracks_ids = model.TrackIds();
   int counter = 0;
+  theia::Timer timer;
 
   for (auto t_id : tracks_ids) {
     theia::Track* track = model.MutableTrack(t_id);
     std::unordered_set<theia::ViewId> views_ids = track->ViewIds();
-    Eigen::Vector3f red_color(255, 0, 0);
     bool match = false;
 
     for (auto v_id : views_ids) {
@@ -131,7 +130,7 @@ void Project::SearchImage(QString file_path, QString model_name) {
 
       if (got == feature_to_descriptor[view->Name()].end()) {
         LOG(INFO) << "Feature not found [" << view->Name()
-        << "]: (" << feature[0] << ", " << feature[1] << ")";
+                  << "]: (" << feature[0] << ", " << feature[1] << ")";
         continue;
       }
 
@@ -139,7 +138,6 @@ void Project::SearchImage(QString file_path, QString model_name) {
       for (auto feature_descriptor : descriptors) {
         float distance = norm(track_descriptor, feature_descriptor);
         if (distance <= 0.1) {
-          LOG(INFO) << distance << " " << view->Name();
           match = true;
           counter++;
           break;
@@ -149,17 +147,11 @@ void Project::SearchImage(QString file_path, QString model_name) {
       if (match) { break; }
     }
 
-    if (match) { *track->MutableColor() = red_color.cast<uint8_t>(); }
+    if (match) { h_tracks->insert(t_id); }
   }
   const double time = timer.ElapsedTimeInSeconds();
   LOG(INFO) << "It took " << time << " seconds to compare descriptors";
   LOG(INFO) << "Match " << counter << "/" << model.NumTracks() << " tracks";
-
-  const std::string out_model_path =
-      output_location_.toStdString() + "model-1.binary";
-  CHECK(theia::WriteReconstruction(model, out_model_path))
-  << "Could not write reconstruction to file";
-  LOG(INFO) << "Writing reconstruction to: " << out_model_path;
   return;
 }
 
@@ -209,7 +201,7 @@ bool Project::WriteConfigurationFile() {
       stream << image_path << endl;
     }
     stream << "OUTPUT_LOCATION "
-    << GetDefaultOutputPath() << endl;
+           << GetDefaultOutputPath() << endl;
   } else {
     return false;
   }
@@ -237,7 +229,7 @@ bool Project::ReadConfigurationFile() {
   stream >> temp_line;
   if (temp_line != "PROJECT_NAME") {
     std::cerr << "Wrong config file format. No PROJECT_NAME attribute."
-    << std::endl;
+              << std::endl;
     configFile.close();
     return false;
   }
@@ -246,8 +238,8 @@ bool Project::ReadConfigurationFile() {
 
   stream >> temp_line;
   if (temp_line != "IMAGES_LOCATION") {
-    std::cerr <<
-    "Wrong config file format. No IMAGES_LOCATION attribute." << std::endl;
+    std::cerr << "Wrong config file format. No IMAGES_LOCATION attribute."
+              << std::endl;
     configFile.close();
     return false;
   }
@@ -258,7 +250,7 @@ bool Project::ReadConfigurationFile() {
   stream >> temp_line;
   if (temp_line != "NUMBER_OF_IMAGES") {
     std::cerr << "Wrong config file format. No NUMBER_OF_IMAGES attr."
-    << std::endl;
+              << std::endl;
     configFile.close();
     return false;
   }
@@ -280,7 +272,7 @@ bool Project::ReadConfigurationFile() {
   stream >> temp_line;
   if (temp_line != "OUTPUT_LOCATION") {
     std::cerr << "Wrong config file format. No OUTPUT_LOCATION attr."
-    << std::endl;
+              << std::endl;
     configFile.close();
     return false;
   }

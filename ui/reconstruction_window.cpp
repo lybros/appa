@@ -61,6 +61,8 @@ void ReconstructionWindow::BuildFromDefaultPath() {
     WorldPoint world_point;
     world_point.coords = point_coords;
     world_point.color = point_color;
+    world_point.trackId = track_id;
+    world_point.is_highlighted = false;
 
     world_points_.emplace_back(world_point);
   }
@@ -70,7 +72,7 @@ void ReconstructionWindow::BuildFromDefaultPath() {
   reconstruction.release();
 
   std::cout << "DRAWING: num world points: " <<
-  world_points_.size() << std::endl;
+            world_points_.size() << std::endl;
   std::cout << "DRAWING: num cameras: " << cameras_.size() << std::endl;
 
   draw();
@@ -119,7 +121,11 @@ void ReconstructionWindow::draw() {
     auto coords = point.coords;
     auto color = point.color;
 
-    glColor3f(color.redF(), color.greenF(), color.blueF());
+    if (point.is_highlighted) {
+      glColor3f(1.0, 0.0, 0.0);
+    } else {
+      glColor3f(color.redF(), color.greenF(), color.blueF());
+    }
     glVertex3i(coords.x(), coords.y(), coords.z());
   }
 
@@ -198,4 +204,14 @@ void ReconstructionWindow::SetHighlightedViewNames(
   update();
 }
 
-ReconstructionWindow::~ReconstructionWindow() { }
+void ReconstructionWindow::SetHighlightedPoints(
+    const QSet<theia::TrackId>* h_tracks) {
+
+  for (WorldPoint& point : world_points_) {
+    point.is_highlighted = h_tracks->contains(point.trackId);
+  }
+
+  update();
+}
+
+ReconstructionWindow::~ReconstructionWindow() {}

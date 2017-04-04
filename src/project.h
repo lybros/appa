@@ -28,6 +28,7 @@
 #include <vector>
 
 #include <QDir>
+#include <QSet>
 #include <QString>
 #include <QTextStream>
 
@@ -50,7 +51,7 @@ class Project {
  public:
   Project();
 
-    Project(QString project_name, QString project_path, QString images_name);
+  Project(QString project_name, QString project_path, QString images_name);
 
   void BuildModelToBinary();
 
@@ -62,8 +63,10 @@ class Project {
   // matched.
   void StartReconstruction();
 
-    // Try to find place for image on 3d reconstruction map
-    void SearchImage(QString file_path, QString model_path);
+  // Try to find place for image on 3d reconstruction map
+  void SearchImage(QString file_path,
+                   QString model_path,
+                   QSet<theia::TrackId>* h_tracks);
 
   QString GetProjectName();
 

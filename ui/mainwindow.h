@@ -9,6 +9,7 @@
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QProcess>
+#include <QSet>
 
 #include "../libs/QtAwesome/QtAwesome/QtAwesome.h"
 

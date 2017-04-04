@@ -33,6 +33,6 @@
 .idea/
 images/
 out/
-cmake-build/
+cmake-build*/
 CMakeLists.txt.user
 

@@ -28,10 +28,12 @@
 #include <vector>
 
 #include <QDir>
+#include <QSet>
 #include <QString>
 #include <QTextStream>
 
 #include <theia/theia.h>
+#include <theia/matching/distance.h>
 
 #include "featuresx.h"
 #include "options.h"
@@ -49,7 +51,7 @@ class Project {
  public:
   Project();
 
-  Project(QString project_name, QString project_path, QString images_path);
+  Project(QString project_name, QString project_path, QString images_name);
 
   void BuildModelToBinary();
 
@@ -62,7 +64,9 @@ class Project {
   void StartReconstruction();
 
   // Try to find place for image on 3d reconstruction map
-  void SearchImage(QString);
+  void SearchImage(QString file_path,
+                   QString model_path,
+                   QSet<theia::TrackId>* h_tracks);
 
   QString GetProjectName();
 

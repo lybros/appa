@@ -85,7 +85,7 @@ void Features::GetDescriptor(
   CHECK(extractor->Initialize()) << "Could not initialize extractor";
 
   LOG(INFO) << "Count descriptor from "
-  << keypoint.x() << " " << keypoint.y();
+            << keypoint.x() << " " << keypoint.y();
 
   theia::Timer timer;
   CHECK(extractor->ComputeDescriptor(image, keypoint, descriptor))
@@ -121,7 +121,7 @@ void Features::GetFeaturesMap(
 
   const double time = timer.ElapsedTimeInSeconds();
   LOG(INFO) << "It took " << time << " seconds to build map of "
-  << counter << " features for " << images_.size() << " images";
+            << counter << " features for " << images_.size() << " images";
 
   *feature_to_descriptor = ftd_map;
   return;
@@ -149,7 +149,7 @@ void Features::_extract(bool is_force) {
   const double time = timer.ElapsedTimeInSeconds();
 
   LOG(INFO) << "It took " << time << " seconds to extract descriptors from "
-  << processing_images.size() << " images";
+            << processing_images.size() << " images";
   return;
 }
 

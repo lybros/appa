@@ -66,14 +66,14 @@ void MainWindow::on_actionNewProject_triggered() {
     // Checking if we've initialized new project.
     LOG(INFO) << "New project basic parameteres:" << std::endl;
     std::cout << "\t" << project_options->project_name.toStdString()
-    << std::endl;
+              << std::endl;
     std::cout << "\t" << project_options->project_path.toStdString()
-    << std::endl;
+              << std::endl;
     std::cout << "\t" << project_options->images_path.toStdString()
-    << std::endl;
+              << std::endl;
     std::cout <<
-    "-------------------------------------------------------------"
-    << std::endl;
+              "-------------------------------------------------------------"
+              << std::endl;
 
     // Try/catch section here to understand if constructor failed
     // to create a Project instance. (?)
@@ -115,13 +115,13 @@ void MainWindow::on_actionOpen_triggered() {
   // To check the data read from config file.
   LOG(INFO) << "Project read!";
   std::cout << "\t" << active_project_->GetProjectName().toStdString()
-  << std::endl;
+            << std::endl;
   std::cout << "\t" << active_project_->GetProjectPath().toStdString()
-  << std::endl;
+            << std::endl;
   std::cout << "\t" << active_project_->GetImagesPath().toStdString()
-  << std::endl;
+            << std::endl;
   std::cout << "-------------------------------------------------------------"
-  << std::endl;
+            << std::endl;
 
   view_->UpdateActiveProject(active_project_);
 
@@ -168,8 +168,15 @@ void MainWindow::on_actionVisualizeBinary_triggered() {
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {
-  LOG(INFO) << "Start search image...";
-  active_project_->SearchImage(QString("images/image005.jpg"));
+  QSet<theia::TrackId>* highlighted_tracks = new QSet<theia::TrackId>();
+  // TODO(drapegnik): replace hardcode with variables from dialog
+  active_project_->SearchImage(
+      QString("images/image005.jpg"),
+      QString("model-0.binary"),
+      highlighted_tracks);
+
+  view_->SetHighlightedPoints(highlighted_tracks);
+  delete highlighted_tracks;
 }
 
 void MainWindow::on_actionRunExampleReconstruction_triggered() {

@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <QVector3D>
+#include <QSet>
 
 #include <Eigen/Core>
 #include <QGLViewer/qglviewer.h>
@@ -17,12 +18,14 @@
 struct WorldPoint {
   QVector3D coords;
   QColor color;
+  theia::TrackId trackId;
+  bool is_highlighted;
 };
 
 class ModifiedCamera : public theia::Camera {
  public:
   explicit ModifiedCamera(theia::Camera camera) : theia::Camera(camera),
-                                                  highlighted_(false) { }
+                                                  highlighted_(false) {}
 
   bool IsHighlighted() const { return highlighted_; }
 
@@ -50,6 +53,9 @@ class ReconstructionWindow : public QGLViewer {
   // Passing a vector of names of views to be highlighted on a map.
   // The name of the View is the same with Image name (not the full path).
   void SetHighlightedViewNames(const QVector<QString>& views);
+
+  // Set highlight flag for WordPoint
+  void SetHighlightedPoints(const QSet<theia::TrackId>* h_tracks);
 
   ~ReconstructionWindow();
 

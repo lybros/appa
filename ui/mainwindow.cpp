@@ -110,6 +110,7 @@ void MainWindow::on_actionOpen_triggered() {
 
   if (!active_project_->ReadConfigurationFile()) {
     LOG(ERROR) << "Reading config file failed!";
+    return;
   }
 
   // To check the data read from config file.
@@ -190,8 +191,7 @@ void MainWindow::on_actionRunExampleReconstruction_triggered() {
   }
 
   QProcess view_reconstruction_process(this);
-  // We assume the view_reconstruction build from Theia library is in your
-  // PATH.
+  // We assume the view_reconstruction build from Theia library is in your PATH.
   view_reconstruction_process.start(
       "view_reconstruction",
       QStringList() << "--reconstruction" << output_model_path);

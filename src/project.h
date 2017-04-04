@@ -111,6 +111,8 @@ class Project {
   QString GetConfigurationFilePath();
 
   std::vector<std::shared_ptr<theia::Reconstruction>> reconstructions_;
+
+  Options::ReconstructionStatus status_;
 };
 
 #endif  // SRC_PROJECT_H_

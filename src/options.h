@@ -39,6 +39,8 @@ class Options {
 
   ~Options();
 
+  enum ReconstructionStatus { NOT_BUILT, BUILT, LOADED_INTO_MEMORY };
+
  private:
   // The parameters of the related Project object.
   QString output_location_;

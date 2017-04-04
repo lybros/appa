@@ -13,21 +13,21 @@ Project::Project(QString project_name,
                                         storage_(new Storage()) {
   storage_->UpdateImagesPath(images_path);
   features_ = new Features(storage_, GetDefaultOutputPath());
+  status_ = Options::ReconstructionStatus::NOT_BUILT;
 
   // Creating a Project in filesystem.
   // TODO(uladbohdan): to handle the situation when creating a folder fails.
   QDir project_parent_dir(project_path);
 
   if (!project_parent_dir.cdUp()) {
-    LOG(ERROR) << "cdUp failed" << std::endl;
+    LOG(ERROR) << "cdUp failed";
   }
 
   if (!project_parent_dir.mkdir(project_name)) {
-    LOG(ERROR) << "Creating Project Directory failed." << std::endl;
+    LOG(ERROR) << "Creating Project Directory failed.";
   }
 
-  LOG(INFO) << "Project Directory seems to be created successfully!" <<
-            std::endl;
+  LOG(INFO) << "Project Directory seems to be created successfully!";
   WriteConfigurationFile();
 
   // Creating out/ directory.
@@ -76,23 +76,22 @@ void Project::BuildModelToBinary() {
   for (int i = 0; i < reconstructions_.size(); i++) {
     reconstructions_[i].reset(reconstructions[i]);
   }
+  status_ = Options::ReconstructionStatus::LOADED_INTO_MEMORY;
 
   for (int i = 0; i < reconstructions.size(); i++) {
     std::string output_file =
-        theia::StringPrintf("%s-%d.binary",
-                            output_file_template.c_str(), i);
-    LOG(INFO) << "Writing reconstruction " << i << " to "
-              << output_file;
+        theia::StringPrintf("%s-%d.binary", output_file_template.c_str(), i);
+    LOG(INFO) << "Writing reconstruction " << i << " to " << output_file;
     CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
     << "Could not write reconstruction to file";
   }
 
   LOG(INFO) << "Reconstruction has been saved to filesystem.";
-
   return;
 }
 
-void Project::SearchImage(QString file_path, QString model_name,
+void Project::SearchImage(QString file_path,
+                          QString model_name,
                           QSet<theia::TrackId>* h_tracks) {
   std::string model_path = QDir(output_location_)
       .filePath(model_name).toStdString();
@@ -191,17 +190,18 @@ void Project::SetImagesPath(QString images_path) {
 
 bool Project::WriteConfigurationFile() {
   QFile configFile(GetConfigurationFilePath());
+
   if (configFile.open(QIODevice::ReadWrite)) {
     QTextStream stream(&configFile);
-    stream << "PROJECT_CONFIG_VERSION v1.0" << endl;
+    stream << "PROJECT_CONFIG_VERSION v1.1" << endl;
     stream << "PROJECT_NAME " << project_name_ << endl;
+    stream << "STATUS " << status_ << endl;
     stream << "IMAGES_LOCATION " << GetImagesPath() << endl;
     stream << "NUMBER_OF_IMAGES " << storage_->NumberOfImages() << endl;
     for (auto image_path : storage_->GetImages()) {
       stream << image_path << endl;
     }
-    stream << "OUTPUT_LOCATION "
-           << GetDefaultOutputPath() << endl;
+    stream << "OUTPUT_LOCATION " << GetDefaultOutputPath() << endl;
   } else {
     return false;
   }
@@ -220,16 +220,15 @@ bool Project::ReadConfigurationFile() {
   QString temp_line;
 
   temp_line = stream.readLine();
-  if (temp_line != "PROJECT_CONFIG_VERSION v1.0") {
-    std::cerr << "Reading config failed: wrong file version." << std::endl;
+  if (temp_line != "PROJECT_CONFIG_VERSION v1.1") {
+    LOG(ERROR) << "Reading config failed: wrong file version.";
     configFile.close();
     return false;
   }
 
   stream >> temp_line;
   if (temp_line != "PROJECT_NAME") {
-    std::cerr << "Wrong config file format. No PROJECT_NAME attribute."
-              << std::endl;
+    LOG(ERROR) << "Wrong config file format. No PROJECT_NAME attribute.";
     configFile.close();
     return false;
   }
@@ -237,9 +236,19 @@ bool Project::ReadConfigurationFile() {
   stream >> project_name_;
 
   stream >> temp_line;
+  if (temp_line != "STATUS") {
+    LOG(ERROR) << "Wrong config file format. No STATUS attribute.";
+    configFile.close();
+    return false;
+  }
+
+  int status;
+  stream >> status;
+  status_ = StatusFromConfigFile(status);
+
+  stream >> temp_line;
   if (temp_line != "IMAGES_LOCATION") {
-    std::cerr << "Wrong config file format. No IMAGES_LOCATION attribute."
-              << std::endl;
+    LOG(ERROR) << "Wrong config file format. No IMAGES_LOCATION attribute.";
     configFile.close();
     return false;
   }
@@ -249,8 +258,7 @@ bool Project::ReadConfigurationFile() {
 
   stream >> temp_line;
   if (temp_line != "NUMBER_OF_IMAGES") {
-    std::cerr << "Wrong config file format. No NUMBER_OF_IMAGES attr."
-              << std::endl;
+    LOG(ERROR) << "Wrong config file format. No NUMBER_OF_IMAGES attr.";
     configFile.close();
     return false;
   }
@@ -264,15 +272,14 @@ bool Project::ReadConfigurationFile() {
   }
 
   if (!storage_->ForceInitialize(images_path, images)) {
-    std::cerr << "Force storage initializing failed :(" << std::endl;
+    LOG(ERROR) << "Force storage initializing failed :(";
     configFile.close();
     return false;
   }
 
   stream >> temp_line;
   if (temp_line != "OUTPUT_LOCATION") {
-    std::cerr << "Wrong config file format. No OUTPUT_LOCATION attr."
-              << std::endl;
+    LOG(ERROR) << "Wrong config file format. No OUTPUT_LOCATION attr.";
     configFile.close();
     return false;
   }
@@ -307,6 +314,7 @@ Storage* Project::GetStorage() {
 }
 
 Project::~Project() {
+  WriteConfigurationFile();
   delete options_;
   delete storage_;
   delete features_;

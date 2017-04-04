@@ -18,3 +18,12 @@ void EnsureTrailingSlash(QString* path) {
 QString FileNameFromPath(const QString& path) {
   return path.mid(path.lastIndexOf("/", -2) + 1);
 }
+
+Options::ReconstructionStatus StatusFromConfigFile(int status) {
+  switch (status) {
+    case 1: case 2:
+      return Options::ReconstructionStatus::BUILT;
+    default:
+      return Options::ReconstructionStatus::NOT_BUILT;
+  }
+}

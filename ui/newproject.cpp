@@ -83,13 +83,6 @@ bool NewProjectDialog::initialize_new_project() {
   project_options_->images_path = ui->images_path->text();
   EnsureTrailingSlash(&(project_options_->images_path));
 
-  LOG(INFO) << "Parameters to be returned back from NewProjectDialog:";
-  std::cout << "\t" << project_options_->project_name.toStdString() <<
-  std::endl;
-  std::cout << "\t" << project_options_->project_path.toStdString() <<
-  std::endl;
-  std::cout << "\t" << project_options_->images_path.toStdString() <<
-  std::endl;
   return true;
 }
 

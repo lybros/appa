@@ -8,7 +8,6 @@
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow) {
   ui->setupUi(this);
-  active_project_ = new Project();
 
   view_ = new ReconstructionWindow(active_project_);
   ui->sceneLayout->addWidget(view_);
@@ -59,34 +58,28 @@ void MainWindow::on_actionBuildToBinary_triggered() {
 
 void MainWindow::on_actionNewProject_triggered() {
   NewProjectDialog new_project_dialog;
-  NewProjectOptions* project_options = new NewProjectOptions();
-  new_project_dialog.SetProjectOptions(project_options);
+  NewProjectOptions project_options;
+  new_project_dialog.SetProjectOptions(&project_options);
 
   if (new_project_dialog.exec()) {
     // Checking if we've initialized new project.
-    LOG(INFO) << "New project basic parameteres:" << std::endl;
-    std::cout << "\t" << project_options->project_name.toStdString()
-              << std::endl;
-    std::cout << "\t" << project_options->project_path.toStdString()
-              << std::endl;
-    std::cout << "\t" << project_options->images_path.toStdString()
-              << std::endl;
-    std::cout <<
-              "-------------------------------------------------------------"
-              << std::endl;
+    LOG(INFO) << "New project basic parameteres:"
+              << "\n\t" << project_options.project_name.toStdString()
+              << "\n\t" << project_options.project_path.toStdString()
+              << "\n\t" << project_options.images_path.toStdString();
 
     // Try/catch section here to understand if constructor failed
     // to create a Project instance. (?)
     active_project_ = new Project(
-        project_options->project_name,
-        project_options->project_path,
-        project_options->images_path);
+        project_options.project_name,
+        project_options.project_path,
+        project_options.images_path);
+
+    view_->UpdateActiveProject(active_project_);
+
     UpdateActiveProjectInfo();
     EnableActions();
-  } else {
   }
-
-  delete project_options;
 }
 
 void MainWindow::on_actionOpen_triggered() {
@@ -105,23 +98,13 @@ void MainWindow::on_actionOpen_triggered() {
   }
 
   // delete active_project_;
-  active_project_ = new Project();
-  active_project_->SetProjectPath(projectPathChosen);
-
-  if (!active_project_->ReadConfigurationFile()) {
-    LOG(ERROR) << "Reading config file failed!";
-  }
+  active_project_ = new Project(projectPathChosen);
 
   // To check the data read from config file.
-  LOG(INFO) << "Project read!";
-  std::cout << "\t" << active_project_->GetProjectName().toStdString()
-            << std::endl;
-  std::cout << "\t" << active_project_->GetProjectPath().toStdString()
-            << std::endl;
-  std::cout << "\t" << active_project_->GetImagesPath().toStdString()
-            << std::endl;
-  std::cout << "-------------------------------------------------------------"
-            << std::endl;
+  LOG(INFO) << "Project read!"
+            << "\n\t" << active_project_->GetProjectName().toStdString()
+            << "\n\t" << active_project_->GetProjectPath().toStdString()
+            << "\n\t" << active_project_->GetImagesPath().toStdString();
 
   view_->UpdateActiveProject(active_project_);
 

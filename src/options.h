@@ -31,8 +31,6 @@
 
 class Options {
  public:
-  Options();
-
   explicit Options(QString output_location);
 
   theia::ReconstructionBuilderOptions* GetReconstructionBuilderOptions();

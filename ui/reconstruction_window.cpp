@@ -18,7 +18,7 @@ void ReconstructionWindow::UpdateActiveProject(Project* project) {
 void ReconstructionWindow::BuildFromDefaultPath() {
   world_points_.clear();
 
-  // TODO: to replace reading from file with visualizing model from project_.
+  // TODO(uladbohdan): to replace reading from file with reading from project_.
 
   std::string filename =
       QDir(project_->GetOutputLocation()).filePath(

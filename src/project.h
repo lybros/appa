@@ -49,10 +49,24 @@ const QString DEFAULT_MODEL_BINARY_FILENAME = "model-0.binary";
 
 class Project {
  public:
-  Project();
+  // This constructor must be called if we're opening an existent project.
+  // The Project::ReadConfigurationFile() is called.
+  explicit Project(QString project_path);
 
+  // This constructor must be called if we're creating new project. That will
+  // create a new project folder in filesystem and call
+  // Project::WriteConfigurationFile() method.
   Project(QString project_name, QString project_path, QString images_name);
 
+  // Simple build from scratch and save into a binary file.
+  // Covers all stages all together:
+  // * Extracting features, saving them into a filesystem.
+  // * Matching features.
+  // * Building a 3D model and saving it into a binary file in filesystem.
+  //
+  // May take plenty of time to finish processing.
+  //
+  // The recommendation is to run every stage separately.
   void BuildModelToBinary();
 
   void ExtractFeatures();

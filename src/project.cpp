@@ -2,14 +2,22 @@
 
 #include "project.h"
 
-Project::Project() : options_(new Options()), storage_(new Storage()) {
+Project::Project(QString project_path) :
+  project_path_(project_path), storage_(new Storage()) {
+  // This constructor assumes we're opening an existent project.
+  // TODO(uladbohdan): to throw exceptions in case we're failed.
+
+  CHECK(ReadConfigurationFile()) << "Reading config file failed!";
+
+  options_ = new Options(output_location_);
+
+  features_ = new Features(storage_, output_location_);
 }
 
 Project::Project(QString project_name,
                  QString project_path,
                  QString images_path) : project_name_(project_name),
                                         project_path_(project_path),
-                                        options_(new Options()),
                                         storage_(new Storage()) {
   storage_->UpdateImagesPath(images_path);
   features_ = new Features(storage_, GetDefaultOutputPath());
@@ -19,15 +27,13 @@ Project::Project(QString project_name,
   // TODO(uladbohdan): to handle the situation when creating a folder fails.
   QDir project_parent_dir(project_path);
 
-  if (!project_parent_dir.cdUp()) {
-    LOG(ERROR) << "cdUp failed";
-  }
+  CHECK(project_parent_dir.cdUp()) << "cdUp failed";
 
-  if (!project_parent_dir.mkdir(project_name)) {
-    LOG(ERROR) << "Creating Project Directory failed.";
-  }
+  CHECK(project_parent_dir.mkdir(project_name))
+    << "Creating Project Directory failed.";
 
-  LOG(INFO) << "Project Directory seems to be created successfully!";
+  LOG(INFO) << "Project Directory was created successfully!";
+
   WriteConfigurationFile();
 
   // Creating out/ directory.
@@ -37,15 +43,6 @@ Project::Project(QString project_name,
   options_ = new Options(output_location_);
 }
 
-// Simple build from scratch and save into a binary file.
-// Covers all stages all together:
-// * Extracting features, saving them into a filesystem.
-// * Matching features.
-// * Building a 3D model and saving it into a binary file in filesystem.
-//
-// May take plenty of time to finish processing.
-//
-// The recommendation is to run every stage separately.
 void Project::BuildModelToBinary() {
   ReconstructionBuilderOptions* options =
       options_->GetReconstructionBuilderOptions();
@@ -95,6 +92,7 @@ void Project::BuildModelToBinary() {
   }
 
   LOG(INFO) << "Reconstruction has been saved to filesystem.";
+
   return;
 }
 
@@ -294,7 +292,6 @@ bool Project::ReadConfigurationFile() {
 
   stream >> temp_line;
   output_location_ = temp_line;
-  features_ = new Features(storage_, output_location_);
 
   configFile.close();
   return true;

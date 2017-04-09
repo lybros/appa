@@ -195,7 +195,7 @@ bool Project::ReadConfigurationFile() {
 
   temp_line = stream.readLine();
   if (temp_line != "PROJECT_CONFIG_VERSION v1.0") {
-    LOG(ERROR) << "Reading config failed: deprecated config file";
+    LOG(ERROR) << "Reading config failed: wrong file version.";
     configFile.close();
     return false;
   }

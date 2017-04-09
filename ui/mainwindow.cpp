@@ -237,7 +237,7 @@ void MainWindow::LoadImagesPreview() {
     }
   });
 
-  progress_widget_->AddTask(QString("Thumbnail loading..."));
+  progress_widget_->AddTask(QString("Thumbnail loading..."), watcher);
 
   // The value is required to resize images in appropriate way.
   const int PREVIEW_AREA_WIDTH =

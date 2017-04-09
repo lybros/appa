@@ -2,6 +2,8 @@
 
 ProgressWidget::ProgressWidget(QWidget* parent) : QWidget(parent) {
   setLayout(new QVBoxLayout(this));
+  setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+
   CheckVisibility();
 }
 
@@ -10,7 +12,8 @@ ProgressWidget::~ProgressWidget() {
 
 void ProgressWidget::AddTask(QString task_name) {
   QWidget* new_progress_tracker = new QWidget(this);
-  new_progress_tracker->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+  new_progress_tracker->setSizePolicy(QSizePolicy::Preferred,
+                                      QSizePolicy::Maximum);
 
   QHBoxLayout* box_layout = new QHBoxLayout(new_progress_tracker);
   new_progress_tracker->setLayout(box_layout);

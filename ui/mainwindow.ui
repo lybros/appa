@@ -213,7 +213,14 @@
          </widget>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="progressLayout"/>
+         <layout class="QVBoxLayout" name="progressLayout">
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMinimumSize</enum>
+          </property>
+         </layout>
         </item>
        </layout>
       </item>

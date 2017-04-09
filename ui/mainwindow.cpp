@@ -233,6 +233,7 @@ void MainWindow::LoadImagesPreview() {
               image_pixmap);
         thumbnails_.push_back(thumbnail);
         ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
+        // ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignTop);
         ui->imagesPreviewArea->addWidget(thumbnail);
     }
   });

@@ -16,6 +16,8 @@ ThumbnailWidget::ThumbnailWidget(MainWindow* main_window,
     path_(image_path),
     name_(FileNameFromPath(image_path)),
     selected_(false) {
+  setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+
   QVBoxLayout* box_layout = new QVBoxLayout(this);
   box_layout->setMargin(0);
   setLayout(box_layout);

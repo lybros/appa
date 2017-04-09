@@ -3,8 +3,8 @@
 #include "featuresx.h"
 
 // TODO(drapegnik): pass to constructor options object.
-Features::Features(Storage* storage, QString out_path) : out_path_(out_path),
-                                                         storage_(storage) {
+Features::Features(Storage* storage) : storage_(storage) {
+  out_path_ = storage->GetOutputLocation();
   images_ = storage_->GetImages();
   options_.output_directory = (out_path_ + "features/").toStdString();
   extractor_ = new theia::FeatureExtractor(options_);

@@ -4,6 +4,8 @@
 #define SRC_STORAGE_H_
 
 #include <iostream>
+#include <vector>
+#include <string>
 
 #include <QtAlgorithms>
 #include <QDirIterator>
@@ -20,6 +22,7 @@ using theia::Reconstruction;
 // The pattern may be extended with image extensions which are supported
 // by Theia.
 const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|JPG|jpeg|JPEG|png|PNG)";
+const QString MODEL_FILENAME_PATTERN = "model-\\d.binary";
 
 class Storage {
  public:
@@ -45,23 +48,35 @@ class Storage {
 
   QVector<QString>& GetImages();
 
-  ~Storage();
+  const QString& GetOutputLocation() const;
+
+  void SetOutputLocation(const QString& output_location_);
+
+  // check if model already in memory, load it if not, ad return
+  Reconstruction* GetReconstruction(const int number);
+
+  // update model in memory
+  void SetReconstructions(const std::vector<Reconstruction*>& reconstructions);
+
+  // write all models to binary file
+  void WriteReconstructions();
 
   void SetReconstructionStatus(ReconstructionStatus status);
 
- private:
- public:
-  std::vector<std::shared_ptr<Reconstruction>>& GetReconstructions();
-
-  void SetReconstructions(std::vector<Reconstruction*> reconstructions);
-
   ReconstructionStatus GetReconstructionStatus() const;
 
+  ~Storage();
+
  private:
-  std::vector<std::shared_ptr<Reconstruction>> reconstructions_;
+  std::vector<Reconstruction*> reconstructions_;
   QVector<QString>* images_;
   QString images_path_;
+  QString output_location_;
   ReconstructionStatus status_;
+
+  // Read model from binary file, and load it in memory
+  // set status_ to LOADED_IN_MEMORY
+  void ReadReconstructions();
 };
 
 #endif  // SRC_STORAGE_H_

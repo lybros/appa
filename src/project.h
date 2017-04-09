@@ -78,17 +78,13 @@ class Project {
   void StartReconstruction();
 
   // Try to find place for image on 3d reconstruction map
-  void SearchImage(QString file_path,
-                   QString model_path,
-                   QSet<theia::TrackId>* h_tracks);
+  void SearchImage(QString file_path, QSet<theia::TrackId>* h_tracks);
 
   QString GetProjectName();
 
   QString GetProjectPath();
 
   QString GetImagesPath();
-
-  QString GetOutputLocation();
 
   void SetProjectName(QString);
 
@@ -113,11 +109,8 @@ class Project {
   // project_path_ contains the full way to the project.
   // e.g. CONFIG_FILE_NAME is directly inside this folder.
   QString project_path_;
-  QString output_location_;
-
-  // images_path_ is stored inside of Storage object.
+  // images_path_ and reconstructions_ is stored inside of Storage object.
   Storage* storage_;
-
   Features* features_;
 
   QString GetConfigurationFilePath();

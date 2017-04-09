@@ -9,9 +9,8 @@ Project::Project(QString project_path) :
 
   CHECK(ReadConfigurationFile()) << "Reading config file failed!";
 
-  options_ = new Options(output_location_);
-
-  features_ = new Features(storage_, output_location_);
+  options_ = new Options(storage_->GetOutputLocation());
+  features_ = new Features(storage_);
 }
 
 Project::Project(QString project_name,
@@ -21,7 +20,7 @@ Project::Project(QString project_name,
                                         storage_(new Storage()) {
   storage_->UpdateImagesPath(images_path);
   storage_->SetReconstructionStatus(ReconstructionStatus::NOT_BUILT);
-  features_ = new Features(storage_, GetDefaultOutputPath());
+  features_ = new Features(storage_);
 
   // Creating a Project in filesystem.
   // TODO(uladbohdan): to handle the situation when creating a folder fails.
@@ -38,9 +37,8 @@ Project::Project(QString project_name,
 
   // Creating out/ directory.
   QDir(project_path).mkdir("out");
-  output_location_ = GetDefaultOutputPath();
-
-  options_ = new Options(output_location_);
+  storage_->SetOutputLocation(GetDefaultOutputPath());
+  options_ = new Options(storage_->GetOutputLocation());
 }
 
 void Project::BuildModelToBinary() {
@@ -75,34 +73,14 @@ void Project::BuildModelToBinary() {
   LOG(INFO) << "Reconstruction colorized successfully!";
 
   storage_->SetReconstructions(reconstructions);
-
-  std::string output_file_template =
-      QDir(output_location_).filePath("model").toStdString();
-
-  for (int i = 0; i < reconstructions.size(); i++) {
-    std::string output_file =
-        theia::StringPrintf("%s-%d.binary", output_file_template.c_str(), i);
-    LOG(INFO) << "Writing reconstruction " << i << " to " << output_file;
-    CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
-    << "Could not write reconstruction to file";
-  }
-
-  LOG(INFO) << "Reconstruction has been saved to filesystem.";
-
+  storage_->WriteReconstructions();
   return;
 }
 
 void Project::SearchImage(QString file_path,
-                          QString model_name,
                           QSet<theia::TrackId>* h_tracks) {
-  std::string model_path = QDir(output_location_)
-      .filePath(model_name).toStdString();
-
-  Reconstruction model;
-  CHECK(theia::ReadReconstruction(model_path, &model))
-  << "Could not read reconstruction from file: " << model_path;
-  LOG(INFO) << "Successfully read model " << model_name.toStdString();
-
+  // TODO(drapegnik): replace hardcode index with some value
+  Reconstruction model = *storage_->GetReconstruction(0);
   std::vector<theia::Keypoint> keypoints;
   std::vector<Eigen::VectorXf> descriptors;
 
@@ -130,8 +108,8 @@ void Project::SearchImage(QString file_path,
           feature_to_descriptor[view->Name()].find(key);
 
       if (got == feature_to_descriptor[view->Name()].end()) {
-        LOG(INFO) << "Feature not found [" << view->Name()
-                  << "]: (" << feature[0] << ", " << feature[1] << ")";
+        LOG(INFO) << "Feature not found [" << view->Name() << "]: ("
+                  << feature[0] << ", " << feature[1] << ")";
         continue;
       }
 
@@ -191,7 +169,6 @@ void Project::SetImagesPath(QString images_path) {
 }
 
 bool Project::WriteConfigurationFile() {
-
   QFile configFile(GetConfigurationFilePath());
   if (!configFile.open(QIODevice::ReadWrite)) { return false; }
 
@@ -283,7 +260,7 @@ bool Project::ReadConfigurationFile() {
     return false;
   }
   stream >> temp_line;
-  output_location_ = temp_line;
+  storage_->SetOutputLocation(temp_line);
 
   configFile.close();
   return true;
@@ -297,9 +274,6 @@ QString Project::GetDefaultOutputPath() {
   return QDir(project_path_).filePath(DEFAULT_OUTPUT_LOCATION_POSTFIX);
 }
 
-QString Project::GetOutputLocation() {
-  return output_location_;
-}
 
 Storage* Project::GetStorage() {
   return storage_;

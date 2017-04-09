@@ -17,25 +17,12 @@ void ReconstructionWindow::UpdateActiveProject(Project* project) {
 
 void ReconstructionWindow::BuildFromDefaultPath() {
   world_points_.clear();
-
-  // TODO(uladbohdan): to replace reading from file with reading from project_.
-
-  std::string filename = QDir(project_->GetOutputLocation())
-      .filePath(DEFAULT_MODEL_BINARY_FILENAME).toStdString();
-  // Output as a binary file.
-  std::unique_ptr<theia::Reconstruction> reconstruction(
-      new theia::Reconstruction());
-  CHECK(ReadReconstruction(filename, reconstruction.get()))
-  << "Could not read reconstruction file.";
-
-  LOG(INFO) << "Read successfully from file.";
+  theia::Reconstruction* reconstruction
+      = project_->GetStorage()->GetReconstruction(0);
 
   // Centers the reconstruction based on the absolute deviation of 3D points.
   reconstruction->Normalize();
-
   world_points_.reserve(reconstruction->NumTracks());
-
-  std::cout << "num tracks: " << reconstruction->NumTracks() << std::endl;
 
   for (const theia::TrackId track_id : reconstruction->TrackIds()) {
     const auto* track = reconstruction->Track(track_id);
@@ -62,13 +49,10 @@ void ReconstructionWindow::BuildFromDefaultPath() {
     world_points_.emplace_back(world_point);
   }
 
-  InitCameras(reconstruction.get());
+  InitCameras(reconstruction);
 
-  reconstruction.release();
-
-  std::cout << "DRAWING: num world points: " <<
-            world_points_.size() << std::endl;
-  std::cout << "DRAWING: num cameras: " << cameras_.size() << std::endl;
+  LOG(INFO) << "DRAWING: num world points: " << world_points_.size();
+  LOG(INFO) << "DRAWING: num cameras: " << cameras_.size();
 
   draw();
 

@@ -3,15 +3,14 @@
 #include "project.h"
 
 Project::Project(QString project_path) :
-  project_path_(project_path), storage_(new Storage()) {
+    project_path_(project_path), storage_(new Storage()) {
   // This constructor assumes we're opening an existent project.
   // TODO(uladbohdan): to throw exceptions in case we're failed.
 
   CHECK(ReadConfigurationFile()) << "Reading config file failed!";
 
-  options_ = new Options(output_location_);
-
-  features_ = new Features(storage_, output_location_);
+  options_ = new Options(storage_->GetOutputLocation());
+  features_ = new Features(storage_);
 }
 
 Project::Project(QString project_name,
@@ -20,7 +19,6 @@ Project::Project(QString project_name,
                                         project_path_(project_path),
                                         storage_(new Storage()) {
   storage_->UpdateImagesPath(images_path);
-  features_ = new Features(storage_, GetDefaultOutputPath());
 
   // Creating a Project in filesystem.
   // TODO(uladbohdan): to handle the situation when creating a folder fails.
@@ -29,7 +27,7 @@ Project::Project(QString project_name,
   CHECK(project_parent_dir.cdUp()) << "cdUp failed";
 
   CHECK(project_parent_dir.mkdir(project_name))
-    << "Creating Project Directory failed.";
+  << "Creating Project Directory failed.";
 
   LOG(INFO) << "Project Directory was created successfully!";
 
@@ -37,9 +35,9 @@ Project::Project(QString project_name,
 
   // Creating out/ directory.
   QDir(project_path).mkdir("out");
-  output_location_ = GetDefaultOutputPath();
-
-  options_ = new Options(output_location_);
+  storage_->SetOutputLocation(GetDefaultOutputPath());
+  options_ = new Options(storage_->GetOutputLocation());
+  features_ = new Features(storage_);
 }
 
 void Project::BuildModelToBinary() {
@@ -73,37 +71,15 @@ void Project::BuildModelToBinary() {
   }
   LOG(INFO) << "Reconstruction colorized successfully!";
 
-  reconstructions_.resize(reconstructions.size());
-  for (int i = 0; i < reconstructions_.size(); i++) {
-    reconstructions_[i].reset(reconstructions[i]);
-  }
-
-  std::string output_file_template =
-      QDir(output_location_).filePath("model").toStdString();
-
-  for (int i = 0; i < reconstructions.size(); i++) {
-    std::string output_file =
-        theia::StringPrintf("%s-%d.binary", output_file_template.c_str(), i);
-    LOG(INFO) << "Writing reconstruction " << i << " to " << output_file;
-    CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
-    << "Could not write reconstruction to file";
-  }
-
-  LOG(INFO) << "Reconstruction has been saved to filesystem.";
-
+  storage_->SetReconstructions(reconstructions);
+  storage_->WriteReconstructions();
   return;
 }
 
-void Project::SearchImage(QString file_path, QString model_name,
+void Project::SearchImage(QString file_path,
                           QSet<theia::TrackId>* h_tracks) {
-  std::string model_path = QDir(output_location_)
-      .filePath(model_name).toStdString();
-
-  Reconstruction model;
-  CHECK(theia::ReadReconstruction(model_path, &model))
-  << "Could not read reconstruction from file: " << model_path;
-  LOG(INFO) << "Successfully read model " << model_name.toStdString();
-
+  // TODO(drapegnik): replace hardcode index with some value.
+  Reconstruction model = *storage_->GetReconstruction(0);
   std::vector<theia::Keypoint> keypoints;
   std::vector<Eigen::VectorXf> descriptors;
 
@@ -131,8 +107,8 @@ void Project::SearchImage(QString file_path, QString model_name,
           feature_to_descriptor[view->Name()].find(key);
 
       if (got == feature_to_descriptor[view->Name()].end()) {
-        LOG(INFO) << "Feature not found [" << view->Name()
-                  << "]: (" << feature[0] << ", " << feature[1] << ")";
+        LOG(INFO) << "Feature not found [" << view->Name() << "]: ("
+                  << feature[0] << ", " << feature[1] << ")";
         continue;
       }
 
@@ -193,20 +169,18 @@ void Project::SetImagesPath(QString images_path) {
 
 bool Project::WriteConfigurationFile() {
   QFile configFile(GetConfigurationFilePath());
-  if (configFile.open(QIODevice::ReadWrite)) {
-    QTextStream stream(&configFile);
-    stream << "PROJECT_CONFIG_VERSION v1.0" << endl;
-    stream << "PROJECT_NAME " << project_name_ << endl;
-    stream << "IMAGES_LOCATION " << GetImagesPath() << endl;
-    stream << "NUMBER_OF_IMAGES " << storage_->NumberOfImages() << endl;
-    for (auto image_path : storage_->GetImages()) {
-      stream << image_path << endl;
-    }
-    stream << "OUTPUT_LOCATION "
-           << GetDefaultOutputPath() << endl;
-  } else {
-    return false;
+  if (!configFile.open(QIODevice::ReadWrite)) { return false; }
+
+  QTextStream stream(&configFile);
+  stream << "PROJECT_CONFIG_VERSION v1.0" << endl;
+  stream << "PROJECT_NAME " << project_name_ << endl;
+  stream << "IMAGES_LOCATION " << GetImagesPath() << endl;
+  stream << "NUMBER_OF_IMAGES " << storage_->NumberOfImages() << endl;
+  for (auto image_path : storage_->GetImages()) {
+    stream << image_path << endl;
   }
+  stream << "OUTPUT_LOCATION " << GetDefaultOutputPath() << endl;
+
   configFile.close();
   return true;
 }
@@ -214,73 +188,62 @@ bool Project::WriteConfigurationFile() {
 bool Project::ReadConfigurationFile() {
   QFile configFile(GetConfigurationFilePath());
 
-  if (!configFile.open(QIODevice::ReadOnly)) {
-    return false;
-  }
+  if (!configFile.open(QIODevice::ReadOnly)) { return false; }
 
   QTextStream stream(&configFile);
   QString temp_line;
 
   temp_line = stream.readLine();
   if (temp_line != "PROJECT_CONFIG_VERSION v1.0") {
-    std::cerr << "Reading config failed: wrong file version." << std::endl;
+    LOG(ERROR) << "Reading config failed: wrong file version.";
     configFile.close();
     return false;
   }
 
   stream >> temp_line;
   if (temp_line != "PROJECT_NAME") {
-    std::cerr << "Wrong config file format. No PROJECT_NAME attribute."
-              << std::endl;
+    LOG(ERROR) << "Wrong config file format. No PROJECT_NAME attribute.";
     configFile.close();
     return false;
   }
-
   stream >> project_name_;
 
   stream >> temp_line;
   if (temp_line != "IMAGES_LOCATION") {
-    std::cerr << "Wrong config file format. No IMAGES_LOCATION attribute."
-              << std::endl;
+    LOG(ERROR) << "Wrong config file format. No IMAGES_LOCATION attribute.";
     configFile.close();
     return false;
   }
-
   QString images_path;
   stream >> images_path;
 
   stream >> temp_line;
   if (temp_line != "NUMBER_OF_IMAGES") {
-    std::cerr << "Wrong config file format. No NUMBER_OF_IMAGES attr."
-              << std::endl;
+    LOG(ERROR) << "Wrong config file format. No NUMBER_OF_IMAGES attr.";
     configFile.close();
     return false;
   }
-
   int number_of_images;
   stream >> number_of_images;
-
   QVector<QString> images(number_of_images);
   for (int i = 0; i < number_of_images; i++) {
     stream >> images[i];
   }
 
   if (!storage_->ForceInitialize(images_path, images)) {
-    std::cerr << "Force storage initializing failed :(" << std::endl;
+    LOG(ERROR) << "Force storage initializing failed :(";
     configFile.close();
     return false;
   }
 
   stream >> temp_line;
   if (temp_line != "OUTPUT_LOCATION") {
-    std::cerr << "Wrong config file format. No OUTPUT_LOCATION attr."
-              << std::endl;
+    LOG(ERROR) << "Wrong config file format. No OUTPUT_LOCATION attr.";
     configFile.close();
     return false;
   }
-
   stream >> temp_line;
-  output_location_ = temp_line;
+  storage_->SetOutputLocation(temp_line);
 
   configFile.close();
   return true;
@@ -294,20 +257,13 @@ QString Project::GetDefaultOutputPath() {
   return QDir(project_path_).filePath(DEFAULT_OUTPUT_LOCATION_POSTFIX);
 }
 
-QString Project::GetOutputLocation() {
-  return output_location_;
-}
-
-std::vector<std::shared_ptr<theia::Reconstruction>>&
-Project::GetReconstructions() {
-  return reconstructions_;
-}
 
 Storage* Project::GetStorage() {
   return storage_;
 }
 
 Project::~Project() {
+  WriteConfigurationFile();
   delete options_;
   delete storage_;
   delete features_;

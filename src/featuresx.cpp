@@ -3,8 +3,8 @@
 #include "featuresx.h"
 
 // TODO(drapegnik): pass to constructor options object.
-Features::Features(Storage* storage, QString out_path) : out_path_(out_path),
-                                                         storage_(storage) {
+Features::Features(Storage* storage) : storage_(storage) {
+  out_path_ = storage->GetOutputLocation();
   images_ = storage_->GetImages();
   options_.output_directory = (out_path_ + "features/").toStdString();
   extractor_ = new theia::FeatureExtractor(options_);
@@ -24,14 +24,13 @@ void Features::Extract(
     std::vector<theia::Keypoint> keypoints;
     std::vector<Eigen::VectorXf> descriptors;
 
-    std::string feature_file =
-        FeatureFilenameFromImage(out_path_, image_path).toStdString();
+    QString feature_file = FeatureFilenameFromImage(out_path_, image_path);
     CHECK(ReadKeypointsAndDescriptors(
-        feature_file,
+        feature_file.toStdString(),
         &keypoints,
         &descriptors))
-    << "Feature reading from " << feature_file << " failed!";
-    LOG(INFO) << feature_file << " " << descriptors.size();
+    << "Feature reading from " << feature_file.toStdString() << " failed!";
+    LOG(INFO) << feature_file.toStdString() << " " << descriptors.size();
     keypoints_vector->push_back(keypoints);
     descriptors_vector->push_back(descriptors);
   }
@@ -51,8 +50,7 @@ void Features::ExtractFeature(
   filenames.push_back(filename.toStdString());
 
   theia::Timer timer;
-  CHECK(extractor_->Extract(
-      filenames, &keypoints_vector, &descriptors_vector))
+  CHECK(extractor_->Extract(filenames, &keypoints_vector, &descriptors_vector))
   << "Feature extraction failed!";
   const double time = timer.ElapsedTimeInSeconds();
 

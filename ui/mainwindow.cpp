@@ -157,11 +157,9 @@ void MainWindow::on_actionVisualizeBinary_triggered() {
 void MainWindow::on_actionSearch_Image_triggered() {
   QSet<theia::TrackId>* highlighted_tracks = new QSet<theia::TrackId>();
   // TODO(drapegnik): replace hardcode with variables from dialog
-  active_project_->SearchImage(
-      QString("images/image005.jpg"),
-      QString("model-0.binary"),
-      highlighted_tracks);
-
+  QString image =
+      QDir(active_project_->GetImagesPath()).filePath("image005.jpg");
+  active_project_->SearchImage(image, highlighted_tracks);
   view_->SetHighlightedPoints(highlighted_tracks);
   delete highlighted_tracks;
 }
@@ -177,8 +175,7 @@ void MainWindow::on_actionRunExampleReconstruction_triggered() {
   }
 
   QProcess view_reconstruction_process(this);
-  // We assume the view_reconstruction build from Theia library is in your
-  // PATH.
+  // We assume the view_reconstruction build from Theia library is in your PATH.
   view_reconstruction_process.start(
       "view_reconstruction",
       QStringList() << "--reconstruction" << output_model_path);
@@ -194,8 +191,8 @@ void MainWindow::UpdateActiveProjectInfo() {
                                   active_project_->GetProjectName());
   ui->project_location_label->setText("PROJECT LOCATION: " +
                                       active_project_->GetProjectPath());
-  ui->output_location_label->setText("OUTPUT LOCATION: " +
-                                     active_project_->GetOutputLocation());
+  ui->output_location_label->setText(
+      "OUTPUT LOCATION: " + active_project_->GetStorage()->GetOutputLocation());
   ui->images_location_label->setText("IMAGES LOCATION: " +
                                      active_project_->GetImagesPath());
   ui->number_images_label->setText("NUMBER OF IMAGES: " + QString::number(

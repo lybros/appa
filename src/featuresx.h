@@ -26,7 +26,7 @@ class Features {
   typedef std::pair<double, double> Pair;
   typedef std::unordered_map<Pair, Eigen::VectorXf> FeaturesMap;
 
-  Features(Storage* storage, QString out_path);
+  explicit Features(Storage* storage);
 
   // Extract features only if doesn't find *.features files.
   void Extract();

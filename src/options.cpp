@@ -25,5 +25,4 @@ Options::GetReconstructionBuilderOptions() {
   return options;
 }
 
-Options::~Options() {
-}
+Options::~Options() {}

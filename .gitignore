@@ -29,10 +29,8 @@
 *.app
 
 # Custom
-.DS_Store
+*.DS_Store
 .idea/
-images/
-out/
 *build*
 CMakeLists.txt.user
 

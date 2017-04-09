@@ -14,6 +14,6 @@ void EnsureTrailingSlash(QString* path);
 
 QString FileNameFromPath(const QString& path);
 
-Options::ReconstructionStatus StatusFromConfigFile(int status);
+ReconstructionStatus StatusFromInt(int status);
 
 #endif  // SRC_UTILS_H_

@@ -10,7 +10,12 @@
 #include <QFileInfo>
 #include <QVector>
 
+#include <theia/theia.h>
+
 #include <glog/logging.h>
+#include "options.h"
+
+using theia::Reconstruction;
 
 // The pattern may be extended with image extensions which are supported
 // by Theia.
@@ -42,9 +47,21 @@ class Storage {
 
   ~Storage();
 
+  void SetReconstructionStatus(ReconstructionStatus status);
+
  private:
+ public:
+  std::vector<std::shared_ptr<Reconstruction>>& GetReconstructions();
+
+  void SetReconstructions(std::vector<Reconstruction*> reconstructions);
+
+  ReconstructionStatus GetReconstructionStatus() const;
+
+ private:
+  std::vector<std::shared_ptr<Reconstruction>> reconstructions_;
   QVector<QString>* images_;
   QString images_path_;
+  ReconstructionStatus status_;
 };
 
 #endif  // SRC_STORAGE_H_

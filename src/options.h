@@ -37,8 +37,6 @@ class Options {
 
   ~Options();
 
-  enum ReconstructionStatus { NOT_BUILT, BUILT, LOADED_INTO_MEMORY };
-
  private:
   // The parameters of the related Project object.
   QString output_location_;
@@ -53,5 +51,7 @@ class Options {
   bool match_out_of_core_ = true;
   bool perform_geometric_verification_ = false;
 };
+
+enum ReconstructionStatus { NOT_BUILT, BUILT, LOADED_INTO_MEMORY };
 
 #endif  // SRC_OPTIONS_H_

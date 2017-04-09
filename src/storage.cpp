@@ -27,7 +27,7 @@ bool Storage::ForceInitialize(QString images_path,
   for (const QString& image : images) {
     if (!QFileInfo(image).exists()) {
       LOG(ERROR) << "Image \"" << image.toStdString()
-      << "\" not found";
+                 << "\" not found";
       return false;
     }
   }
@@ -44,7 +44,7 @@ bool Storage::ForceInitialize(QString images_path,
   qSort(*images_);
 
   LOG(INFO) << "Force initialization: success. " << images_->length()
-  << " read";
+            << " read";
 
   return true;
 }
@@ -61,7 +61,7 @@ int Storage::ParseImageFolder() {
 
     if (rx.indexIn(next_image) == -1) {
       LOG(WARNING) << "\t" << next_image.toStdString() <<
-      "- \"does not match the regex.\"";
+                   "- \"does not match the regex.\"";
       continue;
     }
 
@@ -87,4 +87,27 @@ Storage::~Storage() {
   if (images_) {
     delete images_;
   }
+}
+
+std::vector<std::shared_ptr<Reconstruction>>& Storage::GetReconstructions() {
+  return reconstructions_;
+}
+
+void Storage::SetReconstructions(std::vector<Reconstruction*> reconstructions) {
+  reconstructions_.resize(reconstructions.size());
+  for (int i = 0; i < reconstructions_.size(); i++) {
+    reconstructions_[i].reset(reconstructions[i]); // ?????????
+  }
+
+  status_ = ReconstructionStatus::LOADED_INTO_MEMORY;
+
+  LOG(INFO) << "Reconstruction has been saved to memory.";
+}
+
+void Storage::SetReconstructionStatus(ReconstructionStatus status) {
+  status_ = status;
+}
+
+ReconstructionStatus Storage::GetReconstructionStatus() const {
+  return status_;
 }

@@ -20,9 +20,8 @@ void ReconstructionWindow::BuildFromDefaultPath() {
 
   // TODO(uladbohdan): to replace reading from file with reading from project_.
 
-  std::string filename =
-      QDir(project_->GetOutputLocation()).filePath(
-          DEFAULT_MODEL_BINARY_FILENAME).toStdString();
+  std::string filename = QDir(project_->GetOutputLocation())
+      .filePath(DEFAULT_MODEL_BINARY_FILENAME).toStdString();
   // Output as a binary file.
   std::unique_ptr<theia::Reconstruction> reconstruction(
       new theia::Reconstruction());

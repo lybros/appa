@@ -3,7 +3,7 @@
 #include "project.h"
 
 Project::Project(QString project_path) :
-  project_path_(project_path), storage_(new Storage()) {
+    project_path_(project_path), storage_(new Storage()) {
   // This constructor assumes we're opening an existent project.
   // TODO(uladbohdan): to throw exceptions in case we're failed.
 
@@ -20,8 +20,8 @@ Project::Project(QString project_name,
                                         project_path_(project_path),
                                         storage_(new Storage()) {
   storage_->UpdateImagesPath(images_path);
+  storage_->SetReconstructionStatus(ReconstructionStatus::NOT_BUILT);
   features_ = new Features(storage_, GetDefaultOutputPath());
-  status_ = Options::ReconstructionStatus::NOT_BUILT;
 
   // Creating a Project in filesystem.
   // TODO(uladbohdan): to handle the situation when creating a folder fails.
@@ -30,7 +30,7 @@ Project::Project(QString project_name,
   CHECK(project_parent_dir.cdUp()) << "cdUp failed";
 
   CHECK(project_parent_dir.mkdir(project_name))
-    << "Creating Project Directory failed.";
+  << "Creating Project Directory failed.";
 
   LOG(INFO) << "Project Directory was created successfully!";
 
@@ -74,11 +74,7 @@ void Project::BuildModelToBinary() {
   }
   LOG(INFO) << "Reconstruction colorized successfully!";
 
-  reconstructions_.resize(reconstructions.size());
-  for (int i = 0; i < reconstructions_.size(); i++) {
-    reconstructions_[i].reset(reconstructions[i]);
-  }
-  status_ = Options::ReconstructionStatus::LOADED_INTO_MEMORY;
+  storage_->SetReconstructions(reconstructions);
 
   std::string output_file_template =
       QDir(output_location_).filePath("model").toStdString();
@@ -195,22 +191,21 @@ void Project::SetImagesPath(QString images_path) {
 }
 
 bool Project::WriteConfigurationFile() {
-  QFile configFile(GetConfigurationFilePath());
 
-  if (configFile.open(QIODevice::ReadWrite)) {
-    QTextStream stream(&configFile);
-    stream << "PROJECT_CONFIG_VERSION v1.1" << endl;
-    stream << "PROJECT_NAME " << project_name_ << endl;
-    stream << "STATUS " << status_ << endl;
-    stream << "IMAGES_LOCATION " << GetImagesPath() << endl;
-    stream << "NUMBER_OF_IMAGES " << storage_->NumberOfImages() << endl;
-    for (auto image_path : storage_->GetImages()) {
-      stream << image_path << endl;
-    }
-    stream << "OUTPUT_LOCATION " << GetDefaultOutputPath() << endl;
-  } else {
-    return false;
+  QFile configFile(GetConfigurationFilePath());
+  if (!configFile.open(QIODevice::ReadWrite)) { return false; }
+
+  QTextStream stream(&configFile);
+  stream << "PROJECT_CONFIG_VERSION v1.1" << endl;
+  stream << "PROJECT_NAME " << project_name_ << endl;
+  stream << "STATUS " << storage_->GetReconstructionStatus() << endl;
+  stream << "IMAGES_LOCATION " << GetImagesPath() << endl;
+  stream << "NUMBER_OF_IMAGES " << storage_->NumberOfImages() << endl;
+  for (auto image_path : storage_->GetImages()) {
+    stream << image_path << endl;
   }
+  stream << "OUTPUT_LOCATION " << GetDefaultOutputPath() << endl;
+
   configFile.close();
   return true;
 }
@@ -218,9 +213,7 @@ bool Project::WriteConfigurationFile() {
 bool Project::ReadConfigurationFile() {
   QFile configFile(GetConfigurationFilePath());
 
-  if (!configFile.open(QIODevice::ReadOnly)) {
-    return false;
-  }
+  if (!configFile.open(QIODevice::ReadOnly)) { return false; }
 
   QTextStream stream(&configFile);
   QString temp_line;
@@ -238,7 +231,6 @@ bool Project::ReadConfigurationFile() {
     configFile.close();
     return false;
   }
-
   stream >> project_name_;
 
   stream >> temp_line;
@@ -250,7 +242,11 @@ bool Project::ReadConfigurationFile() {
 
   int status;
   stream >> status;
-  status_ = StatusFromConfigFile(status);
+  ReconstructionStatus temp_status = StatusFromInt(status);
+  if (temp_status == ReconstructionStatus::LOADED_INTO_MEMORY) {
+    temp_status = ReconstructionStatus::BUILT;
+  }
+  storage_->SetReconstructionStatus(temp_status);
 
   stream >> temp_line;
   if (temp_line != "IMAGES_LOCATION") {
@@ -258,7 +254,6 @@ bool Project::ReadConfigurationFile() {
     configFile.close();
     return false;
   }
-
   QString images_path;
   stream >> images_path;
 
@@ -268,10 +263,8 @@ bool Project::ReadConfigurationFile() {
     configFile.close();
     return false;
   }
-
   int number_of_images;
   stream >> number_of_images;
-
   QVector<QString> images(number_of_images);
   for (int i = 0; i < number_of_images; i++) {
     stream >> images[i];
@@ -289,7 +282,6 @@ bool Project::ReadConfigurationFile() {
     configFile.close();
     return false;
   }
-
   stream >> temp_line;
   output_location_ = temp_line;
 
@@ -307,11 +299,6 @@ QString Project::GetDefaultOutputPath() {
 
 QString Project::GetOutputLocation() {
   return output_location_;
-}
-
-std::vector<std::shared_ptr<theia::Reconstruction>>&
-Project::GetReconstructions() {
-  return reconstructions_;
 }
 
 Storage* Project::GetStorage() {

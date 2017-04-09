@@ -19,11 +19,13 @@ QString FileNameFromPath(const QString& path) {
   return path.mid(path.lastIndexOf("/", -2) + 1);
 }
 
-Options::ReconstructionStatus StatusFromConfigFile(int status) {
+ReconstructionStatus StatusFromInt(int status) {
   switch (status) {
-    case 1: case 2:
-      return Options::ReconstructionStatus::BUILT;
-    default:
-      return Options::ReconstructionStatus::NOT_BUILT;
+    case 0:
+      return ReconstructionStatus::NOT_BUILT;
+    case 1:
+      return ReconstructionStatus::BUILT;
+    case 2:
+      return ReconstructionStatus::LOADED_INTO_MEMORY;
   }
 }

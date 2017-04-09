@@ -20,7 +20,6 @@ Project::Project(QString project_name,
                                         storage_(new Storage()) {
   storage_->UpdateImagesPath(images_path);
   storage_->SetReconstructionStatus(ReconstructionStatus::NOT_BUILT);
-  features_ = new Features(storage_);
 
   // Creating a Project in filesystem.
   // TODO(uladbohdan): to handle the situation when creating a folder fails.
@@ -39,6 +38,7 @@ Project::Project(QString project_name,
   QDir(project_path).mkdir("out");
   storage_->SetOutputLocation(GetDefaultOutputPath());
   options_ = new Options(storage_->GetOutputLocation());
+  features_ = new Features(storage_);
 }
 
 void Project::BuildModelToBinary() {
@@ -173,9 +173,8 @@ bool Project::WriteConfigurationFile() {
   if (!configFile.open(QIODevice::ReadWrite)) { return false; }
 
   QTextStream stream(&configFile);
-  stream << "PROJECT_CONFIG_VERSION v1.1" << endl;
+  stream << "PROJECT_CONFIG_VERSION v1.0" << endl;
   stream << "PROJECT_NAME " << project_name_ << endl;
-  stream << "STATUS " << storage_->GetReconstructionStatus() << endl;
   stream << "IMAGES_LOCATION " << GetImagesPath() << endl;
   stream << "NUMBER_OF_IMAGES " << storage_->NumberOfImages() << endl;
   for (auto image_path : storage_->GetImages()) {
@@ -209,21 +208,6 @@ bool Project::ReadConfigurationFile() {
     return false;
   }
   stream >> project_name_;
-
-  stream >> temp_line;
-  if (temp_line != "STATUS") {
-    LOG(ERROR) << "Wrong config file format. No STATUS attribute.";
-    configFile.close();
-    return false;
-  }
-
-  int status;
-  stream >> status;
-  ReconstructionStatus temp_status = StatusFromInt(status);
-  if (temp_status == ReconstructionStatus::LOADED_INTO_MEMORY) {
-    temp_status = ReconstructionStatus::BUILT;
-  }
-  storage_->SetReconstructionStatus(temp_status);
 
   stream >> temp_line;
   if (temp_line != "IMAGES_LOCATION") {

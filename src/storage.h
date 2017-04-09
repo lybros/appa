@@ -13,8 +13,8 @@
 #include <QVector>
 
 #include <theia/theia.h>
-
 #include <glog/logging.h>
+
 #include "options.h"
 
 using theia::Reconstruction;
@@ -22,7 +22,7 @@ using theia::Reconstruction;
 // The pattern may be extended with image extensions which are supported
 // by Theia.
 const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|JPG|jpeg|JPEG|png|PNG)";
-const QString MODEL_FILENAME_PATTERN = "model-\\d.binary";
+const QString MODEL_FILENAME_PATTERN = "model-\\d+.binary";
 
 class Storage {
  public:
@@ -50,12 +50,12 @@ class Storage {
 
   const QString& GetOutputLocation() const;
 
-  void SetOutputLocation(const QString& output_location_);
+  void SetOutputLocation(const QString& output_location);
 
   // check if model already in memory, load it if not, ad return
   Reconstruction* GetReconstruction(const int number);
 
-  // update model in memory
+  // update model in memory and sets status_ to LOADED_IN_MEMORY
   void SetReconstructions(const std::vector<Reconstruction*>& reconstructions);
 
   // write all models to binary file
@@ -74,8 +74,7 @@ class Storage {
   QString output_location_;
   ReconstructionStatus status_;
 
-  // Read model from binary file, and load it in memory
-  // set status_ to LOADED_IN_MEMORY
+  // reads model from binary file
   void ReadReconstructions();
 };
 

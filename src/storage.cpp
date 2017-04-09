@@ -5,6 +5,8 @@
 Storage::Storage() {
   images_ = new QVector<QString>();
   images_path_ = "";
+  output_location_ = "";
+  status_ = ReconstructionStatus::NOT_BUILT;
 }
 
 Storage::Storage(QString images_path) : images_path_(images_path) {
@@ -81,7 +83,7 @@ int Storage::NumberOfImages() {
   return images_->length();
 }
 
-// TODO(all): maybe some refactor to get model by name instead index
+// TODO(all): maybe some refactor to get model by name instead index.
 Reconstruction* Storage::GetReconstruction(int number) {
   if (status_ != ReconstructionStatus::LOADED_INTO_MEMORY) {
     ReadReconstructions();
@@ -94,11 +96,11 @@ void Storage::SetReconstructions(
     const std::vector<Reconstruction*>& reconstructions) {
   reconstructions_.resize(reconstructions.size());
   for (int i = 0; i < reconstructions_.size(); i++) {
-    reconstructions_[i] = reconstructions[i];   // is it ok?????????
+    reconstructions_[i] = reconstructions[i];
   }
 
   status_ = ReconstructionStatus::LOADED_INTO_MEMORY;
-  LOG(INFO) << "Reconstructions has been saved to memory.";
+  LOG(INFO) << "Reconstructions have been saved to memory.";
 }
 
 void Storage::ReadReconstructions() {
@@ -118,14 +120,14 @@ void Storage::ReadReconstructions() {
     }
 
     LOG(INFO) << "\t" << next_model.toStdString();
-    std::string filename = QDir(output_location_)
-        .filePath(next_model).toStdString();
+    QString filename = QDir(output_location_).filePath(next_model);
 
     Reconstruction* reconstruction(new Reconstruction());
-    CHECK(ReadReconstruction(filename, reconstruction))
+    CHECK(ReadReconstruction(filename.toStdString(), reconstruction))
     << "Could not read model from file.";
 
     reconstructions.push_back(reconstruction);
+    delete reconstruction;
   }
 
   SetReconstructions(reconstructions);
@@ -159,8 +161,8 @@ const QString& Storage::GetOutputLocation() const {
   return output_location_;
 }
 
-void Storage::SetOutputLocation(const QString& output_location_) {
-  Storage::output_location_ = output_location_;
+void Storage::SetOutputLocation(const QString& output_location) {
+  output_location_ = output_location;
 }
 
 Storage::~Storage() {

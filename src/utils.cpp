@@ -18,14 +18,3 @@ void EnsureTrailingSlash(QString* path) {
 QString FileNameFromPath(const QString& path) {
   return path.mid(path.lastIndexOf("/", -2) + 1);
 }
-
-ReconstructionStatus StatusFromInt(int status) {
-  switch (status) {
-    case 0:
-      return ReconstructionStatus::NOT_BUILT;
-    case 1:
-      return ReconstructionStatus::BUILT;
-    case 2:
-      return ReconstructionStatus::LOADED_INTO_MEMORY;
-  }
-}

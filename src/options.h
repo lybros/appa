@@ -52,9 +52,10 @@ class Options {
   bool perform_geometric_verification_ = false;
 };
 
-// NOT_BUILT - there is no any models
-// BUILT - models built and saved to filesystem
-// LOADED_INTO_MEMORY - models red from disk and store into Storage
-enum ReconstructionStatus { NOT_BUILT, BUILT, LOADED_INTO_MEMORY };
+enum ReconstructionStatus {
+  NOT_BUILT = 0,              // There is no any models.
+  BUILT = 1,                  // Models built and saved into filesystem.
+  LOADED_INTO_MEMORY = 2      // Models read from disk and stored into Storage.
+};
 
 #endif  // SRC_OPTIONS_H_

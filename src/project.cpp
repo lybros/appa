@@ -19,7 +19,6 @@ Project::Project(QString project_name,
                                         project_path_(project_path),
                                         storage_(new Storage()) {
   storage_->UpdateImagesPath(images_path);
-  storage_->SetReconstructionStatus(ReconstructionStatus::NOT_BUILT);
 
   // Creating a Project in filesystem.
   // TODO(uladbohdan): to handle the situation when creating a folder fails.
@@ -79,7 +78,7 @@ void Project::BuildModelToBinary() {
 
 void Project::SearchImage(QString file_path,
                           QSet<theia::TrackId>* h_tracks) {
-  // TODO(drapegnik): replace hardcode index with some value
+  // TODO(drapegnik): replace hardcode index with some value.
   Reconstruction model = *storage_->GetReconstruction(0);
   std::vector<theia::Keypoint> keypoints;
   std::vector<Eigen::VectorXf> descriptors;

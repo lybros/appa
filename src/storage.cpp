@@ -122,7 +122,7 @@ void Storage::ReadReconstructions() {
     LOG(INFO) << "\t" << next_model.toStdString();
     QString filename = QDir(output_location_).filePath(next_model);
 
-    Reconstruction* reconstruction(new Reconstruction());
+    Reconstruction* reconstruction = new Reconstruction;
     CHECK(ReadReconstruction(filename.toStdString(), reconstruction))
     << "Could not read model from file.";
 

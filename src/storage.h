@@ -74,7 +74,7 @@ class Storage {
   QString output_location_;
   ReconstructionStatus status_;
 
-  // reads model from binary file
+  // Reads model from binary file.
   void ReadReconstructions();
 };
 

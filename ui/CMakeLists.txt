@@ -8,6 +8,7 @@ find_library(QGLVIEWER_LIBRARIES QGLViewer)
 set(SRC_UI
         mainwindow.cpp
         newproject.cpp
+        progress_widget.cpp
         reconstruction_window.cpp
         thumbnail_widget.cpp
         )
@@ -15,6 +16,7 @@ set(SRC_UI
 set(HEADERS_UI
         mainwindow.h
         newproject.h
+        progress_widget.h
         reconstruction_window.h
         thumbnail_widget.h
         )

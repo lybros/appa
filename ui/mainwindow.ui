@@ -40,7 +40,7 @@
            <x>0</x>
            <y>0</y>
            <width>198</width>
-           <height>695</height>
+           <height>701</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -211,6 +211,9 @@
            <string>Press 'A' key to show/hide the axis.</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="progressLayout"/>
         </item>
        </layout>
       </item>

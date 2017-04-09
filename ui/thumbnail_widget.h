@@ -19,7 +19,8 @@ class ThumbnailWidget : public QWidget {
  public:
   ThumbnailWidget(MainWindow* main_window,
                   QWidget* parent,
-                  const QString& image_path);
+                  const QString& image_path,
+                  const QPixmap& image_pixmap);
 
   QString& GetName();
 

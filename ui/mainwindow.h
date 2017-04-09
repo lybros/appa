@@ -6,7 +6,10 @@
 #include <iostream>
 
 #include <QtAlgorithms>
+#include <QtConcurrent/QtConcurrentRun>
+
 #include <QFileInfo>
+#include <QFutureWatcher>
 #include <QMainWindow>
 #include <QProcess>
 #include <QSet>
@@ -14,6 +17,7 @@
 #include "../libs/QtAwesome/QtAwesome/QtAwesome.h"
 
 #include "newproject.h"
+#include "progress_widget.h"
 #include "reconstruction_window.h"
 
 #include "../src/project.h"
@@ -62,10 +66,14 @@ class MainWindow : public QMainWindow {
   // Interaction with widget which renders the model.
   ReconstructionWindow* view_;
 
+  // The widget visualizes the state of every thread it knows about.
+  ProgressWidget* progress_widget_;
+
   bool isProjectDirectory(const QString& project_path);
 
   // Loads Images thumbnails to Image Preview Area.
   void LoadImagesPreview();
+  QMap<QString, QPixmap> RetrieveImages(QVector<QString>& image_paths);
 
   QVector<ThumbnailWidget*> thumbnails_;
 

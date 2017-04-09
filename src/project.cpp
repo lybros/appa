@@ -195,8 +195,8 @@ bool Project::ReadConfigurationFile() {
   QString temp_line;
 
   temp_line = stream.readLine();
-  if (temp_line != "PROJECT_CONFIG_VERSION v1.1") {
-    LOG(ERROR) << "Reading config failed: wrong file version.";
+  if (temp_line != "PROJECT_CONFIG_VERSION v1.0") {
+    LOG(ERROR) << "Reading config failed: deprecated config file";
     configFile.close();
     return false;
   }

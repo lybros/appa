@@ -205,29 +205,31 @@ void MainWindow::UpdateActiveProjectInfo() {
 }
 
 void MainWindow::LoadImagesPreview() {
+  // Removing all old thumbnails.
   for (QWidget* child : ui->imagesPreviewScrollAreaContents->
       findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly)) {
     delete child;
   }
 
+  // Getting a list of image paths.
   QVector<QString>& image_paths = active_project_->GetStorage()->GetImages();
-
   if (image_paths.empty()) {
     return;
   }
 
   thumbnails_.reserve(image_paths.size());
 
+  // Watcher keeps track of the retrieving-images-thread.
   QFutureWatcher<QMap<QString, QPixmap>>* watcher =
       new QFutureWatcher<QMap<QString, QPixmap>>();
+
   QObject::connect(watcher, &QFutureWatcher<QMap<QString, QPixmap>>::finished,
                    [=](){
     LOG(INFO) << "Images have been successfully loaded from filesystem.";
     for (const QString& image_path : image_paths) {
         QPixmap image_pixmap = watcher->result()[image_path];
         ThumbnailWidget* thumbnail = new ThumbnailWidget(
-            this, ui->imagesPreviewScrollAreaContents, image_path,
-              image_pixmap);
+          this, ui->imagesPreviewScrollAreaContents, image_path, image_pixmap);
         thumbnails_.push_back(thumbnail);
         ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
         // ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignTop);
@@ -237,26 +239,26 @@ void MainWindow::LoadImagesPreview() {
 
   progress_widget_->AddTask(QString("Thumbnail loading..."));
 
-  QFuture<QMap<QString, QPixmap>> future =
-      QtConcurrent::run(this, &MainWindow::RetrieveImages, image_paths);
+  // The value is required to resize images in appropriate way.
+  const int PREVIEW_AREA_WIDTH =
+      ui->imagesPreviewScrollAreaContents->size().width() - 25;
+
+  // Running image retrieving in a separate thread. The function will return
+  // a map of (image path, image pixmap) pairs, which are then used to
+  // create widgets for every thumbnail.
+  QFuture<QMap<QString, QPixmap>> future = QtConcurrent::run(
+        [image_paths, PREVIEW_AREA_WIDTH]()->QMap<QString, QPixmap>{
+    const int INF = 99999999;
+    QMap<QString, QPixmap> map;
+    for (QString image_path : image_paths) {
+      map.insert(image_path, QPixmap::fromImage(
+            QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
+                                      Qt::KeepAspectRatio)) );
+    }
+    return map;
+  });
+
   watcher->setFuture(future);
-}
-
-QMap<QString, QPixmap>
-MainWindow::RetrieveImages(QVector<QString>& image_paths) {
-  // TODO(uladbohdan): to make sure this magic number is good for every
-  // screen or to replace it with something else.
-  int PREVIEW_AREA_WIDTH = ui->imagesPreviewScrollAreaContents->size().width() - 25;
-  int INF = 99999999;
-
-  QMap<QString, QPixmap> map;
-  for (QString image_path : image_paths) {
-    map.insert(image_path, QPixmap::fromImage(
-          QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
-                                    Qt::KeepAspectRatio)) );
-  }
-
-  return map;
 }
 
 void MainWindow::UpdateSelectedThumbnails() {

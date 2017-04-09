@@ -73,7 +73,6 @@ class MainWindow : public QMainWindow {
 
   // Loads Images thumbnails to Image Preview Area.
   void LoadImagesPreview();
-  QMap<QString, QPixmap> RetrieveImages(QVector<QString>& image_paths);
 
   QVector<ThumbnailWidget*> thumbnails_;
 

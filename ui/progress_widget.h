@@ -10,6 +10,7 @@
 //template<typename T>
 struct Task {
  // QFutureWatcher<T>* watcher;
+  int task_id;
   QString name;
   QWidget* widget;
 };
@@ -38,6 +39,7 @@ class ProgressWidget : public QWidget {
     progress_bar->setValue(50);
 
     Task new_task;
+    new_task.task_id = NextTaskId();
     new_task.name = task_name;
     //new_task.watcher = watcher;
     new_task.widget = new_progress_tracker;
@@ -46,16 +48,8 @@ class ProgressWidget : public QWidget {
 
     layout()->addWidget(new_progress_tracker);
 
-    connect(watcher, &QFutureWatcher<T>::finished, [=](){
-      for (int i = 0 ; i < tasks_.size(); i++) {
-        if (tasks_[i].widget == new_progress_tracker) {
-          tasks_.erase(tasks_.begin() + i);
-          delete new_progress_tracker;
-          break;
-        }
-      }
-      CheckVisibility();
-    });
+    connect(watcher, &QFutureWatcher<T>::finished, this,
+            [this, new_task](){RemoveTaskById(new_task.task_id);});
 
     CheckVisibility();
   }
@@ -67,6 +61,12 @@ class ProgressWidget : public QWidget {
   void CheckVisibility();
 
   QVector<Task> tasks_;
+
+  void RemoveTaskById(int id);
+
+  static int next_task_id_;
+
+  int NextTaskId();
 };
 
 #endif  // UI_PROGRESS_WIDGET_H_

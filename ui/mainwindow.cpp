@@ -55,8 +55,15 @@ void MainWindow::set_icons(QtAwesome* awesome) {
 }
 
 void MainWindow::on_actionBuildToBinary_triggered() {
+  QFutureWatcher<void>* watcher = new QFutureWatcher<void>();
+
+  progress_widget_->AddTask(QString("Building to binary..."), watcher);
+
+  QFuture<void> future = QtConcurrent::run(active_project_,
+                                           &Project::BuildModelToBinary);
+  watcher->setFuture(future);
+
   LOG(INFO) << "Reconstruction started...";
-  active_project_->BuildModelToBinary();
 }
 
 void MainWindow::on_actionNewProject_triggered() {
@@ -150,7 +157,6 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_actionVisualizeBinary_triggered() {
-
   view_->BuildFromDefaultPath();
 }
 

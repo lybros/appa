@@ -5,6 +5,8 @@ find_package(Qt5Xml REQUIRED)
 find_package(Qt5OpenGL REQUIRED)
 find_library(QGLVIEWER_LIBRARIES QGLViewer)
 
+find_package(Qt5Concurrent REQUIRED)
+
 set(SRC_UI
         mainwindow.cpp
         newproject.cpp
@@ -37,4 +39,4 @@ add_library(ui
 # We're building the ui library on top of src library,
 # that's why need to mention it here.
 # (and we will never specify ui target as a dependency of src target)
-target_link_libraries(ui src ${OPENGL_LIBRARIES} Qt5::Xml Qt5::OpenGL Qt5::Widgets ${QGLVIEWER_LIBRARIES})
+target_link_libraries(ui src ${OPENGL_LIBRARIES} Qt5::Concurrent Qt5::Xml Qt5::OpenGL Qt5::Widgets ${QGLVIEWER_LIBRARIES})

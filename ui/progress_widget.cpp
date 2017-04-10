@@ -5,6 +5,14 @@ int ProgressWidget::next_task_id_ = 0;
 ProgressWidget::ProgressWidget(QWidget* parent) : QWidget(parent) {
   setLayout(new QVBoxLayout(this));
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+  layout()->setMargin(0);
+
+  // Adding horizontal separator on top of progressbar-area.
+  QWidget *horizontalLineWidget = new QWidget(this);
+  horizontalLineWidget->setFixedHeight(1);
+  horizontalLineWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  horizontalLineWidget->setStyleSheet(QString("background-color: #c0c0c0;"));
+  layout()->addWidget(horizontalLineWidget);
 
   CheckVisibility();
 }
@@ -25,8 +33,6 @@ void ProgressWidget::RemoveTaskById(int id) {
     }
   }
   CheckVisibility();
-  // TODO(uladbohdan): to make sure removing watcher here is safe.
-  // delete tasks_[i]
 }
 
 int ProgressWidget::NextTaskId() {

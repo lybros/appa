@@ -24,19 +24,19 @@ class ProgressWidget : public QWidget {
     QWidget* new_progress_tracker = new QWidget(this);
     new_progress_tracker->setSizePolicy(QSizePolicy::Preferred,
                                         QSizePolicy::Maximum);
+   // new_progress_tracker->setStyleSheet("background-color: green;");
+   // new_progress_tracker->setContentsMargins(0,0,0,0);
 
     QHBoxLayout* box_layout = new QHBoxLayout(new_progress_tracker);
+    box_layout->setMargin(0);
     new_progress_tracker->setLayout(box_layout);
 
     QLabel* name_label = new QLabel(task_name, new_progress_tracker);
+   // name_label->setStyleSheet("background-color: yellow;");
     box_layout->addWidget(name_label);
 
     QProgressBar* progress_bar = new QProgressBar(new_progress_tracker);
     box_layout->addWidget(progress_bar);
-    // TODO(uladbohdan): to make progressbar non-constant.
-    progress_bar->setMinimum(0);
-    progress_bar->setMaximum(100);
-    progress_bar->setValue(50);
 
     Task new_task;
     new_task.task_id = NextTaskId();
@@ -48,8 +48,13 @@ class ProgressWidget : public QWidget {
 
     layout()->addWidget(new_progress_tracker);
 
-    connect(watcher, &QFutureWatcher<T>::finished, this,
+    QObject::connect(watcher, &QFutureWatcher<T>::finished, this,
             [this, new_task](){RemoveTaskById(new_task.task_id);});
+
+    QObject::connect(watcher, SIGNAL(progressRangeChanged(int,int)),
+                     progress_bar, SLOT(setRange(int,int)));
+    QObject::connect(watcher, SIGNAL(progressValueChanged(int)),
+                     progress_bar, SLOT(setValue(int)));
 
     CheckVisibility();
   }

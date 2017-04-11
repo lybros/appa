@@ -20,6 +20,27 @@ class ProcessManager : public QWidget {
   ProcessManager(QWidget* parent);
 
   template<typename T>
+  void StartNewProcess(QString process_description, QFuture<T> future) {
+    QFutureWatcher<T>* watcher = new QFutureWatcher<T>();
+    AddTask(process_description, watcher);
+    watcher->setFuture(future);
+  }
+
+  template<typename T, typename Functor>
+  void StartNewProcess(QString process_description, QFuture<T> future, Functor on_finish) {
+    QFutureWatcher<T>* watcher = new QFutureWatcher<T>();
+
+    QObject::connect(watcher, &QFutureWatcher<T>::finished,
+                     [=](){ on_finish(watcher->future().results()); });
+
+    AddTask(process_description, watcher);
+    watcher->setFuture(future);
+  }
+
+  ~ProcessManager();
+
+ private:
+  template<typename T>
   void AddTask(QString task_name, QFutureWatcher<T>* watcher)  {
     QWidget* new_progress_tracker = new QWidget(this);
     new_progress_tracker->setSizePolicy(QSizePolicy::Preferred,
@@ -62,9 +83,6 @@ class ProcessManager : public QWidget {
     CheckVisibility();
   }
 
-  ~ProcessManager();
-
- private:
   // The method checks if the widget should be visible or not.
   void CheckVisibility();
 

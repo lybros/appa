@@ -55,13 +55,10 @@ void MainWindow::set_icons(QtAwesome* awesome) {
 }
 
 void MainWindow::on_actionBuildToBinary_triggered() {
-  QFutureWatcher<void>* watcher = new QFutureWatcher<void>();
-
-  process_manager_->AddTask(QString("Building to binary..."), watcher);
-
-  QFuture<void> future = QtConcurrent::run(active_project_,
-                                           &Project::BuildModelToBinary);
-  watcher->setFuture(future);
+  process_manager_->StartNewProcess(
+        QString("Building to binary..."),
+        QtConcurrent::run(active_project_,
+                          &Project::BuildModelToBinary));
 
   LOG(INFO) << "Reconstruction started...";
 }
@@ -228,27 +225,6 @@ void MainWindow::LoadImagesPreview() {
   // Every thumbnail requires Pixmap and Label to be rendered.
   typedef QPair<QString, QPixmap> ThumbnailData;
 
-  // Watcher keeps track of the retrieving-images-thread.
-  QFutureWatcher<ThumbnailData>* watcher = new QFutureWatcher<ThumbnailData>();
-
-  QObject::connect(watcher, &QFutureWatcher<ThumbnailData>::finished, [=](){
-    LOG(INFO) << "Images have been successfully loaded from filesystem.";
-    ui->imagesPreviewScrollArea->setVisible(true);
-
-    QList<ThumbnailData> pairs = watcher->future().results();
-    for (const ThumbnailData& pair : pairs) {
-      ThumbnailWidget* thumbnail = new ThumbnailWidget(
-        this, ui->imagesPreviewScrollAreaContents, pair.first, pair.second);
-      thumbnails_.push_back(thumbnail);
-      ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
-      // ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignTop);
-      ui->imagesPreviewArea->addWidget(thumbnail, 0, Qt::AlignTop);
-    }
-  });
-
-  process_manager_->AddTask(QString("Loading and scaling thumbnails..."),
-                            watcher);
-
   // The value is required to resize images in appropriate way.
   const int PREVIEW_AREA_WIDTH =
       ui->imagesPreviewScrollAreaContents->size().width() - 25;
@@ -261,10 +237,23 @@ void MainWindow::LoadImagesPreview() {
                                       Qt::KeepAspectRatio)));
   };
 
-  QFuture<ThumbnailData> future =
-      QtConcurrent::mapped(image_paths, scale_images);
+  std::function<void (QList<ThumbnailData>)> on_finish =
+      [this](QList<ThumbnailData> pairs) {
+    LOG(INFO) << "Images have been successfully loaded from filesystem.";
+    ui->imagesPreviewScrollArea->setVisible(true);
+    for (const ThumbnailData& pair : pairs) {
+      ThumbnailWidget* thumbnail = new ThumbnailWidget(
+        this, ui->imagesPreviewScrollAreaContents, pair.first, pair.second);
+      thumbnails_.push_back(thumbnail);
+      ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
+      ui->imagesPreviewArea->addWidget(thumbnail, 0, Qt::AlignTop);
+    }
+  };
 
-  watcher->setFuture(future);
+  process_manager_->StartNewProcess(
+        QString("Loading and rescaling thumbnails..."),
+        QtConcurrent::mapped(image_paths, scale_images),
+        on_finish);
 }
 
 void MainWindow::UpdateSelectedThumbnails() {

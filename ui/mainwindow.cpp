@@ -120,15 +120,24 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_actionExtract_Features_triggered() {
-  active_project_->ExtractFeatures();
+  process_manager_->StartNewProcess(
+        QString("Extracting features..."),
+        QtConcurrent::run(active_project_,
+                          &Project::ExtractFeatures));
 }
 
 void MainWindow::on_actionMatch_Features_triggered() {
-  active_project_->MatchFeatures();
+  process_manager_->StartNewProcess(
+        QString("Matching features..."),
+        QtConcurrent::run(active_project_,
+                          &Project::MatchFeatures));
 }
 
 void MainWindow::on_actionStart_Reconstruction_triggered() {
-  active_project_->StartReconstruction();
+  process_manager_->StartNewProcess(
+        QString("Reconstructing..."),
+        QtConcurrent::run(active_project_,
+                          &Project::StartReconstruction));
 }
 
 bool MainWindow::isProjectDirectory(const QString& project_path) {
@@ -268,11 +277,12 @@ void MainWindow::UpdateSelectedThumbnails() {
 
 // We're enabling action buttons in case of project is loaded.
 void MainWindow::EnableActions() {
+  // TODO(uladbohdan): to enable actions as far as they are implemented.
   ui->actionBuildToBinary->setEnabled(true);
   ui->actionExtract_Features->setEnabled(true);
-  ui->actionMatch_Features->setEnabled(true);
+  //ui->actionMatch_Features->setEnabled(true);
   ui->actionRunExampleReconstruction->setEnabled(true);
   ui->actionSearch_Image->setEnabled(true);
-  ui->actionStart_Reconstruction->setEnabled(true);
+  //ui->actionStart_Reconstruction->setEnabled(true);
   ui->actionVisualizeBinary->setEnabled(true);
 }

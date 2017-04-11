@@ -1,3 +1,5 @@
+// Copyright 2017 Lybros.
+
 #include "process_manager.h"
 
 int ProcessManager::next_task_id_ = 0;
@@ -10,7 +12,8 @@ ProcessManager::ProcessManager(QWidget* parent) : QWidget(parent) {
   // Adding horizontal separator on top of progressbar-area.
   QWidget *horizontalLineWidget = new QWidget(this);
   horizontalLineWidget->setFixedHeight(1);
-  horizontalLineWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  horizontalLineWidget->setSizePolicy(QSizePolicy::Expanding,
+                                      QSizePolicy::Fixed);
   horizontalLineWidget->setStyleSheet(QString("background-color: #c0c0c0;"));
   layout()->addWidget(horizontalLineWidget);
 
@@ -26,7 +29,7 @@ void ProcessManager::CheckVisibility() {
 
 void ProcessManager::RemoveTaskById(int id) {
   for (int i = 0 ; i < tasks_.size(); i++) {
-    if (tasks_[i].task_id == id) {
+    if (tasks_[i].id == id) {
       delete tasks_[i].widget;
       tasks_.erase(tasks_.begin() + i);
       break;

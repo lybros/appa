@@ -238,7 +238,7 @@ void MainWindow::LoadImagesPreview() {
   const int PREVIEW_AREA_WIDTH =
       ui->imagesPreviewScrollAreaContents->size().width() - 25;
 
-  std::function<ThumbnailData (const QString&)> scale_images =
+  std::function<ThumbnailData(const QString&)> scale_images =
       [PREVIEW_AREA_WIDTH](const QString& image_path)->ThumbnailData{
     const int INF = 99999999;
     return ThumbnailData(image_path, QPixmap::fromImage(
@@ -246,7 +246,7 @@ void MainWindow::LoadImagesPreview() {
                                       Qt::KeepAspectRatio)));
   };
 
-  std::function<void (QList<ThumbnailData>)> on_finish =
+  std::function<void(QList<ThumbnailData>)> on_finish =
       [this](QList<ThumbnailData> pairs) {
     LOG(INFO) << "Images have been successfully loaded from filesystem.";
     ui->imagesPreviewScrollArea->setVisible(true);
@@ -280,9 +280,9 @@ void MainWindow::EnableActions() {
   // TODO(uladbohdan): to enable actions as far as they are implemented.
   ui->actionBuildToBinary->setEnabled(true);
   ui->actionExtract_Features->setEnabled(true);
-  //ui->actionMatch_Features->setEnabled(true);
+  // ui->actionMatch_Features->setEnabled(true);
   ui->actionRunExampleReconstruction->setEnabled(true);
   ui->actionSearch_Image->setEnabled(true);
-  //ui->actionStart_Reconstruction->setEnabled(true);
+  // ui->actionStart_Reconstruction->setEnabled(true);
   ui->actionVisualizeBinary->setEnabled(true);
 }

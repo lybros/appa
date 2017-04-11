@@ -2,20 +2,19 @@
 
 #include "options.h"
 
-Options::Options(QString output_location) :
-    output_location_(output_location) {
-}
+Options::Options(QString output_location) : output_location_(output_location) {}
 
-theia::ReconstructionBuilderOptions*
-Options::GetReconstructionBuilderOptions() {
+ReconstructionBuilderOptions* Options::GetReconstructionBuilderOptions() {
   // TODO(uladbohdan): to figure out, where a 'delete' operator should be
   // located if we have a 'new' operator here.
-  theia::ReconstructionBuilderOptions* options =
-      new theia::ReconstructionBuilderOptions();
+  ReconstructionBuilderOptions* options = new ReconstructionBuilderOptions();
 
   options->descriptor_type = descriptor_type_;
-  options->output_matches_file =
-      QDir(output_location_).filePath("matches.binary").toStdString();
+  options->output_matches_file = QDir(output_location_)
+      .filePath("matches.binary").toStdString();
+  options->num_threads = num_threads_;
+  options->matching_strategy = match_strategy_;
+
   options->matching_options.match_out_of_core = match_out_of_core_;
   options->matching_options.perform_geometric_verification =
       perform_geometric_verification_;

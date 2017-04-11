@@ -10,7 +10,6 @@
 #include <QtConcurrent/QtConcurrentMap>
 
 #include <QFileInfo>
-#include <QFutureWatcher>
 #include <QMainWindow>
 #include <QPair>
 #include <QProcess>

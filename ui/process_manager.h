@@ -53,6 +53,12 @@ class ProcessManager : public QWidget {
     QObject::connect(watcher, SIGNAL(progressValueChanged(int)),
                      progress_bar, SLOT(setValue(int)));
 
+    // Deallocating a watcher object after the task is finished.
+    // Keep in mind, this connection must go after any other connections to
+    // 'finished' signal.
+    QObject::connect(watcher, &QFutureWatcher<T>::finished,
+                     [watcher](){ delete watcher; });
+
     CheckVisibility();
   }
 

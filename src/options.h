@@ -29,6 +29,10 @@
 
 #include <theia/theia.h>
 
+using theia::MatchingStrategy;
+using theia::DescriptorExtractorType;
+using theia::ReconstructionBuilderOptions;
+
 class Options {
  public:
   explicit Options(QString output_location);
@@ -42,14 +46,15 @@ class Options {
   QString output_location_;
 
   // THEIA's OPTIONS.
+  int num_threads_ = 4;
 
   // Feature Extraction.
-  theia::DescriptorExtractorType descriptor_type_ =
-      theia::DescriptorExtractorType::SIFT;
+  DescriptorExtractorType descriptor_type_ = DescriptorExtractorType::SIFT;
 
   // Feature Matching.
   bool match_out_of_core_ = true;
   bool perform_geometric_verification_ = false;
+  MatchingStrategy match_strategy_ = MatchingStrategy::CASCADE_HASHING;
 };
 
 enum ReconstructionStatus {

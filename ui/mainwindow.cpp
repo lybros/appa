@@ -12,8 +12,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
   view_ = new ReconstructionWindow();
   ui->sceneLayout->addWidget(view_);
 
-  progress_widget_ = new ProgressWidget(this);
-  ui->progressLayout->addWidget(progress_widget_);
+  process_manager_ = new ProcessManager(this);
+  ui->progressLayout->addWidget(process_manager_);
 
   ui->activeProjectInfo->setVisible(false);
   ui->imagesPreviewScrollArea->setVisible(false);
@@ -57,7 +57,7 @@ void MainWindow::set_icons(QtAwesome* awesome) {
 void MainWindow::on_actionBuildToBinary_triggered() {
   QFutureWatcher<void>* watcher = new QFutureWatcher<void>();
 
-  progress_widget_->AddTask(QString("Building to binary..."), watcher);
+  process_manager_->AddTask(QString("Building to binary..."), watcher);
 
   QFuture<void> future = QtConcurrent::run(active_project_,
                                            &Project::BuildModelToBinary);
@@ -246,7 +246,7 @@ void MainWindow::LoadImagesPreview() {
     }
   });
 
-  progress_widget_->AddTask(QString("Loading and scaling thumbnails..."),
+  process_manager_->AddTask(QString("Loading and scaling thumbnails..."),
                             watcher);
 
   // The value is required to resize images in appropriate way.

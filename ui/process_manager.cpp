@@ -1,8 +1,8 @@
-#include "progress_widget.h"
+#include "process_manager.h"
 
-int ProgressWidget::next_task_id_ = 0;
+int ProcessManager::next_task_id_ = 0;
 
-ProgressWidget::ProgressWidget(QWidget* parent) : QWidget(parent) {
+ProcessManager::ProcessManager(QWidget* parent) : QWidget(parent) {
   setLayout(new QVBoxLayout(this));
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
   layout()->setMargin(0);
@@ -17,14 +17,14 @@ ProgressWidget::ProgressWidget(QWidget* parent) : QWidget(parent) {
   CheckVisibility();
 }
 
-ProgressWidget::~ProgressWidget() {
+ProcessManager::~ProcessManager() {
 }
 
-void ProgressWidget::CheckVisibility() {
+void ProcessManager::CheckVisibility() {
   setVisible(!tasks_.empty());
 }
 
-void ProgressWidget::RemoveTaskById(int id) {
+void ProcessManager::RemoveTaskById(int id) {
   for (int i = 0 ; i < tasks_.size(); i++) {
     if (tasks_[i].task_id == id) {
       delete tasks_[i].widget;
@@ -35,7 +35,7 @@ void ProgressWidget::RemoveTaskById(int id) {
   CheckVisibility();
 }
 
-int ProgressWidget::NextTaskId() {
+int ProcessManager::NextTaskId() {
   next_task_id_++;
   return next_task_id_ - 1;
 }

@@ -1,5 +1,5 @@
-#ifndef UI_PROGRESS_WIDGET_H_
-#define UI_PROGRESS_WIDGET_H_
+#ifndef UI_PROCESS_MANAGER_H_
+#define UI_PROCESS_MANAGER_H_
 
 #include <QFutureWatcher>
 #include <QHBoxLayout>
@@ -15,24 +15,21 @@ struct Task {
   QWidget* widget;
 };
 
-class ProgressWidget : public QWidget {
+class ProcessManager : public QWidget {
  public:
-  ProgressWidget(QWidget* parent);
+  ProcessManager(QWidget* parent);
 
   template<typename T>
   void AddTask(QString task_name, QFutureWatcher<T>* watcher)  {
     QWidget* new_progress_tracker = new QWidget(this);
     new_progress_tracker->setSizePolicy(QSizePolicy::Preferred,
                                         QSizePolicy::Maximum);
-   // new_progress_tracker->setStyleSheet("background-color: green;");
-   // new_progress_tracker->setContentsMargins(0,0,0,0);
 
     QHBoxLayout* box_layout = new QHBoxLayout(new_progress_tracker);
     box_layout->setMargin(0);
     new_progress_tracker->setLayout(box_layout);
 
     QLabel* name_label = new QLabel(task_name, new_progress_tracker);
-   // name_label->setStyleSheet("background-color: yellow;");
     box_layout->addWidget(name_label);
 
     QProgressBar* progress_bar = new QProgressBar(new_progress_tracker);
@@ -59,7 +56,7 @@ class ProgressWidget : public QWidget {
     CheckVisibility();
   }
 
-  ~ProgressWidget();
+  ~ProcessManager();
 
  private:
   // The method checks if the widget should be visible or not.
@@ -74,4 +71,4 @@ class ProgressWidget : public QWidget {
   int NextTaskId();
 };
 
-#endif  // UI_PROGRESS_WIDGET_H_
+#endif  // UI_PROCESS_MANAGER_H_

@@ -19,7 +19,7 @@
 #include "../libs/QtAwesome/QtAwesome/QtAwesome.h"
 
 #include "newproject.h"
-#include "progress_widget.h"
+#include "process_manager.h"
 #include "reconstruction_window.h"
 
 #include "../src/project.h"
@@ -68,8 +68,9 @@ class MainWindow : public QMainWindow {
   // Interaction with widget which renders the model.
   ReconstructionWindow* view_;
 
-  // The widget visualizes the state of every thread it knows about.
-  ProgressWidget* progress_widget_;
+  // The process_manager_ object keeps track of every passed process and
+  // visualizes the progress.
+  ProcessManager* process_manager_;
 
   bool isProjectDirectory(const QString& project_path);
 

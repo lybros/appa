@@ -10,7 +10,7 @@ find_package(Qt5Concurrent REQUIRED)
 set(SRC_UI
         mainwindow.cpp
         newproject.cpp
-        progress_widget.cpp
+        process_manager.cpp
         reconstruction_window.cpp
         thumbnail_widget.cpp
         )
@@ -18,7 +18,7 @@ set(SRC_UI
 set(HEADERS_UI
         mainwindow.h
         newproject.h
-        progress_widget.h
+        process_manager.h
         reconstruction_window.h
         thumbnail_widget.h
         )

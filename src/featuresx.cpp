@@ -152,6 +152,5 @@ void Features::_extract(bool is_force) {
 }
 
 Features::~Features() {
-  delete storage_;
   delete extractor_;
 }

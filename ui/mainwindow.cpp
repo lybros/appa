@@ -9,8 +9,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
-  view_ = new ReconstructionWindow(active_project_);
+  view_ = new ReconstructionWindow();
   ui->sceneLayout->addWidget(view_);
+
+  process_manager_ = new ProcessManager(this);
+  ui->progressLayout->addWidget(process_manager_);
 
   ui->activeProjectInfo->setVisible(false);
   ui->imagesPreviewScrollArea->setVisible(false);
@@ -52,8 +55,12 @@ void MainWindow::set_icons(QtAwesome* awesome) {
 }
 
 void MainWindow::on_actionBuildToBinary_triggered() {
+  process_manager_->StartNewProcess(
+        QString("Building to binary..."),
+        QtConcurrent::run(active_project_,
+                          &Project::BuildModelToBinary));
+
   LOG(INFO) << "Reconstruction started...";
-  active_project_->BuildModelToBinary();
 }
 
 void MainWindow::on_actionNewProject_triggered() {
@@ -113,15 +120,24 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_actionExtract_Features_triggered() {
-  active_project_->ExtractFeatures();
+  process_manager_->StartNewProcess(
+        QString("Extracting features..."),
+        QtConcurrent::run(active_project_,
+                          &Project::ExtractFeatures));
 }
 
 void MainWindow::on_actionMatch_Features_triggered() {
-  active_project_->MatchFeatures();
+  process_manager_->StartNewProcess(
+        QString("Matching features..."),
+        QtConcurrent::run(active_project_,
+                          &Project::MatchFeatures));
 }
 
 void MainWindow::on_actionStart_Reconstruction_triggered() {
-  active_project_->StartReconstruction();
+  process_manager_->StartNewProcess(
+        QString("Reconstructing..."),
+        QtConcurrent::run(active_project_,
+                          &Project::StartReconstruction));
 }
 
 bool MainWindow::isProjectDirectory(const QString& project_path) {
@@ -194,34 +210,59 @@ void MainWindow::UpdateActiveProjectInfo() {
   ui->number_images_label->setText("NUMBER OF IMAGES: " + QString::number(
       active_project_->GetStorage()->NumberOfImages()));
 
-  // TODO(uladbohdan): to load in a separate thread.
   LoadImagesPreview();
 
   ui->activeProjectInfo->setVisible(true);
-  ui->imagesPreviewScrollArea->setVisible(true);
 }
 
 void MainWindow::LoadImagesPreview() {
+  // Removing all old thumbnails.
   for (QWidget* child : ui->imagesPreviewScrollAreaContents->
       findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly)) {
     delete child;
   }
+  ui->imagesPreviewScrollArea->setVisible(false);
 
-  QVector<QString>& images = active_project_->GetStorage()->GetImages();
-
-  if (images.empty()) {
+  // Getting a list of image paths.
+  QVector<QString>& image_paths = active_project_->GetStorage()->GetImages();
+  if (image_paths.empty()) {
     return;
   }
 
-  thumbnails_.reserve(images.size());
+  thumbnails_.reserve(image_paths.size());
 
-  for (QString& image : images) {
-    ThumbnailWidget* thumbnail = new ThumbnailWidget(
-        this, ui->imagesPreviewScrollAreaContents, image);
-    thumbnails_.push_back(thumbnail);
-    ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
-    ui->imagesPreviewArea->addWidget(thumbnail);
-  }
+  // Every thumbnail requires Pixmap and Label to be rendered.
+  typedef QPair<QString, QPixmap> ThumbnailData;
+
+  // The value is required to resize images in appropriate way.
+  const int PREVIEW_AREA_WIDTH =
+      ui->imagesPreviewScrollAreaContents->size().width() - 25;
+
+  std::function<ThumbnailData(const QString&)> scale_images =
+      [PREVIEW_AREA_WIDTH](const QString& image_path)->ThumbnailData{
+    const int INF = 99999999;
+    return ThumbnailData(image_path, QPixmap::fromImage(
+            QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
+                                      Qt::KeepAspectRatio)));
+  };
+
+  std::function<void(QList<ThumbnailData>)> on_finish =
+      [this](QList<ThumbnailData> pairs) {
+    LOG(INFO) << "Images have been successfully loaded from filesystem.";
+    ui->imagesPreviewScrollArea->setVisible(true);
+    for (const ThumbnailData& pair : pairs) {
+      ThumbnailWidget* thumbnail = new ThumbnailWidget(
+        this, ui->imagesPreviewScrollAreaContents, pair.first, pair.second);
+      thumbnails_.push_back(thumbnail);
+      ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
+      ui->imagesPreviewArea->addWidget(thumbnail, 0, Qt::AlignTop);
+    }
+  };
+
+  process_manager_->StartNewProcess(
+        QString("Loading and rescaling thumbnails..."),
+        QtConcurrent::mapped(image_paths, scale_images),
+        on_finish);
 }
 
 void MainWindow::UpdateSelectedThumbnails() {
@@ -236,11 +277,12 @@ void MainWindow::UpdateSelectedThumbnails() {
 
 // We're enabling action buttons in case of project is loaded.
 void MainWindow::EnableActions() {
+  // TODO(uladbohdan): to enable actions as far as they are implemented.
   ui->actionBuildToBinary->setEnabled(true);
   ui->actionExtract_Features->setEnabled(true);
-  ui->actionMatch_Features->setEnabled(true);
+  // ui->actionMatch_Features->setEnabled(true);
   ui->actionRunExampleReconstruction->setEnabled(true);
   ui->actionSearch_Image->setEnabled(true);
-  ui->actionStart_Reconstruction->setEnabled(true);
+  // ui->actionStart_Reconstruction->setEnabled(true);
   ui->actionVisualizeBinary->setEnabled(true);
 }

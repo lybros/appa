@@ -6,14 +6,19 @@
 #include <iostream>
 
 #include <QtAlgorithms>
+#include <QtConcurrent/QtConcurrentRun>
+#include <QtConcurrent/QtConcurrentMap>
+
 #include <QFileInfo>
 #include <QMainWindow>
+#include <QPair>
 #include <QProcess>
 #include <QSet>
 
 #include "../libs/QtAwesome/QtAwesome/QtAwesome.h"
 
 #include "newproject.h"
+#include "process_manager.h"
 #include "reconstruction_window.h"
 
 #include "../src/project.h"
@@ -61,6 +66,10 @@ class MainWindow : public QMainWindow {
 
   // Interaction with widget which renders the model.
   ReconstructionWindow* view_;
+
+  // The process_manager_ object keeps track of every passed process and
+  // visualizes the progress.
+  ProcessManager* process_manager_;
 
   bool isProjectDirectory(const QString& project_path);
 

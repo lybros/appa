@@ -43,9 +43,6 @@ void MainWindow::set_icons(QtAwesome* awesome) {
   // visualizationToolBar
   options.insert("color", QColor(31, 72, 165));
   ui->actionVisualizeBinary->setIcon(awesome->icon(fa::eye, options));
-  options.insert("color", QColor(96, 125, 193));
-  ui->actionRunExampleReconstruction->setIcon(
-      awesome->icon(fa::windowrestore, options));
 
   // mainToolBar
   options.insert("color", QColor(32, 33, 35));
@@ -63,9 +60,9 @@ void MainWindow::on_actionBuildToBinary_triggered() {
   }
 
   process_manager_->StartNewProcess(
-        QString("Building to binary..."),
-        QtConcurrent::run(active_project_,
-                          &Project::BuildModelToBinary));
+      QString("Building to binary..."),
+      QtConcurrent::run(active_project_,
+                        &Project::BuildModelToBinary));
 
   LOG(INFO) << "Reconstruction started...";
 }
@@ -134,9 +131,9 @@ void MainWindow::on_actionExtract_Features_triggered() {
   }
 
   process_manager_->StartNewProcess(
-        QString("Extracting features..."),
-        QtConcurrent::run(active_project_,
-                          &Project::ExtractFeatures));
+      QString("Extracting features..."),
+      QtConcurrent::run(active_project_,
+                        &Project::ExtractFeatures));
 }
 
 void MainWindow::on_actionMatch_Features_triggered() {
@@ -147,9 +144,9 @@ void MainWindow::on_actionMatch_Features_triggered() {
   }
 
   process_manager_->StartNewProcess(
-        QString("Matching features..."),
-        QtConcurrent::run(active_project_,
-                          &Project::MatchFeatures));
+      QString("Matching features..."),
+      QtConcurrent::run(active_project_,
+                        &Project::MatchFeatures));
 }
 
 void MainWindow::on_actionStart_Reconstruction_triggered() {
@@ -160,9 +157,9 @@ void MainWindow::on_actionStart_Reconstruction_triggered() {
   }
 
   process_manager_->StartNewProcess(
-        QString("Reconstructing..."),
-        QtConcurrent::run(active_project_,
-                          &Project::StartReconstruction));
+      QString("Reconstructing..."),
+      QtConcurrent::run(active_project_,
+                        &Project::StartReconstruction));
 }
 
 bool MainWindow::isProjectDirectory(const QString& project_path) {
@@ -199,24 +196,6 @@ void MainWindow::on_actionSearch_Image_triggered() {
   active_project_->SearchImage(image, highlighted_tracks);
   view_->SetHighlightedPoints(highlighted_tracks);
   delete highlighted_tracks;
-}
-
-void MainWindow::on_actionRunExampleReconstruction_triggered() {
-  QString output_path = active_project_->GetDefaultOutputPath();
-  QString output_model_path =
-      QDir(output_path).filePath(DEFAULT_MODEL_BINARY_FILENAME);
-
-  if (!QFileInfo(output_model_path).exists()) {
-    LOG(ERROR) << "No Model binary found";
-    return;
-  }
-
-  QProcess view_reconstruction_process(this);
-  // We assume the view_reconstruction build from Theia library is in your PATH.
-  view_reconstruction_process.start(
-      "view_reconstruction",
-      QStringList() << "--reconstruction" << output_model_path);
-  view_reconstruction_process.waitForFinished();
 }
 
 void MainWindow::UpdateActiveProjectInfo() {
@@ -264,30 +243,31 @@ void MainWindow::LoadImagesPreview() {
       ui->imagesPreviewScrollAreaContents->size().width() - 25;
 
   std::function<ThumbnailData(const QString&)> scale_images =
-      [PREVIEW_AREA_WIDTH](const QString& image_path)->ThumbnailData{
-    const int INF = 99999999;
-    return ThumbnailData(image_path, QPixmap::fromImage(
+      [PREVIEW_AREA_WIDTH](const QString& image_path) -> ThumbnailData {
+        const int INF = 99999999;
+        return ThumbnailData(image_path, QPixmap::fromImage(
             QImage(image_path).scaled(PREVIEW_AREA_WIDTH, INF,
                                       Qt::KeepAspectRatio)));
-  };
+      };
 
   std::function<void(QList<ThumbnailData>)> on_finish =
       [this](QList<ThumbnailData> pairs) {
-    LOG(INFO) << "Images have been successfully loaded from filesystem.";
-    ui->imagesPreviewScrollArea->setVisible(true);
-    for (const ThumbnailData& pair : pairs) {
-      ThumbnailWidget* thumbnail = new ThumbnailWidget(
-        this, ui->imagesPreviewScrollAreaContents, pair.first, pair.second);
-      thumbnails_.push_back(thumbnail);
-      ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
-      ui->imagesPreviewArea->addWidget(thumbnail, 0, Qt::AlignTop);
-    }
-  };
+        LOG(INFO) << "Images have been successfully loaded from filesystem.";
+        ui->imagesPreviewScrollArea->setVisible(true);
+        for (const ThumbnailData& pair : pairs) {
+          ThumbnailWidget* thumbnail = new ThumbnailWidget(
+              this, ui->imagesPreviewScrollAreaContents, pair.first,
+              pair.second);
+          thumbnails_.push_back(thumbnail);
+          ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
+          ui->imagesPreviewArea->addWidget(thumbnail, 0, Qt::AlignTop);
+        }
+      };
 
   process_manager_->StartNewProcess(
-        QString("Loading and rescaling thumbnails..."),
-        QtConcurrent::mapped(image_paths, scale_images),
-        on_finish);
+      QString("Loading and rescaling thumbnails..."),
+      QtConcurrent::mapped(image_paths, scale_images),
+      on_finish);
 }
 
 void MainWindow::UpdateSelectedThumbnails() {
@@ -306,7 +286,6 @@ void MainWindow::EnableActions() {
   ui->actionBuildToBinary->setEnabled(true);
   ui->actionExtract_Features->setEnabled(true);
   // ui->actionMatch_Features->setEnabled(true);
-  ui->actionRunExampleReconstruction->setEnabled(true);
   ui->actionSearch_Image->setEnabled(true);
   // ui->actionStart_Reconstruction->setEnabled(true);
   ui->actionVisualizeBinary->setEnabled(true);

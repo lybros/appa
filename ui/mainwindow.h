@@ -59,8 +59,6 @@ class MainWindow : public QMainWindow {
 
   void on_actionSearch_Image_triggered();
 
-  void on_actionRunExampleReconstruction_triggered();
-
  private:
   Ui::MainWindow* ui;
   Project* active_project_;

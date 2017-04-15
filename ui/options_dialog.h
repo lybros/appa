@@ -17,6 +17,16 @@ const int EXTRACTING_FEATURES_OPTIONS = 0b00000010;
 const int MATCHING_FEATURES_OPTIONS   = 0b00000100;
 const int RECONSTRUCTION_OPTIONS      = 0b00001000;
 
+/* HOWTO add a new option to the dialog.
+ * 1. The option must be in Options class (flag, string, number or whatever).
+ * 2. To add the label and the data-input widget to the options_dialog.ui file
+ *    to the appropriate section. To give the widget non-default name.
+ * 3. To implement reading a default (or read from config file) value in
+ *    OptionsDialog::InitializeForms() method.
+ * 4. To set an updated value back to options_ in OptionsDialog::accept()
+ *    method. Additional verification may be needed.
+ * ****************************************************************************/
+
 class OptionsDialog : public QDialog {
  Q_OBJECT    // NOLINT(whitespace/indent)
 

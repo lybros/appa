@@ -55,6 +55,13 @@ void MainWindow::set_icons(QtAwesome* awesome) {
 }
 
 void MainWindow::on_actionBuildToBinary_triggered() {
+  OptionsDialog options_dialog(this, active_project_->GetOptions(),
+    GENERAL_OPTIONS | EXTRACTING_FEATURES_OPTIONS | MATCHING_FEATURES_OPTIONS |
+    RECONSTRUCTION_OPTIONS);
+  if (!options_dialog.exec()) {
+    return;
+  }
+
   process_manager_->StartNewProcess(
         QString("Building to binary..."),
         QtConcurrent::run(active_project_,
@@ -133,6 +140,12 @@ void MainWindow::on_actionExtract_Features_triggered() {
 }
 
 void MainWindow::on_actionMatch_Features_triggered() {
+  OptionsDialog options_dialog(this, active_project_->GetOptions(),
+                               GENERAL_OPTIONS | MATCHING_FEATURES_OPTIONS);
+  if (!options_dialog.exec()) {
+    return;
+  }
+
   process_manager_->StartNewProcess(
         QString("Matching features..."),
         QtConcurrent::run(active_project_,
@@ -140,6 +153,12 @@ void MainWindow::on_actionMatch_Features_triggered() {
 }
 
 void MainWindow::on_actionStart_Reconstruction_triggered() {
+  OptionsDialog options_dialog(this, active_project_->GetOptions(),
+                               GENERAL_OPTIONS | RECONSTRUCTION_OPTIONS);
+  if (!options_dialog.exec()) {
+    return;
+  }
+
   process_manager_->StartNewProcess(
         QString("Reconstructing..."),
         QtConcurrent::run(active_project_,

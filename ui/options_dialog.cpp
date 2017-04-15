@@ -18,13 +18,23 @@ OptionsDialog::~OptionsDialog() {
 
 // Initializing Options Dialog with options from the project.
 void OptionsDialog::InitializeForms() {
+  // General options.
   FindSetCombobox(ui->num_threads_combobox,
                   QString::number(options_->num_threads_));
+
+  // Feature extracting options.
   FindSetCombobox(ui->descriptor_type_combobox,
                   QMap<theia::DescriptorExtractorType, QString>({
                     {theia::DescriptorExtractorType::SIFT, "SIFT"},
                     {theia::DescriptorExtractorType::AKAZE, "AKAZE"},
                   })[options_->descriptor_type_]);
+
+  // Feature matching options.
+  FindSetCombobox(ui->matching_strategy_combobox,
+                QMap<theia::MatchingStrategy, QString>({
+                  {theia::MatchingStrategy::BRUTE_FORCE, "Brute Force"},
+                  {theia::MatchingStrategy::CASCADE_HASHING, "Cascade Hashing"},
+                })[options_->match_strategy_]);
 }
 
 void OptionsDialog::FindSetCombobox(QComboBox* combobox, QString text) {
@@ -42,6 +52,16 @@ void OptionsDialog::accept() {
       {"AKAZE", theia::DescriptorExtractorType::AKAZE},
     })[ui->descriptor_type_combobox->currentText()];
   }
+
+  if (options_enabled_ & MATCHING_FEATURES_OPTIONS) {
+    options_->match_strategy_ = QMap<QString, theia::MatchingStrategy>({
+      {"Brute Force", theia::MatchingStrategy::BRUTE_FORCE},
+      {"Cascade Hashing", theia::MatchingStrategy::CASCADE_HASHING},
+    })[ui->matching_strategy_combobox->currentText()];
+  }
+
+  // if (options_enabled_ & RECONSTRUCTION_OPTIONS) {
+  // }
 
   LOG(INFO) << "All options applied successfully.";
   QDialog::accept();

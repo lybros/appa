@@ -1,9 +1,9 @@
-# :boar: Appa :arrow_down:
-Coursework on [FAMCS](http://www.fpmi.bsu.by/en/main.aspx), [BSU](http://www.bsu.by/en/main.aspx) and [UIIP](http://uiip.bas-net.by/eng/), [NASB](http://nasb.gov.by/eng/)
+# :boar: Appa
+GUI for [TheiaSfM](https://github.com/sweeneychris/TheiaSfM) multiview geometry and structure from motion library.
+
+Implemented as a part of [uladbohdan](https://github.com/uladbohdan) and [drapegnik](https://github.com/drapegnik) coursework on [FAMCS](http://www.fpmi.bsu.by/en/main.aspx), [BSU](http://www.bsu.by/en/main.aspx) and [UIIP](http://uiip.bas-net.by/eng/), [NASB](http://nasb.gov.by/eng/).
 
 <img src="http://res.cloudinary.com/dzsjwgjii/image/upload/v1492274096/appa.png" height="150px" >
-
-Simple `ide` for building `3d` models from image data sets and visualizing it
 
 ### Supported platforms:
 - [x] **macOS**
@@ -23,7 +23,7 @@ Simple `ide` for building `3d` models from image data sets and visualizing it
 - [x] visualize `model`
 - [ ] search `image` on `3d` `model`
 
-for details, see [`issues`](https://github.com/lybros/sfm/issues)
+for details, check the [`issues`](https://github.com/lybros/sfm/issues)
 
 ### install:
 ```
@@ -48,11 +48,11 @@ git submodule update --init
 * add `path/to/theiaSfM/build/bin` to `$PATH`
 
 ### usage:
-* build code
-* run ./ume from `build/` directory
+* build the code
+* run `./appa` from `build/` directory
 * create new `project` and run `BuildToBinary` action
-* or open already built [`quarry-project`](https://www.dropbox.com/s/0sfd02glicvwvo7/quarry.zip?dl=0) and run `VisualizeBinary` to see result
+* or download and open prebuilt [`quarry-project`](https://www.dropbox.com/s/0sfd02glicvwvo7/quarry.zip?dl=0) and run `VisualizeBinary` to see the result
 
 ### development:
-* use `LOG(INFO)` from [glog](http://rpg.ifi.uzh.ch/docs/glog.html) instead `std::cout`. set `GLOG_logtostderr=1` env var to enable logging
-* use `bash cpplint.sh` for checking style guide
+* use `LOG(INFO)` from [glog](http://rpg.ifi.uzh.ch/docs/glog.html) instead of `std::cout`. set `GLOG_logtostderr=1` env variable to enable logging
+* use `bash cpplint.sh` to check the accordance with style preferences

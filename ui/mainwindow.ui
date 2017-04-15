@@ -40,7 +40,7 @@
            <x>0</x>
            <y>0</y>
            <width>198</width>
-           <height>701</height>
+           <height>695</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -319,7 +319,6 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionVisualizeBinary"/>
-   <addaction name="actionRunExampleReconstruction"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="sizePolicy">

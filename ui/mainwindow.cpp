@@ -120,6 +120,12 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_actionExtract_Features_triggered() {
+  OptionsDialog options_dialog(this, active_project_->GetOptions(),
+                               GENERAL_OPTIONS | EXTRACTING_FEATURES_OPTIONS);
+  if (!options_dialog.exec()) {
+    return;
+  }
+
   process_manager_->StartNewProcess(
         QString("Extracting features..."),
         QtConcurrent::run(active_project_,

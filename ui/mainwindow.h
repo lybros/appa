@@ -18,6 +18,7 @@
 #include "../libs/QtAwesome/QtAwesome/QtAwesome.h"
 
 #include "newproject.h"
+#include "options_dialog.h"
 #include "process_manager.h"
 #include "reconstruction_window.h"
 

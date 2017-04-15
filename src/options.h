@@ -41,7 +41,6 @@ class Options {
 
   ~Options();
 
- private:
   // The parameters of the related Project object.
   QString output_location_;
 

@@ -100,6 +100,8 @@ class Project {
 
   Storage* GetStorage();
 
+  Options* GetOptions();
+
   ~Project();
 
  private:

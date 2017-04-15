@@ -262,6 +262,10 @@ Storage* Project::GetStorage() {
   return storage_;
 }
 
+Options* Project::GetOptions() {
+  return options_;
+}
+
 Project::~Project() {
   WriteConfigurationFile();
   delete options_;

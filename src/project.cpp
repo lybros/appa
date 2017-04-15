@@ -10,7 +10,7 @@ Project::Project(QString project_path) :
   CHECK(ReadConfigurationFile()) << "Reading config file failed!";
 
   options_ = new Options(storage_->GetOutputLocation());
-  features_ = new Features(storage_);
+  features_ = new Features(storage_, options_);
 }
 
 Project::Project(QString project_name,
@@ -37,14 +37,14 @@ Project::Project(QString project_name,
   QDir(project_path).mkdir("out");
   storage_->SetOutputLocation(GetDefaultOutputPath());
   options_ = new Options(storage_->GetOutputLocation());
-  features_ = new Features(storage_);
+  features_ = new Features(storage_, options_);
 }
 
 void Project::BuildModelToBinary() {
-  ReconstructionBuilderOptions* options =
+  ReconstructionBuilderOptions options =
       options_->GetReconstructionBuilderOptions();
 
-  ReconstructionBuilder reconstruction_builder(*options);
+  ReconstructionBuilder reconstruction_builder(options);
 
   for (QString image_path : storage_->GetImages()) {
     reconstruction_builder.AddImage(image_path.toStdString());

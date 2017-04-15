@@ -14,6 +14,7 @@
 
 #include <theia/theia.h>
 
+#include "options.h"
 #include "storage.h"
 #include "utils.h"
 
@@ -26,7 +27,7 @@ class Features {
   typedef std::pair<double, double> Pair;
   typedef std::unordered_map<Pair, Eigen::VectorXf> FeaturesMap;
 
-  explicit Features(Storage* storage);
+  Features(Storage* storage, Options* options);
 
   // Extract features only if doesn't find *.features files.
   void Extract();
@@ -71,8 +72,11 @@ class Features {
   QString out_path_;
   QVector<QString> images_;
   Storage* storage_;
-  theia::FeatureExtractor::Options options_;
-  theia::FeatureExtractor* extractor_;
+
+  // This is the pointer to the same options_ as we have in Project.
+  // Options in Project may be modified (e.g. through OptionsDialog), that
+  // means we need to get actual options before any extracting-related actions.
+  Options* options_;
 };
 
 #endif  // SRC_FEATURESX_H_

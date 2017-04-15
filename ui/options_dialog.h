@@ -10,9 +10,7 @@
 
 #include "../src/options.h"
 
-namespace Ui {
-  class OptionsDialog;
-}
+namespace Ui { class OptionsDialog; }
 
 const int GENERAL_OPTIONS             = 0b00000001;
 const int EXTRACTING_FEATURES_OPTIONS = 0b00000010;

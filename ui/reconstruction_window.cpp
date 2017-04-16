@@ -17,8 +17,12 @@ void ReconstructionWindow::UpdateActiveProject(Project* project) {
 
 void ReconstructionWindow::BuildFromDefaultPath() {
   world_points_.clear();
-  theia::Reconstruction* reconstruction
-      = project_->GetStorage()->GetReconstruction(0);
+  theia::Reconstruction* reconstruction =
+      project_->GetStorage()->GetReconstruction(0);
+  if (!reconstruction) {
+    LOG(WARNING) << "There is no built models!";
+    return;
+  }
 
   // Centers the reconstruction based on the absolute deviation of 3D points.
   reconstruction->Normalize();

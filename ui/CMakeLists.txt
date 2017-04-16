@@ -10,6 +10,7 @@ find_package(Qt5Concurrent REQUIRED)
 set(SRC_UI
         mainwindow.cpp
         newproject.cpp
+        options_dialog.cpp
         process_manager.cpp
         reconstruction_window.cpp
         thumbnail_widget.cpp
@@ -18,6 +19,7 @@ set(SRC_UI
 set(HEADERS_UI
         mainwindow.h
         newproject.h
+        options_dialog.h
         process_manager.h
         reconstruction_window.h
         thumbnail_widget.h
@@ -26,6 +28,7 @@ set(HEADERS_UI
 set(FORMS_UI
         mainwindow.ui
         newproject.ui
+        options_dialog.ui
         )
 
 QT5_WRAP_UI(FORMS_UI_HDRS ${FORMS_UI})

@@ -10,7 +10,7 @@ Project::Project(QString project_path) :
   CHECK(ReadConfigurationFile()) << "Reading config file failed!";
 
   options_ = new Options(storage_->GetOutputLocation());
-  features_ = new Features(storage_);
+  features_ = new Features(storage_, options_);
 }
 
 Project::Project(QString project_name,
@@ -37,14 +37,14 @@ Project::Project(QString project_name,
   QDir(project_path).mkdir("out");
   storage_->SetOutputLocation(GetDefaultOutputPath());
   options_ = new Options(storage_->GetOutputLocation());
-  features_ = new Features(storage_);
+  features_ = new Features(storage_, options_);
 }
 
 void Project::BuildModelToBinary() {
-  ReconstructionBuilderOptions* options =
+  ReconstructionBuilderOptions options =
       options_->GetReconstructionBuilderOptions();
 
-  ReconstructionBuilder reconstruction_builder(*options);
+  ReconstructionBuilder reconstruction_builder(options);
 
   for (QString image_path : storage_->GetImages()) {
     reconstruction_builder.AddImage(image_path.toStdString());
@@ -79,7 +79,12 @@ void Project::BuildModelToBinary() {
 void Project::SearchImage(QString file_path,
                           QSet<theia::TrackId>* h_tracks) {
   // TODO(drapegnik): replace hardcode index with some value.
-  Reconstruction model = *storage_->GetReconstruction(0);
+  Reconstruction* model = storage_->GetReconstruction(0);
+  if (!model) {
+    LOG(WARNING) << "There is no built models!";
+    return;
+  }
+
   std::vector<theia::Keypoint> keypoints;
   std::vector<Eigen::VectorXf> descriptors;
 
@@ -90,17 +95,17 @@ void Project::SearchImage(QString file_path,
   features_->GetFeaturesMap(&feature_to_descriptor);
 
   theia::L2 norm;
-  std::vector<theia::TrackId> tracks_ids = model.TrackIds();
+  std::vector<theia::TrackId> tracks_ids = model->TrackIds();
   int counter = 0;
   theia::Timer timer;
 
   for (auto t_id : tracks_ids) {
-    theia::Track* track = model.MutableTrack(t_id);
+    theia::Track* track = model->MutableTrack(t_id);
     std::unordered_set<theia::ViewId> views_ids = track->ViewIds();
     bool match = false;
 
     for (auto v_id : views_ids) {
-      theia::View* view = model.MutableView(v_id);
+      theia::View* view = model->MutableView(v_id);
       const theia::Feature feature = *(view->GetFeature(t_id));
       const Features::Pair key = std::make_pair(feature[0], feature[1]);
       Features::FeaturesMap::const_iterator got =
@@ -129,7 +134,7 @@ void Project::SearchImage(QString file_path,
   }
   const double time = timer.ElapsedTimeInSeconds();
   LOG(INFO) << "It took " << time << " seconds to compare descriptors";
-  LOG(INFO) << "Match " << counter << "/" << model.NumTracks() << " tracks";
+  LOG(INFO) << "Match " << counter << "/" << model->NumTracks() << " tracks";
   return;
 }
 
@@ -260,6 +265,10 @@ QString Project::GetDefaultOutputPath() {
 
 Storage* Project::GetStorage() {
   return storage_;
+}
+
+Options* Project::GetOptions() {
+  return options_;
 }
 
 Project::~Project() {

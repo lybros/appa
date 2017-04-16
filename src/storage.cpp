@@ -88,6 +88,7 @@ Reconstruction* Storage::GetReconstruction(int number) {
   if (status_ != ReconstructionStatus::LOADED_INTO_MEMORY) {
     ReadReconstructions();
   }
+  if (reconstructions_.size() < number + 1) { return NULL; }
 
   return reconstructions_[number];
 }
@@ -97,6 +98,11 @@ void Storage::SetReconstructions(
   reconstructions_.resize(reconstructions.size());
   for (int i = 0; i < reconstructions_.size(); i++) {
     reconstructions_[i] = reconstructions[i];
+  }
+
+  if (!reconstructions_.size()) {
+    status_ = ReconstructionStatus::NOT_BUILT;
+    return;
   }
 
   status_ = ReconstructionStatus::LOADED_INTO_MEMORY;

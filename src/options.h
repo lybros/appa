@@ -29,15 +29,21 @@
 
 #include <theia/theia.h>
 
+// TODO(uladbohdan): to be consistent in using "using" keyword.
 using theia::MatchingStrategy;
 using theia::DescriptorExtractorType;
 using theia::ReconstructionBuilderOptions;
 
 class Options {
+  // Granting access to private fields to OptionsDialog class.
+  friend class OptionsDialog;
+
  public:
   explicit Options(QString output_location);
 
-  theia::ReconstructionBuilderOptions* GetReconstructionBuilderOptions();
+  theia::ReconstructionBuilderOptions GetReconstructionBuilderOptions();
+
+  theia::FeatureExtractor::Options GetFeatureExtractorOptions();
 
   ~Options();
 

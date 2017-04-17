@@ -33,6 +33,8 @@
 using theia::MatchingStrategy;
 using theia::DescriptorExtractorType;
 using theia::ReconstructionBuilderOptions;
+using theia::FeatureMatcherOptions;
+using theia::FeatureExtractor;
 
 class Options {
   // Granting access to private fields to OptionsDialog class.
@@ -41,9 +43,11 @@ class Options {
  public:
   explicit Options(QString output_location);
 
-  theia::ReconstructionBuilderOptions GetReconstructionBuilderOptions();
+  ReconstructionBuilderOptions GetReconstructionBuilderOptions();
 
-  theia::FeatureExtractor::Options GetFeatureExtractorOptions();
+  FeatureExtractor::Options GetFeatureExtractorOptions();
+
+  FeatureMatcherOptions GetFeatureMatcherOptions();
 
   ~Options();
 

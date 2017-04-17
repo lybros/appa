@@ -53,8 +53,9 @@ void MainWindow::set_icons(QtAwesome* awesome) {
 
 void MainWindow::on_actionBuildToBinary_triggered() {
   OptionsDialog options_dialog(this, active_project_->GetOptions(),
-    GENERAL_OPTIONS | EXTRACTING_FEATURES_OPTIONS | MATCHING_FEATURES_OPTIONS |
-    RECONSTRUCTION_OPTIONS);
+                               GENERAL_OPTIONS | EXTRACTING_FEATURES_OPTIONS |
+                               MATCHING_FEATURES_OPTIONS |
+                               RECONSTRUCTION_OPTIONS);
   if (!options_dialog.exec()) {
     return;
   }
@@ -189,19 +190,26 @@ void MainWindow::on_actionVisualizeBinary_triggered() {
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {
+
+  QString image_path = QFileDialog::getOpenFileName(
+      this,
+      tr("Choose image for search"),
+      active_project_->GetImagesPath(),
+      tr("images (*.jpg *.jpeg *.png)"),
+      0,
+      QFileDialog::DontUseNativeDialog | QFileDialog::ReadOnly);
+
+  if (!image_path.length()) { return; }
+
   QSet<theia::TrackId>* highlighted_tracks = new QSet<theia::TrackId>();
-  // TODO(drapegnik): replace hardcode with variables from dialog
-  QString image =
-      QDir(active_project_->GetImagesPath()).filePath("image005.jpg");
-  active_project_->SearchImage(image, highlighted_tracks);
+  view_->BuildFromDefaultPath();
+  active_project_->SearchImage(image_path, highlighted_tracks);
   view_->SetHighlightedPoints(highlighted_tracks);
   delete highlighted_tracks;
 }
 
 void MainWindow::UpdateActiveProjectInfo() {
-  if (!active_project_) {
-    return;
-  }
+  if (!active_project_) { return; }
 
   ui->project_name_label->setText("PROJECT NAME: " +
                                   active_project_->GetProjectName());

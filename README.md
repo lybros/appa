@@ -38,6 +38,7 @@ git submodule update --init
 * [QGLViewer](https://libqglviewer.com/) ~ `v2.6.4` 
 * [OpenGL](https://www.opengl.org/) (*seems that you already have installed it on your computer*)
 * [`cpplint`](https://github.com/cpplint/cpplint) (*optional*)
+* [`Ninja`](https://ninja-build.org/manual.html) (*optional*) for build, check the [instruction](https://gist.github.com/nevkontakte/3f22937b2c3a4ff2293c)
 
 ### setup:
 * set `DYLD_LIBRARY_PATH` environment variable to `path/to/openimageio/lib`

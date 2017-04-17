@@ -4,14 +4,12 @@
 
 // TODO(drapegnik): pass to constructor options object.
 Features::Features(Storage* storage, Options* options) :
-  storage_(storage), options_(options) {
+    storage_(storage), options_(options) {
   out_path_ = storage->GetOutputLocation();
   images_ = storage_->GetImages();
 }
 
-void Features::Extract() {
-  return _extract(false);
-}
+void Features::Extract() { return _extract(false); }
 
 void Features::Extract(
     std::vector<std::vector<theia::Keypoint> >* keypoints_vector,
@@ -50,7 +48,7 @@ void Features::ExtractFeature(
 
   theia::Timer timer;
   std::unique_ptr<theia::FeatureExtractor> extractor(
-        new theia::FeatureExtractor(options_->GetFeatureExtractorOptions()));
+      new theia::FeatureExtractor(options_->GetFeatureExtractorOptions()));
   CHECK(extractor->Extract(filenames, &keypoints_vector, &descriptors_vector))
   << "Feature extraction failed!";
   const double time = timer.ElapsedTimeInSeconds();
@@ -146,7 +144,7 @@ void Features::_extract(bool is_force) {
 
   theia::Timer timer;
   std::unique_ptr<theia::FeatureExtractor> extractor(
-        new theia::FeatureExtractor(options_->GetFeatureExtractorOptions()));
+      new theia::FeatureExtractor(options_->GetFeatureExtractorOptions()));
   CHECK(extractor->ExtractToDisk(processing_images))
   << "Feature extraction failed!";
   const double time = timer.ElapsedTimeInSeconds();
@@ -158,5 +156,4 @@ void Features::_extract(bool is_force) {
   return;
 }
 
-Features::~Features() {
-}
+Features::~Features() {}

@@ -46,8 +46,15 @@ void Project::BuildModelToBinary() {
 
   ReconstructionBuilder reconstruction_builder(options);
 
+  theia::CameraIntrinsicsGroupId intrinsics_group_id =
+      theia::kInvalidCameraIntrinsicsGroupId;
+  if (options_->CameraCalibrationIsShared()) {
+    intrinsics_group_id = 0;
+  }
+
   for (QString image_path : storage_->GetImages()) {
-    reconstruction_builder.AddImage(image_path.toStdString());
+    reconstruction_builder.AddImage(image_path.toStdString(),
+                                    intrinsics_group_id);
   }
   LOG(INFO) << "All images are added to the builder.";
   LOG(INFO) << "Starting extracting and matching";

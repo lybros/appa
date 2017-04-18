@@ -35,6 +35,9 @@ void OptionsDialog::InitializeForms() {
                   {theia::MatchingStrategy::BRUTE_FORCE, "Brute Force"},
                   {theia::MatchingStrategy::CASCADE_HASHING, "Cascade Hashing"},
                 })[options_->match_strategy_]);
+
+  // Reconstruction options.
+  ui->shared_calibration_checkBox->setChecked(options_->shared_calibration);
 }
 
 void OptionsDialog::FindSetCombobox(QComboBox* combobox, QString text) {
@@ -60,8 +63,9 @@ void OptionsDialog::accept() {
     })[ui->matching_strategy_combobox->currentText()];
   }
 
-  // if (options_enabled_ & RECONSTRUCTION_OPTIONS) {
-  // }
+  if (options_enabled_ & RECONSTRUCTION_OPTIONS) {
+    options_->shared_calibration = ui->shared_calibration_checkBox->isChecked();
+  }
 
   LOG(INFO) << "All options applied successfully.";
   QDialog::accept();

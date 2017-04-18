@@ -33,4 +33,8 @@ theia::FeatureExtractor::Options Options::GetFeatureExtractorOptions() {
   return options;
 }
 
+bool Options::CameraCalibrationIsShared() {
+  return shared_calibration;
+}
+
 Options::~Options() {}

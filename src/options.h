@@ -45,6 +45,9 @@ class Options {
 
   theia::FeatureExtractor::Options GetFeatureExtractorOptions();
 
+  // TODO(uladbohdan): to replace with something more generic.
+  bool CameraCalibrationIsShared();
+
   ~Options();
 
  private:
@@ -61,6 +64,9 @@ class Options {
   bool match_out_of_core_ = true;
   bool perform_geometric_verification_ = false;
   MatchingStrategy match_strategy_ = MatchingStrategy::CASCADE_HASHING;
+
+  // Reconstruction.
+  bool shared_calibration = false;
 };
 
 enum ReconstructionStatus {

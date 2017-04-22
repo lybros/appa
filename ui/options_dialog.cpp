@@ -38,10 +38,30 @@ void OptionsDialog::InitializeForms() {
 
   // Reconstruction options.
   ui->shared_calibration_checkBox->setChecked(options_->shared_calibration);
+  ui->use_intrinsics_prior_checkBox->setChecked(
+        options_->use_camera_intrinsics_prior);
+
+  SetCheckbox(ui->optimize_focal_length_checkBox,
+              OptimizeIntrinsicsType::FOCAL_LENGTH);
+  SetCheckbox(ui->optimize_principal_points_checkBox,
+              OptimizeIntrinsicsType::PRINCIPAL_POINTS);
+  SetCheckbox(ui->optimize_aspect_ratio_checkBox,
+              OptimizeIntrinsicsType::ASPECT_RATIO);
+  SetCheckbox(ui->optimize_skew_checkBox, OptimizeIntrinsicsType::SKEW);
+  SetCheckbox(ui->optimize_radial_distortion_checkBox,
+      OptimizeIntrinsicsType::RADIAL_DISTORTION);
+  SetCheckbox(ui->optimize_tangential_distortion_checkBox,
+              OptimizeIntrinsicsType::TANGENTIAL_DISTORTION);
 }
 
 void OptionsDialog::FindSetCombobox(QComboBox* combobox, QString text) {
   combobox->setCurrentIndex(combobox->findText(text));
+}
+
+void OptionsDialog::SetCheckbox(QCheckBox* checkbox,
+                                OptimizeIntrinsicsType opt_type) {
+  checkbox->setChecked(
+        static_cast<bool>(options_->intrinsics_to_optimize_ & opt_type));
 }
 
 void OptionsDialog::accept() {
@@ -65,6 +85,29 @@ void OptionsDialog::accept() {
 
   if (options_enabled_ & RECONSTRUCTION_OPTIONS) {
     options_->shared_calibration = ui->shared_calibration_checkBox->isChecked();
+    options_->use_camera_intrinsics_prior =
+        ui->use_intrinsics_prior_checkBox->isChecked();
+
+    OptimizeIntrinsicsType optimize_type = OptimizeIntrinsicsType::NONE;
+    if (ui->optimize_focal_length_checkBox->isChecked()) {
+      optimize_type |= OptimizeIntrinsicsType::FOCAL_LENGTH;
+    }
+    if (ui->optimize_aspect_ratio_checkBox->isChecked()) {
+      optimize_type |= OptimizeIntrinsicsType::ASPECT_RATIO;
+    }
+    if (ui->optimize_principal_points_checkBox->isChecked()) {
+      optimize_type |= OptimizeIntrinsicsType::PRINCIPAL_POINTS;
+    }
+    if (ui->optimize_skew_checkBox->isChecked()) {
+      optimize_type |= OptimizeIntrinsicsType::SKEW;
+    }
+    if (ui->optimize_radial_distortion_checkBox->isChecked()) {
+      optimize_type |= OptimizeIntrinsicsType::RADIAL_DISTORTION;
+    }
+    if (ui->optimize_tangential_distortion_checkBox->isChecked()) {
+      optimize_type |= OptimizeIntrinsicsType::TANGENTIAL_DISTORTION;
+    }
+    options_->intrinsics_to_optimize_ = optimize_type;
   }
 
   LOG(INFO) << "All options applied successfully.";

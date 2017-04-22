@@ -19,6 +19,9 @@ ReconstructionBuilderOptions Options::GetReconstructionBuilderOptions() {
   options.matching_options.keypoints_and_descriptors_output_dir =
       QDir(output_location_).filePath("features").toStdString();
 
+  options.reconstruction_estimator_options =
+      GetReconstructionEstimatorOptions();
+
   return options;
 }
 
@@ -30,6 +33,13 @@ theia::FeatureExtractor::Options Options::GetFeatureExtractorOptions() {
       filePath("features/").toStdString();
   options.num_threads = num_threads_;
 
+  return options;
+}
+
+theia::ReconstructionEstimatorOptions
+Options::GetReconstructionEstimatorOptions() {
+  theia::ReconstructionEstimatorOptions options;
+  options.intrinsics_to_optimize = intrinsics_to_optimize_;
   return options;
 }
 

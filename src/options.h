@@ -45,6 +45,8 @@ class Options {
 
   theia::FeatureExtractor::Options GetFeatureExtractorOptions();
 
+  theia::ReconstructionEstimatorOptions GetReconstructionEstimatorOptions();
+
   // TODO(uladbohdan): to replace with something more generic.
   bool CameraCalibrationIsShared();
 
@@ -67,6 +69,12 @@ class Options {
 
   // Reconstruction.
   bool shared_calibration = false;
+  bool use_camera_intrinsics_prior = false;
+
+  // Reconstruction Estimator Options.
+  theia::OptimizeIntrinsicsType intrinsics_to_optimize_ =
+      theia::OptimizeIntrinsicsType::FOCAL_LENGTH |
+      theia::OptimizeIntrinsicsType::RADIAL_DISTORTION;
 };
 
 enum ReconstructionStatus {

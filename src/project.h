@@ -14,17 +14,42 @@
  * ...
  * "nameN.jpg"
  * OUTPUT_LOCATION "~/project0/out"
- * -------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
  * Notice: names of images should be sorted in ascending order. Images are
  * automatically sorted during the parsing, but you should keep that in mind if
  * you're creating a project config manually.
- */
+ *
+ * In order to provide prior values for Camera Intrinsics, the file called
+ * "camera_intrinsics.txt" must be in your IMAGES_LOCATION directory. It is
+ * ignored unless the flag 'use_camera_intrinsics_prior' is set. Either all the
+ * images or only a part of them may be specified in a file. Only one row is
+ * enough if the 'shared_calibration' is set (the rest is ignored even if
+ * provided).
+ * The file format is:
+ * ----------------------------------------------------------------------------
+ * CAMERA_CALIBRATION_<TYPE>_1.0
+ * NUMBER_OF_IMAGES <N>
+ * <IMG_1_NAME> <parameters ... vary from TYPE>
+ * ...
+ * <IMG_N_NAME> ...
+ * ----------------------------------------------------------------------------
+ * The file format for PINHOLE camera:
+ * ----------------------------------------------------------------------------
+ * CAMERA_CALIBRATION_PINHOLE_1.0
+ * NUMBER_OF_IMAGES N
+ * <IMG_1_NAME> <focal_length> <px> <py> <skew> <aspect_ratio> <rad1> <rad2>
+ * ...
+ * <IMG_N_NAME> ...
+ * ----------------------------------------------------------------------------
+ *
+ ******************************************************************************/
 
 #ifndef SRC_PROJECT_H_
 #define SRC_PROJECT_H_
 
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <QDir>

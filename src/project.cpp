@@ -11,6 +11,8 @@ Project::Project(QString project_path) :
 
   options_ = new Options(storage_->GetOutputLocation());
   features_ = new Features(storage_, options_);
+
+  storage_->SetOptions(options_);
 }
 
 Project::Project(QString project_name,
@@ -38,6 +40,8 @@ Project::Project(QString project_name,
   storage_->SetOutputLocation(GetDefaultOutputPath());
   options_ = new Options(storage_->GetOutputLocation());
   features_ = new Features(storage_, options_);
+
+  storage_->SetOptions(options_);
 }
 
 void Project::BuildModelToBinary() {
@@ -46,16 +50,35 @@ void Project::BuildModelToBinary() {
 
   ReconstructionBuilder reconstruction_builder(options);
 
+  // Enabling "Shared Calibration" (all images were made with the same camera).
   theia::CameraIntrinsicsGroupId intrinsics_group_id =
       theia::kInvalidCameraIntrinsicsGroupId;
-  if (options_->CameraCalibrationIsShared()) {
+  if (options_->shared_calibration) {
     intrinsics_group_id = 0;
   }
 
-  for (QString image_path : storage_->GetImages()) {
-    reconstruction_builder.AddImage(image_path.toStdString(),
-                                    intrinsics_group_id);
+  // Making decision if Prior Camera Calibration parameters are provided.
+  std::unordered_map<std::string, theia::CameraIntrinsicsPrior>
+      camera_intrinsics_prior;
+
+  if (options_->use_camera_intrinsics_prior &&
+      storage_->ReadCalibration(&camera_intrinsics_prior)) {
+    for (QString image_path : storage_->GetImages()) {
+      // TODO(uladbohdan): what if do not have prior intrinsics for some of the
+      // images?
+      reconstruction_builder.AddImageWithCameraIntrinsicsPrior(
+            image_path.toStdString(),
+            camera_intrinsics_prior[image_path.toStdString()],
+            intrinsics_group_id);
+    }
+    LOG(INFO) << "Prior camera intrinsics successfully applied.";
+  } else {
+    for (QString image_path : storage_->GetImages()) {
+      reconstruction_builder.AddImage(image_path.toStdString(),
+                                      intrinsics_group_id);
+    }
   }
+
   LOG(INFO) << "All images are added to the builder.";
   LOG(INFO) << "Starting extracting and matching";
 

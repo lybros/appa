@@ -35,8 +35,9 @@ using theia::DescriptorExtractorType;
 using theia::ReconstructionBuilderOptions;
 
 class Options {
-  // Granting access to private fields to OptionsDialog class.
   friend class OptionsDialog;
+  friend class Project;
+  friend class Storage;
 
  public:
   explicit Options(QString output_location);
@@ -46,9 +47,6 @@ class Options {
   theia::FeatureExtractor::Options GetFeatureExtractorOptions();
 
   theia::ReconstructionEstimatorOptions GetReconstructionEstimatorOptions();
-
-  // TODO(uladbohdan): to replace with something more generic.
-  bool CameraCalibrationIsShared();
 
   ~Options();
 
@@ -68,7 +66,7 @@ class Options {
   MatchingStrategy match_strategy_ = MatchingStrategy::CASCADE_HASHING;
 
   // Reconstruction.
-  bool shared_calibration = false;
+  bool shared_calibration = true;
   bool use_camera_intrinsics_prior = false;
 
   // Reconstruction Estimator Options.

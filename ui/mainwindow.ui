@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Appa</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -40,7 +40,7 @@
            <x>0</x>
            <y>0</y>
            <width>198</width>
-           <height>695</height>
+           <height>701</height>
           </rect>
          </property>
          <property name="sizePolicy">

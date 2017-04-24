@@ -38,6 +38,7 @@ class Options {
   friend class OptionsDialog;
   friend class Project;
   friend class Storage;
+  friend class StorageIO;
 
  public:
   explicit Options(QString output_location);

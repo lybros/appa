@@ -64,6 +64,9 @@ void Project::BuildModelToBinary() {
     for (QString image_path : storage_->GetImages()) {
       // TODO(uladbohdan): what if do not have prior intrinsics for some of the
       // images?
+      LOG(INFO) << "Images will be added with prior calibration."
+                << "Shared calibration is "
+                << (options_->shared_calibration ? "on" : "off");
       reconstruction_builder.AddImageWithCameraIntrinsicsPrior(
             image_path.toStdString(),
             camera_intrinsics_prior[image_path],
@@ -71,6 +74,9 @@ void Project::BuildModelToBinary() {
     }
     LOG(INFO) << "Prior camera intrinsics successfully applied.";
   } else {
+    LOG(INFO) << "Images will be added without prior calibration."
+              << "Shared calibration is "
+              << (options_->shared_calibration ? "on" : "off");
     for (QString image_path : storage_->GetImages()) {
       reconstruction_builder.AddImage(image_path.toStdString(),
                                       intrinsics_group_id);

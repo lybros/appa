@@ -4,6 +4,7 @@
 #define UI_OPTIONS_DIALOG_H_
 
 #include <QComboBox>
+#include <QCheckBox>
 #include <QDialog>
 #include <QString>
 #include <QTextStream>
@@ -11,6 +12,8 @@
 #include "../src/options.h"
 
 namespace Ui { class OptionsDialog; }
+
+using theia::OptimizeIntrinsicsType;
 
 const int GENERAL_OPTIONS             = 0b00000001;
 const int EXTRACTING_FEATURES_OPTIONS = 0b00000010;
@@ -47,7 +50,9 @@ class OptionsDialog : public QDialog {
 
   void EnableOptionSections();
 
+  // Helpers to reduce the code size.
   void FindSetCombobox(QComboBox* combobox, QString text);
+  void SetCheckbox(QCheckBox* checkbox, OptimizeIntrinsicsType opt_type);
 };
 
 #endif  // UI_OPTIONS_DIALOG_H_

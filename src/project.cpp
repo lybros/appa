@@ -11,6 +11,8 @@ Project::Project(QString project_path) :
 
   options_ = new Options(storage_->GetOutputLocation());
   features_ = new Features(storage_, options_);
+
+  storage_->SetOptions(options_);
 }
 
 Project::Project(QString project_name,
@@ -38,6 +40,8 @@ Project::Project(QString project_name,
   storage_->SetOutputLocation(GetDefaultOutputPath());
   options_ = new Options(storage_->GetOutputLocation());
   features_ = new Features(storage_, options_);
+
+  storage_->SetOptions(options_);
 }
 
 void Project::BuildModelToBinary() {
@@ -46,9 +50,39 @@ void Project::BuildModelToBinary() {
 
   ReconstructionBuilder reconstruction_builder(options);
 
-  for (QString image_path : storage_->GetImages()) {
-    reconstruction_builder.AddImage(image_path.toStdString());
+  // Enabling "Shared Calibration" (all images were made with the same camera).
+  theia::CameraIntrinsicsGroupId intrinsics_group_id =
+      theia::kInvalidCameraIntrinsicsGroupId;
+  if (options_->shared_calibration) {
+    intrinsics_group_id = 0;
   }
+
+  // Making decision if Prior Camera Calibration parameters are provided.
+  QMap<QString, theia::CameraIntrinsicsPrior> camera_intrinsics_prior;
+  if (options_->use_camera_intrinsics_prior &&
+      storage_->GetCalibration(&camera_intrinsics_prior)) {
+    for (QString image_path : storage_->GetImages()) {
+      // TODO(uladbohdan): what if do not have prior intrinsics for some of the
+      // images?
+      LOG(INFO) << "Images will be added with prior calibration."
+                << "Shared calibration is "
+                << (options_->shared_calibration ? "on" : "off");
+      reconstruction_builder.AddImageWithCameraIntrinsicsPrior(
+            image_path.toStdString(),
+            camera_intrinsics_prior[image_path],
+            intrinsics_group_id);
+    }
+    LOG(INFO) << "Prior camera intrinsics successfully applied.";
+  } else {
+    LOG(INFO) << "Images will be added without prior calibration."
+              << "Shared calibration is "
+              << (options_->shared_calibration ? "on" : "off");
+    for (QString image_path : storage_->GetImages()) {
+      reconstruction_builder.AddImage(image_path.toStdString(),
+                                      intrinsics_group_id);
+    }
+  }
+
   LOG(INFO) << "All images are added to the builder.";
   LOG(INFO) << "Starting extracting and matching";
 
@@ -173,85 +207,11 @@ void Project::SetImagesPath(QString images_path) {
 }
 
 bool Project::WriteConfigurationFile() {
-  QFile configFile(GetConfigurationFilePath());
-  if (!configFile.open(QIODevice::ReadWrite)) { return false; }
-
-  QTextStream stream(&configFile);
-  stream << "PROJECT_CONFIG_VERSION v1.0" << endl;
-  stream << "PROJECT_NAME " << project_name_ << endl;
-  stream << "IMAGES_LOCATION " << GetImagesPath() << endl;
-  stream << "NUMBER_OF_IMAGES " << storage_->NumberOfImages() << endl;
-  for (auto image_path : storage_->GetImages()) {
-    stream << image_path << endl;
-  }
-  stream << "OUTPUT_LOCATION " << GetDefaultOutputPath() << endl;
-
-  configFile.close();
-  return true;
+  return ProjectIO(this).WriteConfigurationFile();
 }
 
 bool Project::ReadConfigurationFile() {
-  QFile configFile(GetConfigurationFilePath());
-
-  if (!configFile.open(QIODevice::ReadOnly)) { return false; }
-
-  QTextStream stream(&configFile);
-  QString temp_line;
-
-  temp_line = stream.readLine();
-  if (temp_line != "PROJECT_CONFIG_VERSION v1.0") {
-    LOG(ERROR) << "Reading config failed: wrong file version.";
-    configFile.close();
-    return false;
-  }
-
-  stream >> temp_line;
-  if (temp_line != "PROJECT_NAME") {
-    LOG(ERROR) << "Wrong config file format. No PROJECT_NAME attribute.";
-    configFile.close();
-    return false;
-  }
-  stream >> project_name_;
-
-  stream >> temp_line;
-  if (temp_line != "IMAGES_LOCATION") {
-    LOG(ERROR) << "Wrong config file format. No IMAGES_LOCATION attribute.";
-    configFile.close();
-    return false;
-  }
-  QString images_path;
-  stream >> images_path;
-
-  stream >> temp_line;
-  if (temp_line != "NUMBER_OF_IMAGES") {
-    LOG(ERROR) << "Wrong config file format. No NUMBER_OF_IMAGES attr.";
-    configFile.close();
-    return false;
-  }
-  int number_of_images;
-  stream >> number_of_images;
-  QVector<QString> images(number_of_images);
-  for (int i = 0; i < number_of_images; i++) {
-    stream >> images[i];
-  }
-
-  if (!storage_->ForceInitialize(images_path, images)) {
-    LOG(ERROR) << "Force storage initializing failed :(";
-    configFile.close();
-    return false;
-  }
-
-  stream >> temp_line;
-  if (temp_line != "OUTPUT_LOCATION") {
-    LOG(ERROR) << "Wrong config file format. No OUTPUT_LOCATION attr.";
-    configFile.close();
-    return false;
-  }
-  stream >> temp_line;
-  storage_->SetOutputLocation(temp_line);
-
-  configFile.close();
-  return true;
+  return ProjectIO(this).ReadConfigurationFile();
 }
 
 QString Project::GetConfigurationFilePath() {

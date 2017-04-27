@@ -2,6 +2,7 @@
 
 #include "reconstructor.h"
 
+#include <string>
 #include <vector>
 
 #include <QMap>
@@ -21,9 +22,9 @@ void Reconstructor::SmartBuild() {
 
   ReconstructionBuilder reconstruction_builder(options);
 
-  if (!ReadMatches(reconstruction_builder)) {
+  if (!ReadMatches(&reconstruction_builder)) {
     LOG(INFO) << "Failed to read matches. Starting the process from scratch...";
-    if (!ExtractFeaturesMatches(reconstruction_builder)) {
+    if (!ExtractFeaturesMatches(&reconstruction_builder)) {
       LOG(ERROR) << "Failed to extract features and matches.";
       return;
     }
@@ -50,15 +51,13 @@ void Reconstructor::SmartBuild() {
   return;
 }
 
-bool Reconstructor::ReadMatches(
-    ReconstructionBuilder& reconstruction_builder) {
+bool Reconstructor::ReadMatches(ReconstructionBuilder* reconstruction_builder) {
   std::vector<std::string> image_files;
   std::vector<theia::CameraIntrinsicsPrior> camera_intrinsics_prior;
   std::vector<theia::ImagePairMatch> image_matches;
 
   QString matches_file =
       QDir(project_->GetDefaultOutputPath()).filePath("matches.binary");
-
   if (!QFileInfo(matches_file).exists()) {
     return false;
   }
@@ -79,13 +78,13 @@ bool Reconstructor::ReadMatches(
   }
 
   for (int i = 0; i < image_files.size(); i++) {
-    reconstruction_builder.AddImageWithCameraIntrinsicsPrior(
+    reconstruction_builder->AddImageWithCameraIntrinsicsPrior(
         image_files[i], camera_intrinsics_prior[i], intrinsics_group_id);
   }
 
   // Add the matches.
   for (const auto& match : image_matches) {
-    CHECK(reconstruction_builder.AddTwoViewMatch(match.image1,
+    CHECK(reconstruction_builder->AddTwoViewMatch(match.image1,
                                                  match.image2,
                                                  match));
   }
@@ -95,7 +94,7 @@ bool Reconstructor::ReadMatches(
 }
 
 bool Reconstructor::ExtractFeaturesMatches(
-    ReconstructionBuilder& reconstruction_builder) {
+    ReconstructionBuilder* reconstruction_builder) {
   // Enabling "Shared Calibration" (all images were made with the same camera).
   theia::CameraIntrinsicsGroupId intrinsics_group_id =
       theia::kInvalidCameraIntrinsicsGroupId;
@@ -113,7 +112,7 @@ bool Reconstructor::ExtractFeaturesMatches(
       LOG(INFO) << "Images will be added with prior calibration."
                 << "Shared calibration is "
                 << (options_->shared_calibration ? "on" : "off");
-      reconstruction_builder.AddImageWithCameraIntrinsicsPrior(
+      reconstruction_builder->AddImageWithCameraIntrinsicsPrior(
             image_path.toStdString(),
             camera_intrinsics_prior[image_path],
             intrinsics_group_id);
@@ -124,7 +123,7 @@ bool Reconstructor::ExtractFeaturesMatches(
               << "Shared calibration is "
               << (options_->shared_calibration ? "on" : "off");
     for (QString image_path : storage_->GetImages()) {
-      reconstruction_builder.AddImage(image_path.toStdString(),
+      reconstruction_builder->AddImage(image_path.toStdString(),
                                       intrinsics_group_id);
     }
   }
@@ -132,7 +131,7 @@ bool Reconstructor::ExtractFeaturesMatches(
   LOG(INFO) << "All images are added to the builder.";
   LOG(INFO) << "Starting extracting and matching";
 
-  CHECK(reconstruction_builder.ExtractAndMatchFeatures())
+  CHECK(reconstruction_builder->ExtractAndMatchFeatures())
   << "Could not extract and match features";
 
   LOG(INFO) << "Extracted and matched successfully!";

@@ -27,8 +27,8 @@ class Reconstructor {
   Storage* storage_;
   Options* options_;
 
-  bool ReadMatches(ReconstructionBuilder& reconstruction_builder);
-  bool ExtractFeaturesMatches(ReconstructionBuilder& reconstruction_builder);
+  bool ReadMatches(ReconstructionBuilder* reconstruction_builder);
+  bool ExtractFeaturesMatches(ReconstructionBuilder* reconstruction_builder);
 };
 
 #endif  // SRC_RECONSTRUCTOR_H_

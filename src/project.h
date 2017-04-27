@@ -46,15 +46,8 @@ class Project {
   // Project::WriteConfigurationFile() method.
   Project(QString project_name, QString project_path, QString images_name);
 
-  // Simple build from scratch and save into a binary file.
-  // Covers all stages all together:
-  // * Extracting features, saving them into a filesystem.
-  // * Matching features.
-  // * Building a 3D model and saving it into a binary file in filesystem.
-  //
-  // May take plenty of time to finish processing.
-  //
-  // The recommendation is to run every stage separately.
+  // Runs Smart building process, which figures out if we need matching stage
+  // or it has been already run.
   void BuildModelToBinary();
 
   void ExtractFeatures();

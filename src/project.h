@@ -35,7 +35,6 @@ const QString DEFAULT_MODEL_BINARY_FILENAME = "model-0.binary";
 
 class Project {
   friend class ProjectIO;
-  friend class Reconstructor;
 
  public:
   // This constructor must be called if we're opening an existent project.

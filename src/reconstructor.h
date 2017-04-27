@@ -5,6 +5,10 @@
 
 #include "theia/theia.h"
 
+#include "options.h"
+#include "project.h"
+#include "storage.h"
+
 using theia::Reconstruction;
 using theia::ReconstructionBuilder;
 using theia::ReconstructionBuilderOptions;
@@ -20,6 +24,11 @@ class Reconstructor {
 
  private:
   Project* project_;
+  Storage* storage_;
+  Options* options_;
+
+  bool ReadMatches(ReconstructionBuilder& reconstruction_builder);
+  bool ExtractFeaturesMatches(ReconstructionBuilder& reconstruction_builder);
 };
 
 #endif  // SRC_RECONSTRUCTOR_H_

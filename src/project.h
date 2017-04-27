@@ -26,11 +26,8 @@
 #include "io/project.h"
 #include "featuresx.h"
 #include "options.h"
+#include "reconstructor.h"
 #include "storage.h"
-
-using theia::Reconstruction;
-using theia::ReconstructionBuilder;
-using theia::ReconstructionBuilderOptions;
 
 const QString CONFIG_FILE_NAME = "project-config";
 const QString DEFAULT_OUTPUT_LOCATION_POSTFIX = "out/";
@@ -38,6 +35,7 @@ const QString DEFAULT_MODEL_BINARY_FILENAME = "model-0.binary";
 
 class Project {
   friend class ProjectIO;
+  friend class Reconstructor;
 
  public:
   // This constructor must be called if we're opening an existent project.

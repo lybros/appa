@@ -37,6 +37,7 @@ using theia::ReconstructionBuilderOptions;
 class Options {
   friend class OptionsDialog;
   friend class Project;
+  friend class Reconstructor;
   friend class Storage;
   friend class StorageIO;
 

@@ -2,6 +2,7 @@ set(SOURCE_FILES
     featuresx.cpp
     options.cpp
     project.cpp
+    reconstructor.cpp
     storage.cpp
     utils.cpp
     )
@@ -10,6 +11,7 @@ set(HEADERS
     featuresx.h
     options.h
     project.h
+    reconstructor.h
     storage.h
     utils.h
     )

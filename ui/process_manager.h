@@ -9,6 +9,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QProgressBar>
+#include <QTextStream>
+#include <QTimer>
 #include <QWidget>
 
 struct Task {
@@ -61,6 +63,26 @@ class ProcessManager : public QWidget {
 
     QProgressBar* progress_bar = new QProgressBar(new_progress_tracker);
     box_layout->addWidget(progress_bar);
+
+    QLabel* timer_label = new QLabel("00:00", new_progress_tracker);
+    box_layout->addWidget(timer_label);
+
+    QTimer* timer = new QTimer(new_progress_tracker);
+    connect(timer, &QTimer::timeout, [timer_label] {
+      int cur_mins, cur_secs;
+      QStringList splitted_time = timer_label->text().split(':');
+      QTextStream(&splitted_time[0]) >> cur_mins;
+      QTextStream(&splitted_time[1]) >> cur_secs;
+      int seconds_to_show = cur_mins * 60 + cur_secs + 1;
+      int mins = seconds_to_show / 60;
+      int secs = seconds_to_show % 60;
+      timer_label->setText(QString(mins < 10 ? "0" : "") +
+                           QString::number(seconds_to_show / 60) +
+                           QString(":") +
+                           QString(secs < 10 ? "0" : "") +
+                           QString::number(seconds_to_show % 60));
+    });
+    timer->start(1000);
 
     Task new_task;
     new_task.id = NextTaskId();

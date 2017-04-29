@@ -4,20 +4,7 @@
  * project_name_folder
  * |--"project-config"
  *
- * project-config file is:
- * ----------------------------------------------------------------------------
- * PROJECT_CONFIG_VERSION v1.0
- * PROJECT_NAME "project-name"
- * IMAGES_LOCATION "~/datasets/dataset0/"
- * NUMBER_OF_IMAGES N_IMAGES
- * "name0.jpg"
- * ...
- * "nameN.jpg"
- * OUTPUT_LOCATION "~/project0/out"
- * -------------------------------------------------------------------------
- * Notice: names of images should be sorted in ascending order. Images are
- * automatically sorted during the parsing, but you should keep that in mind if
- * you're creating a project config manually.
+ * More about the structure in io/ firectory.
  */
 
 #ifndef SRC_PROJECT_H_
@@ -28,6 +15,7 @@
 #include <vector>
 
 #include <QDir>
+#include <QMap>
 #include <QSet>
 #include <QString>
 #include <QTextStream>
@@ -35,19 +23,19 @@
 #include <theia/theia.h>
 #include <theia/matching/distance.h>
 
+#include "io/project.h"
 #include "featuresx.h"
 #include "options.h"
+#include "reconstructor.h"
 #include "storage.h"
-
-using theia::Reconstruction;
-using theia::ReconstructionBuilder;
-using theia::ReconstructionBuilderOptions;
 
 const QString CONFIG_FILE_NAME = "project-config";
 const QString DEFAULT_OUTPUT_LOCATION_POSTFIX = "out/";
 const QString DEFAULT_MODEL_BINARY_FILENAME = "model-0.binary";
 
 class Project {
+  friend class ProjectIO;
+
  public:
   // This constructor must be called if we're opening an existent project.
   // The Project::ReadConfigurationFile() is called.
@@ -58,15 +46,8 @@ class Project {
   // Project::WriteConfigurationFile() method.
   Project(QString project_name, QString project_path, QString images_name);
 
-  // Simple build from scratch and save into a binary file.
-  // Covers all stages all together:
-  // * Extracting features, saving them into a filesystem.
-  // * Matching features.
-  // * Building a 3D model and saving it into a binary file in filesystem.
-  //
-  // May take plenty of time to finish processing.
-  //
-  // The recommendation is to run every stage separately.
+  // Runs Smart building process, which figures out if we need matching stage
+  // or it has been already run.
   void BuildModelToBinary();
 
   void ExtractFeatures();

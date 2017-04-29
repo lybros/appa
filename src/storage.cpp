@@ -13,6 +13,10 @@ Storage::Storage(QString images_path) : images_path_(images_path) {
   Storage();
 }
 
+void Storage::SetOptions(Options* options) {
+  options_ = options;
+}
+
 QString Storage::GetImagesPath() {
   return images_path_;
 }
@@ -168,6 +172,16 @@ const QString& Storage::GetOutputLocation() const {
 
 void Storage::SetOutputLocation(const QString& output_location) {
   output_location_ = output_location;
+}
+
+bool Storage::GetCalibration(
+    QMap<QString, theia::CameraIntrinsicsPrior>* camera_intrinsics_prior) {
+  return StorageIO(this).ReadCalibrationFile(GetCameraIntrinsicsPath(),
+                                             camera_intrinsics_prior);
+}
+
+QString Storage::GetCameraIntrinsicsPath() const {
+  return QDir(images_path_).filePath(DEFAULT_CALIBRATION_FILE_NAME);
 }
 
 Storage::~Storage() {

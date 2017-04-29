@@ -34,11 +34,20 @@ using theia::MatchingStrategy;
 using theia::DescriptorExtractorType;
 using theia::ReconstructionBuilderOptions;
 using theia::FeatureMatcherOptions;
+using theia::ReconstructionEstimatorOptions;
 using theia::FeatureExtractor;
+using theia::OptimizeIntrinsicsType;
 
 class Options {
-  // Granting access to private fields to OptionsDialog class.
   friend class OptionsDialog;
+
+  friend class Project;
+
+  friend class Reconstructor;
+
+  friend class Storage;
+
+  friend class StorageIO;
 
  public:
   explicit Options(QString output_location);
@@ -48,6 +57,8 @@ class Options {
   FeatureExtractor::Options GetFeatureExtractorOptions();
 
   FeatureMatcherOptions GetFeatureMatcherOptions();
+
+  theia::ReconstructionEstimatorOptions GetReconstructionEstimatorOptions();
 
   ~Options();
 
@@ -65,6 +76,15 @@ class Options {
   bool match_out_of_core_ = true;
   bool perform_geometric_verification_ = false;
   MatchingStrategy match_strategy_ = MatchingStrategy::CASCADE_HASHING;
+
+  // Reconstruction.
+  bool shared_calibration = true;
+  bool use_camera_intrinsics_prior = false;
+
+  // Reconstruction Estimator Options.
+  OptimizeIntrinsicsType intrinsics_to_optimize_ =
+      OptimizeIntrinsicsType::FOCAL_LENGTH |
+      OptimizeIntrinsicsType::RADIAL_DISTORTION;
 };
 
 enum ReconstructionStatus {

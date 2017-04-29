@@ -1,17 +1,32 @@
 set(SOURCE_FILES
-        project.cpp
-        project.h
-        storage.cpp
-        storage.h
-        featuresx.cpp
-        featuresx.h
-        utils.cpp
-        utils.h
-        options.cpp
-        options.h
-        )
+    featuresx.cpp
+    options.cpp
+    project.cpp
+    reconstructor.cpp
+    storage.cpp
+    utils.cpp
+    )
 
-add_library(src ${SOURCE_FILES})
+set(HEADERS
+    featuresx.h
+    options.h
+    project.h
+    reconstructor.h
+    storage.h
+    utils.h
+    )
+
+set(IO_SOURCE_FILES
+    io/project.cpp
+    io/storage.cpp
+    )
+
+set(IO_HEADERS
+    io/project.h
+    io/storage.h
+    )
+
+add_library(src ${SOURCE_FILES} ${HEADERS} ${IO_SOURCE_FILES} ${IO_HEADERS})
 
 # Never include ui target here.
 target_link_libraries(src ${THEIA_LIBRARIES} Qt5::Widgets)

@@ -1,4 +1,7 @@
 # :boar: Appa
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d68247aae4b540d0a034e05ecd9fb7cb)](https://www.codacy.com/app/Drapegnik/Appa?utm_source=github.com&utm_medium=referral&utm_content=lybros/Appa&utm_campaign=badger)
+
 GUI for [TheiaSfM](https://github.com/sweeneychris/TheiaSfM) multiview geometry and structure from motion library.
 
 Implemented as a part of [uladbohdan](https://github.com/uladbohdan) and [drapegnik](https://github.com/drapegnik) coursework on [FAMCS](http://www.fpmi.bsu.by/en/main.aspx), [BSU](http://www.bsu.by/en/main.aspx) and [UIIP](http://uiip.bas-net.by/eng/), [NASB](http://nasb.gov.by/eng/).

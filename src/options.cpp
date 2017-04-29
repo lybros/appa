@@ -14,6 +14,9 @@ ReconstructionBuilderOptions Options::GetReconstructionBuilderOptions() {
   options.matching_strategy = match_strategy_;
 
   options.matching_options = GetFeatureMatcherOptions();
+  options.reconstruction_estimator_options =
+      GetReconstructionEstimatorOptions();
+
   return options;
 }
 
@@ -38,6 +41,12 @@ FeatureMatcherOptions Options::GetFeatureMatcherOptions() {
   options.perform_geometric_verification =
       perform_geometric_verification_;
 
+  return options;
+}
+
+ReconstructionEstimatorOptions Options::GetReconstructionEstimatorOptions() {
+  ReconstructionEstimatorOptions options;
+  options.intrinsics_to_optimize = intrinsics_to_optimize_;
   return options;
 }
 

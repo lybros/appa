@@ -11,6 +11,8 @@ Project::Project(QString project_path) :
 
   options_ = new Options(storage_->GetOutputLocation());
   features_ = new Features(storage_, options_);
+
+  storage_->SetOptions(options_);
 }
 
 Project::Project(QString project_name,
@@ -38,42 +40,12 @@ Project::Project(QString project_name,
   storage_->SetOutputLocation(GetDefaultOutputPath());
   options_ = new Options(storage_->GetOutputLocation());
   features_ = new Features(storage_, options_);
+
+  storage_->SetOptions(options_);
 }
 
 void Project::BuildModelToBinary() {
-  ReconstructionBuilderOptions options =
-      options_->GetReconstructionBuilderOptions();
-
-  ReconstructionBuilder reconstruction_builder(options);
-
-  for (QString image_path : storage_->GetImages()) {
-    reconstruction_builder.AddImage(image_path.toStdString());
-  }
-  LOG(INFO) << "All images are added to the builder.";
-  LOG(INFO) << "Starting extracting and matching";
-
-  CHECK(reconstruction_builder.ExtractAndMatchFeatures())
-  << "Could not extract and match features";
-
-  LOG(INFO) << "Extracted and matched successfully!";
-
-  std::vector<theia::Reconstruction*> reconstructions;
-  CHECK(reconstruction_builder.BuildReconstruction(&reconstructions))
-  << "Could not create a reconstruction";
-
-  LOG(INFO) << "Reconstruction has been created.";
-
-  // Using raw image data to colorize the reconstructions.
-  // The method is running using 2 threads.
-  for (int i = 0; i < reconstructions.size(); i++) {
-    theia::ColorizeReconstruction(GetImagesPath().toStdString(), 2,
-                                  reconstructions[i]);
-  }
-  LOG(INFO) << "Reconstruction colorized successfully!";
-
-  storage_->SetReconstructions(reconstructions);
-  storage_->WriteReconstructions();
-  return;
+  Reconstructor(this).SmartBuild();
 }
 
 void Project::SearchImage(QString file_path,
@@ -173,85 +145,11 @@ void Project::SetImagesPath(QString images_path) {
 }
 
 bool Project::WriteConfigurationFile() {
-  QFile configFile(GetConfigurationFilePath());
-  if (!configFile.open(QIODevice::ReadWrite)) { return false; }
-
-  QTextStream stream(&configFile);
-  stream << "PROJECT_CONFIG_VERSION v1.0" << endl;
-  stream << "PROJECT_NAME " << project_name_ << endl;
-  stream << "IMAGES_LOCATION " << GetImagesPath() << endl;
-  stream << "NUMBER_OF_IMAGES " << storage_->NumberOfImages() << endl;
-  for (auto image_path : storage_->GetImages()) {
-    stream << image_path << endl;
-  }
-  stream << "OUTPUT_LOCATION " << GetDefaultOutputPath() << endl;
-
-  configFile.close();
-  return true;
+  return ProjectIO(this).WriteConfigurationFile();
 }
 
 bool Project::ReadConfigurationFile() {
-  QFile configFile(GetConfigurationFilePath());
-
-  if (!configFile.open(QIODevice::ReadOnly)) { return false; }
-
-  QTextStream stream(&configFile);
-  QString temp_line;
-
-  temp_line = stream.readLine();
-  if (temp_line != "PROJECT_CONFIG_VERSION v1.0") {
-    LOG(ERROR) << "Reading config failed: wrong file version.";
-    configFile.close();
-    return false;
-  }
-
-  stream >> temp_line;
-  if (temp_line != "PROJECT_NAME") {
-    LOG(ERROR) << "Wrong config file format. No PROJECT_NAME attribute.";
-    configFile.close();
-    return false;
-  }
-  stream >> project_name_;
-
-  stream >> temp_line;
-  if (temp_line != "IMAGES_LOCATION") {
-    LOG(ERROR) << "Wrong config file format. No IMAGES_LOCATION attribute.";
-    configFile.close();
-    return false;
-  }
-  QString images_path;
-  stream >> images_path;
-
-  stream >> temp_line;
-  if (temp_line != "NUMBER_OF_IMAGES") {
-    LOG(ERROR) << "Wrong config file format. No NUMBER_OF_IMAGES attr.";
-    configFile.close();
-    return false;
-  }
-  int number_of_images;
-  stream >> number_of_images;
-  QVector<QString> images(number_of_images);
-  for (int i = 0; i < number_of_images; i++) {
-    stream >> images[i];
-  }
-
-  if (!storage_->ForceInitialize(images_path, images)) {
-    LOG(ERROR) << "Force storage initializing failed :(";
-    configFile.close();
-    return false;
-  }
-
-  stream >> temp_line;
-  if (temp_line != "OUTPUT_LOCATION") {
-    LOG(ERROR) << "Wrong config file format. No OUTPUT_LOCATION attr.";
-    configFile.close();
-    return false;
-  }
-  stream >> temp_line;
-  storage_->SetOutputLocation(temp_line);
-
-  configFile.close();
-  return true;
+  return ProjectIO(this).ReadConfigurationFile();
 }
 
 QString Project::GetConfigurationFilePath() {

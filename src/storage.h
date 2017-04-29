@@ -10,12 +10,15 @@
 #include <QtAlgorithms>
 #include <QDirIterator>
 #include <QFileInfo>
+#include <QTextStream>
 #include <QVector>
 
 #include <theia/theia.h>
 #include <glog/logging.h>
 
+#include "io/storage.h"
 #include "options.h"
+#include "utils.h"
 
 using theia::Reconstruction;
 
@@ -24,11 +27,17 @@ using theia::Reconstruction;
 const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|JPG|jpeg|JPEG|png|PNG)";
 const QString MODEL_FILENAME_PATTERN = "model-\\d+.binary";
 
+const QString DEFAULT_CALIBRATION_FILE_NAME = "camera_intrinsics.txt";
+
 class Storage {
+  friend class StorageIO;
+
  public:
   Storage();
 
   explicit Storage(QString images_path);
+
+  void SetOptions(Options* options);
 
   QString GetImagesPath();
 
@@ -52,18 +61,20 @@ class Storage {
 
   void SetOutputLocation(const QString& output_location);
 
-  // check if model already in memory, load it if not, ad return
+  // Check if model already in memory, load it if not, and return.
   Reconstruction* GetReconstruction(const int number);
 
-  // update model in memory and sets status_ to LOADED_IN_MEMORY
+  // Update model in memory and sets status_ to LOADED_IN_MEMORY.
   void SetReconstructions(const std::vector<Reconstruction*>& reconstructions);
 
-  // write all models to binary file
+  // Write all models to binary file.
   void WriteReconstructions();
 
   void SetReconstructionStatus(ReconstructionStatus status);
 
   ReconstructionStatus GetReconstructionStatus() const;
+
+  bool GetCalibration(QMap<QString, theia::CameraIntrinsicsPrior>*);
 
   ~Storage();
 
@@ -74,8 +85,12 @@ class Storage {
   QString output_location_;
   ReconstructionStatus status_;
 
+  Options* options_;
+
   // Reads model from binary file.
   void ReadReconstructions();
+
+  QString GetCameraIntrinsicsPath() const;
 };
 
 #endif  // SRC_STORAGE_H_

@@ -24,8 +24,8 @@
  * ----------------------------------------------------------------------------
  */
 
-#ifndef SRC_IO_STORAGE_H_
-#define SRC_IO_STORAGE_H_
+#ifndef SRC_IO_STORAGEIO_H_
+#define SRC_IO_STORAGEIO_H_
 
 #include <QMap>
 #include <QString>
@@ -53,4 +53,4 @@ class StorageIO {
     theia::CameraIntrinsicsPrior* temp_camera_intrinsics_prior);
 };
 
-#endif  // SRC_IO_STORAGE_H_
+#endif  // SRC_IO_STORAGEIO_H_

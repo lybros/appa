@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef SRC_IO_PROJECT_H_
-#define SRC_IO_PROJECT_H_
+#ifndef SRC_IO_PROJECTIO_H_
+#define SRC_IO_PROJECTIO_H_
 
 class Project;
 
@@ -35,4 +35,4 @@ class ProjectIO {
   Project* project_;
 };
 
-#endif  // SRC_IO_PROJECT_H_
+#endif  // SRC_IO_PROJECTIO_H_

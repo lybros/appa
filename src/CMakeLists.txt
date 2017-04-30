@@ -17,13 +17,13 @@ set(HEADERS
     )
 
 set(IO_SOURCE_FILES
-    io/project.cpp
-    io/storage.cpp
+    io/projectio.cpp
+    io/storageio.cpp
     )
 
 set(IO_HEADERS
-    io/project.h
-    io/storage.h
+    io/projectio.h
+    io/storageio.h
     )
 
 add_library(src ${SOURCE_FILES} ${HEADERS} ${IO_SOURCE_FILES} ${IO_HEADERS})

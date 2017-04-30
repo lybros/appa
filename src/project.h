@@ -23,7 +23,7 @@
 #include <theia/theia.h>
 #include <theia/matching/distance.h>
 
-#include "io/project.h"
+#include "io/projectio.h"
 #include "featuresx.h"
 #include "options.h"
 #include "reconstructor.h"

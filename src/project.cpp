@@ -48,12 +48,14 @@ void Project::BuildModelToBinary() {
   Reconstructor(this).SmartBuild();
 }
 
-void Project::SearchImage(QString file_path, QSet<theia::TrackId>* h_tracks) {
+QSet<theia::TrackId>* Project::SearchImage(QString file_path) {
   // TODO(drapegnik): replace hardcode index with some value.
   Reconstruction* model = storage_->GetReconstruction(0);
+  QSet<theia::TrackId>* h_tracks = new QSet<theia::TrackId>();
+
   if (not model) {
     LOG(WARNING) << "There is no built models!";
-    return;
+    return h_tracks;
   }
 
   std::vector<theia::Keypoint> keypoints;
@@ -73,7 +75,6 @@ void Project::SearchImage(QString file_path, QSet<theia::TrackId>* h_tracks) {
     theia::View* view = model->MutableView(v_id);
     std::vector<theia::TrackId> tracks_ids = view->TrackIds();
     std::unordered_map<theia::Feature, theia::TrackId> feature_to_track;
-
     for (auto t_id : tracks_ids) {
       feature_to_track[*(view->GetFeature(t_id))] = t_id;
     }
@@ -103,7 +104,7 @@ void Project::SearchImage(QString file_path, QSet<theia::TrackId>* h_tracks) {
   LOG(INFO) << "It took " << time << " seconds to search";
   LOG(INFO) << "Match " << h_tracks->size()
             << "/" << model->NumTracks() << " tracks";
-  return;
+  return h_tracks;
 }
 
 void Project::ExtractFeatures() {

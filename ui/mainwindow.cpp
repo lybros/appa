@@ -37,8 +37,7 @@ void MainWindow::set_icons(QtAwesome* awesome) {
   options.insert("color", QColor(235, 78, 78));
   ui->actionMatch_Features->setIcon(awesome->icon(fa::sharealt, options));
   options.insert("color", QColor(67, 205, 128));
-  ui->actionStart_Reconstruction->setIcon(
-      awesome->icon(fa::codepen, options));
+  ui->actionStart_Reconstruction->setIcon(awesome->icon(fa::codepen, options));
 
   // visualizationToolBar
   options.insert("color", QColor(31, 72, 165));
@@ -62,8 +61,7 @@ void MainWindow::on_actionBuildToBinary_triggered() {
 
   process_manager_->StartNewProcess(
       QString("Building to binary..."),
-      QtConcurrent::run(active_project_,
-                        &Project::BuildModelToBinary));
+      QtConcurrent::run(active_project_, &Project::BuildModelToBinary));
 
   LOG(INFO) << "Reconstruction started...";
 }
@@ -133,8 +131,7 @@ void MainWindow::on_actionExtract_Features_triggered() {
 
   process_manager_->StartNewProcess(
       QString("Extracting features..."),
-      QtConcurrent::run(active_project_,
-                        &Project::ExtractFeatures));
+      QtConcurrent::run(active_project_, &Project::ExtractFeatures));
 }
 
 void MainWindow::on_actionMatch_Features_triggered() {
@@ -146,8 +143,7 @@ void MainWindow::on_actionMatch_Features_triggered() {
 
   process_manager_->StartNewProcess(
       QString("Matching features..."),
-      QtConcurrent::run(active_project_,
-                        &Project::MatchFeatures));
+      QtConcurrent::run(active_project_, &Project::MatchFeatures));
 }
 
 void MainWindow::on_actionStart_Reconstruction_triggered() {
@@ -159,8 +155,7 @@ void MainWindow::on_actionStart_Reconstruction_triggered() {
 
   process_manager_->StartNewProcess(
       QString("Reconstructing..."),
-      QtConcurrent::run(active_project_,
-                        &Project::StartReconstruction));
+      QtConcurrent::run(active_project_, &Project::StartReconstruction));
 }
 
 bool MainWindow::isProjectDirectory(const QString& project_path) {
@@ -190,7 +185,6 @@ void MainWindow::on_actionVisualizeBinary_triggered() {
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {
-
   QString image_path = QFileDialog::getOpenFileName(
       this,
       tr("Choose image for search"),
@@ -201,11 +195,21 @@ void MainWindow::on_actionSearch_Image_triggered() {
 
   if (!image_path.length()) { return; }
 
-  QSet<theia::TrackId>* highlighted_tracks = new QSet<theia::TrackId>();
   view_->BuildFromDefaultPath();
-  active_project_->SearchImage(image_path, highlighted_tracks);
-  view_->SetHighlightedPoints(highlighted_tracks);
-  delete highlighted_tracks;
+
+  std::function<void(QList<QSet<theia::TrackId>*>)> on_finish =
+      [this](QList<QSet<theia::TrackId>*> highlighted_tracks) { // why QList??
+        if (not highlighted_tracks.size()) { return; }
+        view_->SetHighlightedPoints(highlighted_tracks[0]);
+      };
+
+  process_manager_->StartNewProcess(
+      QString("Search image " + image_path + "..."),
+      QtConcurrent::run(
+          active_project_,
+          &Project::SearchImage,
+          image_path),
+      on_finish);
 }
 
 void MainWindow::UpdateActiveProjectInfo() {

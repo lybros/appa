@@ -26,7 +26,9 @@ class Features {
  public:
   Features(Storage* storage, Options* options);
 
-  typedef std::pair<std::vector<theia::Keypoint>, std::vector<Eigen::VectorXf> > FeatureVectors;
+  typedef std::pair<std::vector
+      <theia::Keypoint>, std::vector<Eigen::VectorXf>
+  > FeatureVectors;
   typedef std::unordered_map<std::string, FeatureVectors> FeaturesMap;
 
   // Extract features only if doesn't find *.features files.

@@ -198,8 +198,8 @@ void MainWindow::on_actionSearch_Image_triggered() {
   view_->BuildFromDefaultPath();
 
   std::function<void(QList<QSet<theia::TrackId>*>)> on_finish =
-      [this](QList<QSet<theia::TrackId>*> highlighted_tracks) { // why QList??
-        if (not highlighted_tracks.size()) { return; }
+      [this](QList<QSet<theia::TrackId>*> highlighted_tracks) {   // why QList??
+        if (!highlighted_tracks.size()) { return; }
         view_->SetHighlightedPoints(highlighted_tracks[0]);
       };
 

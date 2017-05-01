@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <utility>
 
 #include <QtAlgorithms>
 #include <QDirIterator>
@@ -38,7 +39,9 @@ class Storage {
 
   explicit Storage(QString images_path);
 
-  typedef std::pair<std::vector<theia::Keypoint>, std::vector<Eigen::VectorXf> > FeatureVectors;
+  typedef std::pair<
+      std::vector<theia::Keypoint>, std::vector<Eigen::VectorXf>
+  > FeatureVectors;
   typedef std::unordered_map<std::string, FeatureVectors> FeaturesMap;
 
   void SetOptions(Options* options);

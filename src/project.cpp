@@ -53,7 +53,7 @@ QSet<theia::TrackId>* Project::SearchImage(QString file_path) {
   Reconstruction* model = storage_->GetReconstruction(0);
   QSet<theia::TrackId>* h_tracks = new QSet<theia::TrackId>();
 
-  if (not model) {
+  if (!model) {
     LOG(WARNING) << "There is no built models!";
     return h_tracks;
   }
@@ -79,8 +79,10 @@ QSet<theia::TrackId>* Project::SearchImage(QString file_path) {
     }
 
     theia::CascadeHashingFeatureMatcher matcher(matcher_options);
-    std::vector<theia::Keypoint> view_keypoints = features[view->Name()].first;
-    std::vector<Eigen::VectorXf> view_descriptors = features[view->Name()].second;
+    std::vector<theia::Keypoint> view_keypoints
+        = features[view->Name()].first;
+    std::vector<Eigen::VectorXf> view_descriptors
+        = features[view->Name()].second;
 
     matcher.AddImage("view", view_keypoints, view_descriptors);
     matcher.AddImage(file_path.toStdString(), keypoints, descriptors);

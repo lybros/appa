@@ -49,8 +49,9 @@ class StorageIO {
  private:
   Storage* storage_;
 
-  bool ReadCalibrationFileRow(QTextStream* stream,
-    theia::CameraIntrinsicsPrior* temp_camera_intrinsics_prior);
+  bool ReadCalibrationFileRow(
+      QTextStream* stream,
+      theia::CameraIntrinsicsPrior* temp_camera_intrinsics_prior);
 };
 
 #endif  // SRC_IO_STORAGEIO_H_

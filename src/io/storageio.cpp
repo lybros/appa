@@ -86,8 +86,9 @@ bool StorageIO::ReadCalibrationFile(
   return true;
 }
 
-bool StorageIO::ReadCalibrationFileRow(QTextStream* stream,
-                                       theia::CameraIntrinsicsPrior* temp_camera_intrinsics_prior) {
+bool StorageIO::ReadCalibrationFileRow(
+    QTextStream* stream,
+    theia::CameraIntrinsicsPrior* temp_camera_intrinsics_prior) {
   temp_camera_intrinsics_prior->focal_length.is_set = true;
   (*stream) >> temp_camera_intrinsics_prior->focal_length.value[0];
 

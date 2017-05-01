@@ -7,6 +7,7 @@ Storage::Storage() {
   images_path_ = "";
   output_location_ = "";
   status_ = ReconstructionStatus::NOT_BUILT;
+  features_map_ = NULL;
 }
 
 Storage::Storage(QString images_path) : images_path_(images_path) {
@@ -85,6 +86,14 @@ QVector<QString>& Storage::GetImages() {
 
 int Storage::NumberOfImages() {
   return images_->length();
+}
+
+Features::FeaturesMap* Storage::GetFeaturesMap() const {
+  return features_map_;
+}
+
+void Storage::SetFeaturesMap(Features::FeaturesMap* features_map_) {
+  Storage::features_map_ = features_map_;
 }
 
 // TODO(all): maybe some refactor to get model by name instead index.

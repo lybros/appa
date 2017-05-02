@@ -4,6 +4,7 @@
 
 #include <QDateTime>
 #include <QFile>
+#include <QProcessEnvironment>
 #include <QTextStream>
 
 #include "theia/theia.h"
@@ -31,7 +32,9 @@ bool Report::GenerateSmartReconstructionReport(QString filepath) {
   QTextStream r(&report);
   r << "Smart reconstruction report." << endl
     << project_->GetProjectName() << endl
-    << QDateTime::currentDateTime().toString() << endl;
+    << QDateTime::currentDateTime().toString() << endl
+    << QProcessEnvironment::systemEnvironment().value(
+         HARDWARE_INFO_VARIABLE, "no hardware data provided.") << endl;
   r << endl;
 
   r << "----- OVERVIEW -----" << endl
@@ -48,7 +51,7 @@ bool Report::GenerateSmartReconstructionReport(QString filepath) {
   } else {
     r << "extraction was performed." << endl
       << "desriptor type: "
-      << DescriptorExtractorTypeToString(options_->descriptor_type_);
+      << DescriptorExtractorTypeToString(options_->descriptor_type_) << endl;
   }
   r << endl;
 

@@ -65,7 +65,7 @@ void Reconstructor::SmartBuild() {
 
   // Generating a report.
   QString report_path =
-      QDir(storage_->GetOutputLocation()).filePath("test_report0.txt");
+      QDir(storage_->GetOutputLocation()).filePath("report.txt");
   bool ok = report_->GenerateSmartReconstructionReport(report_path);
   if (ok) {
     LOG(INFO) << "Report was successfully created. Written to "

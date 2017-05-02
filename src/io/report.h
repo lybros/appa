@@ -9,6 +9,11 @@ class Options;
 class Project;
 class Storage;
 
+// You may add hardware information to the report by manually specifing it in
+// APPA_HARDWARE_INFO environment variable. Example:
+// APPA_HARDWARE_INFO="Ubuntu 16.04 | 2gb ram | 1 physical core"
+const QString HARDWARE_INFO_VARIABLE = "APPA_HARDWARE_INFO";
+
 // Report class generates a report with flags and timing for extracting/
 // matching/reconstruction.
 class Report {

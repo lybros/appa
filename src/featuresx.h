@@ -24,8 +24,8 @@ using theia::Keypoint;
 
 class Features {
  public:
-  typedef std::pair<double, double> Pair;
-  typedef std::unordered_map<Pair, Eigen::VectorXf> FeaturesMap;
+  typedef std::pair<std::vector<theia::Keypoint>, std::vector<Eigen::VectorXf> > FeatureVectors;
+  typedef std::unordered_map<std::string, FeatureVectors> FeaturesMap;
 
   Features(Storage* storage, Options* options);
 
@@ -52,10 +52,9 @@ class Features {
                      Eigen::VectorXf* descriptor);
 
   // Load features and descriptors,
-  // return map with <image name> as key and <another map> as value:
-  // <another map>: with Feature coordinates as key
-  //                and corresponding Descriptor as value
-  void GetFeaturesMap(std::unordered_map<std::string, FeaturesMap>*);
+  // return map with <image name> as key
+  // and Pair of Keypoints and Descriptors for that image as value
+  void GetFeaturesMap(FeaturesMap*);
 
   void Match();
 

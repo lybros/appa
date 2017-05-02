@@ -13,22 +13,17 @@ ReconstructionBuilderOptions Options::GetReconstructionBuilderOptions() {
   options.num_threads = num_threads_;
   options.matching_strategy = match_strategy_;
 
-  options.matching_options.match_out_of_core = match_out_of_core_;
-  options.matching_options.perform_geometric_verification =
-      perform_geometric_verification_;
-  options.matching_options.keypoints_and_descriptors_output_dir =
-      QDir(output_location_).filePath("features").toStdString();
-
+  options.matching_options = GetFeatureMatcherOptions();
   options.reconstruction_estimator_options =
       GetReconstructionEstimatorOptions();
 
   return options;
 }
 
-theia::FeatureExtractor::Options Options::GetFeatureExtractorOptions() {
-  theia::FeatureExtractor::Options options;
+FeatureExtractor::Options Options::GetFeatureExtractorOptions() {
+  FeatureExtractor::Options options;
 
-  options.descriptor_extractor_type  = descriptor_type_;
+  options.descriptor_extractor_type = descriptor_type_;
   options.output_directory = QDir(output_location_).
       filePath("features/").toStdString();
   options.num_threads = num_threads_;
@@ -36,9 +31,21 @@ theia::FeatureExtractor::Options Options::GetFeatureExtractorOptions() {
   return options;
 }
 
-theia::ReconstructionEstimatorOptions
-Options::GetReconstructionEstimatorOptions() {
-  theia::ReconstructionEstimatorOptions options;
+FeatureMatcherOptions Options::GetFeatureMatcherOptions() {
+  FeatureMatcherOptions options;
+
+  options.num_threads = num_threads_;
+  options.keypoints_and_descriptors_output_dir = QDir(output_location_)
+      .filePath("features").toStdString();
+  options.match_out_of_core = match_out_of_core_;
+  options.perform_geometric_verification =
+      perform_geometric_verification_;
+
+  return options;
+}
+
+ReconstructionEstimatorOptions Options::GetReconstructionEstimatorOptions() {
+  ReconstructionEstimatorOptions options;
   options.intrinsics_to_optimize = intrinsics_to_optimize_;
   return options;
 }

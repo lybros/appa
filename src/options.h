@@ -38,6 +38,7 @@ class Options {
   friend class OptionsDialog;
   friend class Project;
   friend class Reconstructor;
+  friend class Report;
   friend class Storage;
   friend class StorageIO;
 

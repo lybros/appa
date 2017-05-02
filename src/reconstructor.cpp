@@ -78,7 +78,7 @@ void Reconstructor::SmartBuild() {
 }
 
 bool Reconstructor::ReadMatches(ReconstructionBuilder* reconstruction_builder) {
-  theia::Timer read_matches_timer;
+  theia::Timer reading_matches_timer;
 
   std::vector<std::string> image_files;
   std::vector<theia::CameraIntrinsicsPrior> camera_intrinsics_prior;
@@ -118,13 +118,13 @@ bool Reconstructor::ReadMatches(ReconstructionBuilder* reconstruction_builder) {
   }
 
   LOG(INFO) << "Matches read from filesystem successfully";
-  report_->reading_matches_time_ = read_matches_timer.ElapsedTimeInSeconds();
+  report_->reading_matches_time_ = reading_matches_timer.ElapsedTimeInSeconds();
   return true;
 }
 
 bool Reconstructor::ExtractFeaturesMatches(
     ReconstructionBuilder* reconstruction_builder) {
-  theia::Timer extract_match_timer;
+  theia::Timer extracting_matching_timer;
 
   // Enabling "Shared Calibration" (all images were made with the same camera).
   theia::CameraIntrinsicsGroupId intrinsics_group_id =
@@ -169,7 +169,8 @@ bool Reconstructor::ExtractFeaturesMatches(
 
   LOG(INFO) << "Extracted and matched successfully!";
 
-  report_->extract_match_time_ = extract_match_timer.ElapsedTimeInSeconds();
+  report_->extraction_matching_time_ =
+      extracting_matching_timer.ElapsedTimeInSeconds();
 
   return true;
 }

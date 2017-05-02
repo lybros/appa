@@ -37,7 +37,7 @@ class Report {
   double overall_time_;
   double extraction_time_;
   double matching_time_;
-  double extract_match_time_;
+  double extraction_matching_time_;
   double reading_matches_time_;
   double reconstruction_time_;
   double colorizing_time_;

@@ -60,7 +60,7 @@ bool Report::GenerateSmartReconstructionReport(QString filepath) {
     r << "feature matching was performed." << endl
       << "matching strategy: "
       << MatchingStrategyToString(options_->match_strategy_) << endl
-      << "timing (extract&match):  " << extract_match_time_ << "s" << endl;
+      << "timing (extract&match):  " << extraction_matching_time_ << "s" << endl;
   }
   r << endl;
 

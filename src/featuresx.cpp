@@ -100,19 +100,17 @@ void Features::GetFeaturesMap(FeaturesMap* features) {
   std::vector<std::vector<theia::Keypoint> > keypoints_vector;
   std::vector<std::vector<Eigen::VectorXf> > descriptors_vector;
   Extract(&keypoints_vector, &descriptors_vector);
-  FeaturesMap features_map;
 
   theia::Timer timer;
   for (int i = 0; i < images_.size(); i++) {
     std::string key = FileNameFromPath(images_[i]).toStdString();
     FeatureVectors value = std::make_pair(
         keypoints_vector[i], descriptors_vector[i]);
-    features_map[key] = value;
+    (*features)[key] = value;
   }
 
   const double time = timer.ElapsedTimeInSeconds();
   LOG(INFO) << "It took " << time << " seconds to build map";
-  *features = features_map;
   return;
 }
 

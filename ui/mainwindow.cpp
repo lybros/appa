@@ -201,6 +201,7 @@ void MainWindow::on_actionSearch_Image_triggered() {
       [this](QList<QSet<theia::TrackId>*> highlighted_tracks) {   // why QList??
         if (!highlighted_tracks.size()) { return; }
         view_->SetHighlightedPoints(highlighted_tracks[0]);
+        delete highlighted_tracks[0];
       };
 
   process_manager_->StartNewProcess(

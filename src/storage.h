@@ -6,7 +6,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <utility>
 
 #include <QtAlgorithms>
 #include <QDirIterator>
@@ -39,11 +38,6 @@ class Storage {
 
   explicit Storage(QString images_path);
 
-  typedef std::pair<
-      std::vector<theia::Keypoint>, std::vector<Eigen::VectorXf>
-  > FeatureVectors;
-  typedef std::unordered_map<std::string, FeatureVectors> FeaturesMap;
-
   void SetOptions(Options* options);
 
   QString GetImagesPath();
@@ -71,7 +65,6 @@ class Storage {
   // Check if model already in memory, load it if not, and return.
   Reconstruction* GetReconstruction(const int number);
 
-
   // Update model in memory and sets status_ to LOADED_IN_MEMORY.
   void SetReconstructions(const std::vector<Reconstruction*>& reconstructions);
 
@@ -84,10 +77,6 @@ class Storage {
 
   bool GetCalibration(QMap<QString, theia::CameraIntrinsicsPrior>*);
 
-  FeaturesMap* GetFeaturesMap() const;
-
-  void SetFeaturesMap(FeaturesMap* features_map_);
-
   ~Storage();
 
  private:
@@ -96,7 +85,6 @@ class Storage {
   QString images_path_;
   QString output_location_;
   ReconstructionStatus status_;
-  FeaturesMap* features_map_;
 
   Options* options_;
 

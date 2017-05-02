@@ -63,10 +63,11 @@ QSet<theia::TrackId>* Project::SearchImage(QString file_path) {
   features_->ExtractFeature(file_path, &keypoints, &descriptors);
   LOG(INFO) << "Successfully extract " << descriptors.size() << " features";
 
-  Features::FeaturesMap features = *(features_->GetFeaturesMap());
+  Features::FeaturesMap features;
   theia::FeatureMatcherOptions matcher_options;
   matcher_options = options_->GetFeatureMatcherOptions();
   matcher_options.match_out_of_core = false;
+  features_->GetFeaturesMap(&features);
 
   theia::Timer timer;
   std::vector<theia::ViewId> views_ids = model->ViewIds();
@@ -91,6 +92,9 @@ QSet<theia::TrackId>* Project::SearchImage(QString file_path) {
     matcher.MatchImages(&matches);
 
     if (matches.size() == 0) { continue; }
+
+    LOG(INFO) << "Matched " << matches[0].correspondences.size() << " "
+        "features with " << view->Name();
 
     for (auto cor : matches[0].correspondences) {
       std::unordered_map<theia::Feature, theia::TrackId>::const_iterator got =

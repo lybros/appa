@@ -96,31 +96,24 @@ void Features::GetDescriptor(
 
 // TODO(drapegnik): save feature map to disk once when build model
 // and load from disk all other time
-Features::FeaturesMap* Features::GetFeaturesMap() {
-  Features::FeaturesMap* features_map = storage_->GetFeaturesMap();
-  if (features_map && features_map->size()) {
-    return features_map;
-  }
-
-  LOG(INFO) << "Feature map not loaded into memory.";
-
-  features_map = new FeaturesMap();
+void Features::GetFeaturesMap(FeaturesMap* features) {
   std::vector<std::vector<theia::Keypoint> > keypoints_vector;
   std::vector<std::vector<Eigen::VectorXf> > descriptors_vector;
   Extract(&keypoints_vector, &descriptors_vector);
+  FeaturesMap features_map;
 
   theia::Timer timer;
   for (int i = 0; i < images_.size(); i++) {
     std::string key = FileNameFromPath(images_[i]).toStdString();
     FeatureVectors value = std::make_pair(
         keypoints_vector[i], descriptors_vector[i]);
-    (*features_map)[key] = value;
+    features_map[key] = value;
   }
 
-  storage_->SetFeaturesMap(features_map);
   const double time = timer.ElapsedTimeInSeconds();
   LOG(INFO) << "It took " << time << " seconds to build map";
-  return features_map;
+  *features = features_map;
+  return;
 }
 
 void Features::_extract(bool is_force) {

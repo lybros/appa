@@ -162,7 +162,6 @@ QString Project::GetDefaultOutputPath() {
   return QDir(project_path_).filePath(DEFAULT_OUTPUT_LOCATION_POSTFIX);
 }
 
-
 Storage* Project::GetStorage() {
   return storage_;
 }

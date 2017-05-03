@@ -20,6 +20,8 @@ struct Task {
 };
 
 class ProcessManager : public QWidget {
+ Q_OBJECT   // NOLINT(whitespace/indent)
+
  public:
   explicit ProcessManager(QWidget* parent);
 

@@ -4,6 +4,7 @@ set(SOURCE_FILES
     project.cpp
     reconstructor.cpp
     storage.cpp
+    theia_utils.cpp
     utils.cpp
     )
 
@@ -13,16 +14,19 @@ set(HEADERS
     project.h
     reconstructor.h
     storage.h
+    theia_utils.h
     utils.h
     )
 
 set(IO_SOURCE_FILES
     io/projectio.cpp
+    io/report.cpp
     io/storageio.cpp
     )
 
 set(IO_HEADERS
     io/projectio.h
+    io/report.h
     io/storageio.h
     )
 

@@ -2,15 +2,11 @@
 
 #include "storage.h"
 
-Storage::Storage() {
-  images_ = new QVector<QString>();
-  images_path_ = "";
-  output_location_ = "";
-  status_ = ReconstructionStatus::NOT_BUILT;
-}
-
-Storage::Storage(QString images_path) : images_path_(images_path) {
-  Storage();
+Storage::Storage() : options_(nullptr),
+                     images_(nullptr),
+                     images_path_(""),
+                     output_location_(""),
+                     status_(ReconstructionStatus::NOT_BUILT) {
 }
 
 void Storage::SetOptions(Options* options) {
@@ -54,6 +50,7 @@ bool Storage::ForceInitialize(QString images_path,
 }
 
 int Storage::ParseImageFolder() {
+  delete images_;
   images_ = new QVector<QString>();
   QDirIterator it(images_path_, QDirIterator::Subdirectories);
 
@@ -99,6 +96,11 @@ Reconstruction* Storage::GetReconstruction(int number) {
 
 void Storage::SetReconstructions(
     const std::vector<Reconstruction*>& reconstructions) {
+  // Removing old reconstructions.
+  for (auto reconstruction : reconstructions_) {
+    delete reconstruction;
+  }
+
   reconstructions_.resize(reconstructions.size());
   for (int i = 0; i < reconstructions_.size(); i++) {
     reconstructions_[i] = reconstructions[i];
@@ -185,7 +187,8 @@ QString Storage::GetCameraIntrinsicsPath() const {
 }
 
 Storage::~Storage() {
-  if (images_) {
-    delete images_;
+  delete images_;
+  for (auto reconstruction : reconstructions_) {
+    delete reconstruction;
   }
 }

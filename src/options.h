@@ -45,6 +45,8 @@ class Options {
 
   friend class Reconstructor;
 
+  friend class Report;
+
   friend class Storage;
 
   friend class StorageIO;

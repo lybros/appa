@@ -16,6 +16,8 @@
 class MainWindow;
 
 class ThumbnailWidget : public QWidget {
+ Q_OBJECT   // NOLINT(whitespace/indent)
+
  public:
   ThumbnailWidget(MainWindow* main_window,
                   QWidget* parent,

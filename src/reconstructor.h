@@ -5,6 +5,7 @@
 
 #include "theia/theia.h"
 
+#include "io/report.h"
 #include "options.h"
 #include "project.h"
 #include "storage.h"
@@ -29,6 +30,8 @@ class Reconstructor {
 
   bool ReadMatches(ReconstructionBuilder* reconstruction_builder);
   bool ExtractFeaturesMatches(ReconstructionBuilder* reconstruction_builder);
+
+  Report* report_;
 };
 
 #endif  // SRC_RECONSTRUCTOR_H_

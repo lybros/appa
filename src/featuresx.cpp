@@ -66,36 +66,6 @@ void Features::ForceExtract() {
   return _extract(true);
 }
 
-void Features::GetDescriptor(
-    const std::string image_name,
-    const theia::Feature* feature,
-    Eigen::VectorXf* descriptor
-) {
-  std::string image_path =
-      storage_->GetImagesPath().toStdString() + image_name;
-
-  Keypoint keypoint((*feature)[0],
-                    (*feature)[1],
-                    Keypoint::KeypointType::SIFT);
-
-  LOG(INFO) << "Start process " << image_path;
-  theia::FloatImage image(image_path);
-  DescriptorExtractor* extractor = new theia::SiftDescriptorExtractor();
-  CHECK(extractor->Initialize()) << "Could not initialize extractor";
-
-  LOG(INFO) << "Count descriptor from "
-            << keypoint.x() << " " << keypoint.y();
-
-  theia::Timer timer;
-  CHECK(extractor->ComputeDescriptor(image, keypoint, descriptor))
-  << "Could not extract descriptors for: " << image_path;
-  const double time = timer.ElapsedTimeInSeconds();
-  LOG(INFO) << "It took " << time << " seconds to extract descriptor";
-  return;
-}
-
-// TODO(drapegnik): save feature map to disk once when build model
-// and load from disk all other time
 void Features::GetFeaturesMap(FeaturesMap* features) {
   std::vector<std::vector<theia::Keypoint> > keypoints_vector;
   std::vector<std::vector<Eigen::VectorXf> > descriptors_vector;
@@ -115,7 +85,6 @@ void Features::GetFeaturesMap(FeaturesMap* features) {
 }
 
 void Features::_extract(bool is_force) {
-//  LOG(INFO) << "Start processing:";
   std::vector<std::string> processing_images;
   images_ = storage_->GetImages();
 

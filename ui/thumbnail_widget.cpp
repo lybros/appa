@@ -11,7 +11,7 @@ ThumbnailWidget::ThumbnailWidget(MainWindow* main_window,
                                  QWidget* parent,
                                  const QString& image_path,
                                  const QPixmap& image_pixmap) :
-    QWidget(parent),
+    QWidget(nullptr),
     main_window_(main_window),
     path_(image_path),
     name_(FileNameFromPath(image_path)),

@@ -3,6 +3,8 @@
 #include "options_dialog.h"
 #include "ui_options_dialog.h"
 
+#include "../src/theia_utils.h"
+
 OptionsDialog::OptionsDialog(QWidget* parent,
                              Options* options, int options_enabled) :
   QDialog(parent), ui(new Ui::OptionsDialog),
@@ -24,17 +26,11 @@ void OptionsDialog::InitializeForms() {
 
   // Feature extracting options.
   FindSetCombobox(ui->descriptor_type_combobox,
-                  QMap<theia::DescriptorExtractorType, QString>({
-                    {theia::DescriptorExtractorType::SIFT, "SIFT"},
-                    {theia::DescriptorExtractorType::AKAZE, "AKAZE"},
-                  })[options_->descriptor_type_]);
+                  DescriptorExtractorTypeToString(options_->descriptor_type_));
 
   // Feature matching options.
   FindSetCombobox(ui->matching_strategy_combobox,
-                QMap<theia::MatchingStrategy, QString>({
-                  {theia::MatchingStrategy::BRUTE_FORCE, "Brute Force"},
-                  {theia::MatchingStrategy::CASCADE_HASHING, "Cascade Hashing"},
-                })[options_->match_strategy_]);
+                  MatchingStrategyToString(options_->match_strategy_));
 
   // Reconstruction options.
   ui->shared_calibration_checkBox->setChecked(options_->shared_calibration);
@@ -70,17 +66,13 @@ void OptionsDialog::accept() {
   }
 
   if (options_enabled_ & EXTRACTING_FEATURES_OPTIONS) {
-    options_->descriptor_type_ = QMap<QString, theia::DescriptorExtractorType>({
-      {"SIFT", theia::DescriptorExtractorType::SIFT},
-      {"AKAZE", theia::DescriptorExtractorType::AKAZE},
-    })[ui->descriptor_type_combobox->currentText()];
+    options_->descriptor_type_ = DescriptorExtractorTypeFromString(
+          ui->descriptor_type_combobox->currentText());
   }
 
   if (options_enabled_ & MATCHING_FEATURES_OPTIONS) {
-    options_->match_strategy_ = QMap<QString, theia::MatchingStrategy>({
-      {"Brute Force", theia::MatchingStrategy::BRUTE_FORCE},
-      {"Cascade Hashing", theia::MatchingStrategy::CASCADE_HASHING},
-    })[ui->matching_strategy_combobox->currentText()];
+    options_->match_strategy_ = MatchingStrategyFromString(
+          ui->matching_strategy_combobox->currentText());
   }
 
   if (options_enabled_ & RECONSTRUCTION_OPTIONS) {

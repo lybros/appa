@@ -45,12 +45,6 @@ class Features {
                       std::vector<theia::Keypoint>* keypoints,
                       std::vector<Eigen::VectorXf>* descriptors);
 
-  // not used yet, maybe removed in the future
-  // Read image from storage and extract descriptor for passed Feature
-  void GetDescriptor(const std::string image_name,
-                     const theia::Feature* feature,
-                     Eigen::VectorXf* descriptor);
-
   // Load features and descriptors,
   // return map with <image name> as key
   // and Pair of Keypoints and Descriptors for that image as value

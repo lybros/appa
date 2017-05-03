@@ -27,7 +27,9 @@ Report::~Report() {
 
 bool Report::GenerateSmartReconstructionReport(QString filepath) {
   QFile report(filepath);
-  if (!report.open(QIODevice::ReadWrite)) { return false; }
+  if (!report.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
+    return false;
+  }
 
   QTextStream r(&report);
   r << "Smart reconstruction report." << endl

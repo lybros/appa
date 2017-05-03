@@ -3,7 +3,6 @@
 import sys
 import os
 import subprocess
-import shutil
 import re
 import select
 
@@ -33,8 +32,8 @@ def trace(message, argv=[]):
 def call_cmake(passing_args):
     """
      Call real cmake as a subprocess passing it's output both to stdout and trace file.
-    :param passing_args: 
-    :return: 
+    :param passing_args:
+    :return:
     """
     passing_args = [REAL_CMAKE] + passing_args
     trace("Calling real cmake:", passing_args)

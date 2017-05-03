@@ -16,7 +16,8 @@
 #include <theia/theia.h>
 #include <glog/logging.h>
 
-#include "io/storage.h"
+#include "io/storageio.h"
+#include "featuresx.h"
 #include "options.h"
 #include "utils.h"
 

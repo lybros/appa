@@ -1,14 +1,13 @@
 // Copyright 2017 Lybros.
 
-#include "storage.h"
+#include "storageio.h"
 
 #include <QFile>
 #include <QFileInfo>
 
 #include "../storage.h"
-#include "../utils.h"
 
-StorageIO::StorageIO(Storage *storage) : storage_(storage) {
+StorageIO::StorageIO(Storage* storage) : storage_(storage) {
 }
 
 StorageIO::~StorageIO() {
@@ -87,8 +86,9 @@ bool StorageIO::ReadCalibrationFile(
   return true;
 }
 
-bool StorageIO::ReadCalibrationFileRow(QTextStream* stream,
-  theia::CameraIntrinsicsPrior* temp_camera_intrinsics_prior) {
+bool StorageIO::ReadCalibrationFileRow(
+    QTextStream* stream,
+    theia::CameraIntrinsicsPrior* temp_camera_intrinsics_prior) {
   temp_camera_intrinsics_prior->focal_length.is_set = true;
   (*stream) >> temp_camera_intrinsics_prior->focal_length.value[0];
 

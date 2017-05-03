@@ -48,66 +48,68 @@ void Project::BuildModelToBinary() {
   Reconstructor(this).SmartBuild();
 }
 
-void Project::SearchImage(QString file_path,
-                          QSet<theia::TrackId>* h_tracks) {
+QSet<theia::TrackId>* Project::SearchImage(QString file_path) {
   // TODO(drapegnik): replace hardcode index with some value.
   Reconstruction* model = storage_->GetReconstruction(0);
+  QSet<theia::TrackId>* h_tracks = new QSet<theia::TrackId>();
+
   if (!model) {
     LOG(WARNING) << "There is no built models!";
-    return;
+    return h_tracks;
   }
 
   std::vector<theia::Keypoint> keypoints;
   std::vector<Eigen::VectorXf> descriptors;
-
   features_->ExtractFeature(file_path, &keypoints, &descriptors);
   LOG(INFO) << "Successfully extract " << descriptors.size() << " features";
 
-  std::unordered_map<std::string, Features::FeaturesMap> feature_to_descriptor;
-  features_->GetFeaturesMap(&feature_to_descriptor);
+  Features::FeaturesMap features;
+  theia::FeatureMatcherOptions matcher_options;
+  matcher_options = options_->GetFeatureMatcherOptions();
+  matcher_options.match_out_of_core = false;
+  features_->GetFeaturesMap(&features);
 
-  theia::L2 norm;
-  std::vector<theia::TrackId> tracks_ids = model->TrackIds();
-  int counter = 0;
   theia::Timer timer;
-
-  for (auto t_id : tracks_ids) {
-    theia::Track* track = model->MutableTrack(t_id);
-    std::unordered_set<theia::ViewId> views_ids = track->ViewIds();
-    bool match = false;
-
-    for (auto v_id : views_ids) {
-      theia::View* view = model->MutableView(v_id);
-      const theia::Feature feature = *(view->GetFeature(t_id));
-      const Features::Pair key = std::make_pair(feature[0], feature[1]);
-      Features::FeaturesMap::const_iterator got =
-          feature_to_descriptor[view->Name()].find(key);
-
-      if (got == feature_to_descriptor[view->Name()].end()) {
-        LOG(INFO) << "Feature not found [" << view->Name() << "]: ("
-                  << feature[0] << ", " << feature[1] << ")";
-        continue;
-      }
-
-      Eigen::VectorXf track_descriptor = got->second;
-      for (auto feature_descriptor : descriptors) {
-        float distance = norm(track_descriptor, feature_descriptor);
-        if (distance <= 0.1) {
-          match = true;
-          counter++;
-          break;
-        }
-      }
-
-      if (match) { break; }
+  std::vector<theia::ViewId> views_ids = model->ViewIds();
+  for (auto v_id : views_ids) {
+    theia::View* view = model->MutableView(v_id);
+    std::vector<theia::TrackId> tracks_ids = view->TrackIds();
+    std::unordered_map<theia::Feature, theia::TrackId> feature_to_track;
+    for (auto t_id : tracks_ids) {
+      feature_to_track[*(view->GetFeature(t_id))] = t_id;
     }
 
-    if (match) { h_tracks->insert(t_id); }
+    theia::CascadeHashingFeatureMatcher matcher(matcher_options);
+    std::vector<theia::Keypoint> view_keypoints
+        = features[view->Name()].first;
+    std::vector<Eigen::VectorXf> view_descriptors
+        = features[view->Name()].second;
+
+    matcher.AddImage("view", view_keypoints, view_descriptors);
+    matcher.AddImage(file_path.toStdString(), keypoints, descriptors);
+
+    std::vector<theia::ImagePairMatch> matches;
+    matcher.MatchImages(&matches);
+
+    if (matches.size() == 0) { continue; }
+
+    LOG(INFO) << "Matched " << matches[0].correspondences.size() << " "
+        "features with " << view->Name();
+
+    for (auto cor : matches[0].correspondences) {
+      std::unordered_map<theia::Feature, theia::TrackId>::const_iterator got =
+          feature_to_track.find(cor.feature1);
+
+      if (got == feature_to_track.end()) { continue; }
+      h_tracks->insert(got->second);
+    }
   }
+
   const double time = timer.ElapsedTimeInSeconds();
-  LOG(INFO) << "It took " << time << " seconds to compare descriptors";
-  LOG(INFO) << "Match " << counter << "/" << model->NumTracks() << " tracks";
-  return;
+  LOG(INFO) << "It took " << time << " seconds to search";
+  LOG(INFO) << "Match " << h_tracks->size()
+            << "/" << model->NumTracks() << " tracks";
+  return h_tracks;
 }
 
 void Project::ExtractFeatures() {

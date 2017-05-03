@@ -19,15 +19,15 @@ set(HEADERS
     )
 
 set(IO_SOURCE_FILES
-    io/project.cpp
+    io/projectio.cpp
     io/report.cpp
-    io/storage.cpp
+    io/storageio.cpp
     )
 
 set(IO_HEADERS
-    io/project.h
+    io/projectio.h
     io/report.h
-    io/storage.h
+    io/storageio.h
     )
 
 add_library(src ${SOURCE_FILES} ${HEADERS} ${IO_SOURCE_FILES} ${IO_HEADERS})

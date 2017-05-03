@@ -1,6 +1,6 @@
 // Copyright 2017 Lybros.
 
-#include "project.h"
+#include "projectio.h"
 
 #include "../project.h"
 
@@ -17,7 +17,9 @@ bool ProjectIO::WriteConfigurationFile() {
   Project* pr = project_;
 
   QFile configFile(pr->GetConfigurationFilePath());
-  if (!configFile.open(QIODevice::ReadWrite)) { return false; }
+  if (!configFile.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
+    return false;
+  }
 
   QTextStream stream(&configFile);
   stream << "PROJECT_CONFIG_VERSION v1.0" << endl;

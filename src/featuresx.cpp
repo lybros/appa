@@ -82,6 +82,8 @@ void Features::GetDescriptor(
 
   LOG(INFO) << "Start process " << image_path;
   theia::FloatImage image(image_path);
+  // TODO(drapegnik): why not to simply create an object of
+  // SiftDescriptorExtractor type? Assigned by uladbohdan.
   DescriptorExtractor* extractor = new theia::SiftDescriptorExtractor();
   CHECK(extractor->Initialize()) << "Could not initialize extractor";
 
@@ -93,6 +95,9 @@ void Features::GetDescriptor(
   << "Could not extract descriptors for: " << image_path;
   const double time = timer.ElapsedTimeInSeconds();
   LOG(INFO) << "It took " << time << " seconds to extract descriptor";
+
+  delete extractor;
+
   return;
 }
 

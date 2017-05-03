@@ -35,8 +35,6 @@ class Storage {
  public:
   Storage();
 
-  explicit Storage(QString images_path);
-
   void SetOptions(Options* options);
 
   QString GetImagesPath();

@@ -44,6 +44,8 @@ class ModifiedCamera : public theia::Camera {
 // The data comes from project_ field, which connects us with instance of
 // Project class.
 class ReconstructionWindow : public QGLViewer {
+ Q_OBJECT   // NOLINT(whitespace/indent)
+
  public:
   ReconstructionWindow();
 

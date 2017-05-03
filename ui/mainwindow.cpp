@@ -6,7 +6,8 @@
 #include "thumbnail_widget.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
-                                          ui(new Ui::MainWindow) {
+                                          ui(new Ui::MainWindow),
+                                          active_project_(nullptr) {
   ui->setupUi(this);
 
   view_ = new ReconstructionWindow();
@@ -81,6 +82,9 @@ void MainWindow::on_actionNewProject_triggered() {
 
     // Try/catch section here to understand if constructor failed
     // to create a Project instance. (?)
+
+    delete active_project_;
+
     active_project_ = new Project(
         project_options.project_name,
         project_options.project_path,
@@ -108,7 +112,8 @@ void MainWindow::on_actionOpen_triggered() {
     return;
   }
 
-  // delete active_project_;
+  delete active_project_;
+
   active_project_ = new Project(projectPathChosen);
 
   // To check the data read from config file.
@@ -179,6 +184,10 @@ bool MainWindow::isProjectDirectory(const QString& project_path) {
 }
 
 MainWindow::~MainWindow() {
+  for (auto thumbnail : thumbnails_) {
+    delete thumbnail;
+  }
+  thumbnails_.clear();
   delete ui;
   delete active_project_;
   delete view_;
@@ -220,11 +229,10 @@ void MainWindow::UpdateActiveProjectInfo() {
 }
 
 void MainWindow::LoadImagesPreview() {
-  // Removing all old thumbnails.
-  for (QWidget* child : ui->imagesPreviewScrollAreaContents->
-      findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly)) {
-    delete child;
+  for (auto thumbnail : thumbnails_) {
+    delete thumbnail;
   }
+  thumbnails_.clear();
   ui->imagesPreviewScrollArea->setVisible(false);
 
   // Getting a list of image paths.
@@ -256,8 +264,8 @@ void MainWindow::LoadImagesPreview() {
         ui->imagesPreviewScrollArea->setVisible(true);
         for (const ThumbnailData& pair : pairs) {
           ThumbnailWidget* thumbnail = new ThumbnailWidget(
-              this, ui->imagesPreviewScrollAreaContents, pair.first,
-              pair.second);
+              this, ui->imagesPreviewScrollAreaContents,
+              pair.first, pair.second);
           thumbnails_.push_back(thumbnail);
           ui->imagesPreviewArea->setAlignment(thumbnail, Qt::AlignHCenter);
           ui->imagesPreviewArea->addWidget(thumbnail, 0, Qt::AlignTop);
@@ -266,8 +274,7 @@ void MainWindow::LoadImagesPreview() {
 
   process_manager_->StartNewProcess(
       QString("Loading and rescaling thumbnails..."),
-      QtConcurrent::mapped(image_paths, scale_images),
-      on_finish);
+      QtConcurrent::mapped(image_paths, scale_images), on_finish);
 }
 
 void MainWindow::UpdateSelectedThumbnails() {

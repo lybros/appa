@@ -58,12 +58,12 @@ bool Report::GenerateSmartReconstructionReport(QString filepath) {
   r << "----- FEATURE MATCHING -----" << endl;
   if (using_prebuilt_matches_) {
     r << "feature matching was skipped (read from filesystem)" << endl
-      << "timing (reading matches):  " << reading_matches_time_ << "s" << endl;
+      << "timing (reading matches): " << reading_matches_time_ << "s" << endl;
   } else {
     r << "feature matching was performed." << endl
       << "matching strategy: "
       << MatchingStrategyToString(options_->match_strategy_) << endl
-      << "timing (extract&match):  " << extraction_matching_time_ << "s" << endl;
+      << "timing (extract&match): " << extraction_matching_time_ << "s" << endl;
   }
   r << endl;
 

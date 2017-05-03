@@ -197,4 +197,5 @@ void ReconstructionWindow::SetHighlightedPoints(
   update();
 }
 
-ReconstructionWindow::~ReconstructionWindow() {}
+ReconstructionWindow::~ReconstructionWindow() {
+}

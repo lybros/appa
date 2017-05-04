@@ -64,8 +64,7 @@ void Reconstructor::SmartBuild() {
   report_->overall_time_ = overall_timer.ElapsedTimeInSeconds();
 
   // Generating a report.
-  QString report_path =
-      QDir(storage_->GetOutputLocation()).filePath("reconstruction_report.txt");
+  QString report_path = report_->GetDefaultReportPath();
   bool ok = report_->GenerateSmartReconstructionReport(report_path);
   if (ok) {
     LOG(INFO) << "Report was successfully created. Written to "

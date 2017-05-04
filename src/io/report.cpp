@@ -3,6 +3,7 @@
 #include "report.h"
 
 #include <QDateTime>
+#include <QDir>
 #include <QFile>
 #include <QProcessEnvironment>
 #include <QTextStream>
@@ -23,6 +24,13 @@ Report::Report(Project* project) : project_(project) {
 }
 
 Report::~Report() {
+}
+
+QString Report::GetDefaultReportPath() {
+  return QDir(storage_->GetOutputLocation()).filePath(
+        QString("build_") +
+        QDateTime::currentDateTime().toString(Qt::ISODate) +
+        QString("_report.txt") );
 }
 
 bool Report::GenerateSmartReconstructionReport(QString filepath) {

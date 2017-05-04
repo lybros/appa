@@ -28,7 +28,7 @@ Report::~Report() {
 
 QString Report::GetDefaultReportPath() {
   return QDir(storage_->GetOutputLocation()).filePath(
-        QString("build_") +
+        QString("models/build_") +
         QDateTime::currentDateTime().toString(Qt::ISODate) +
         QString("_report.txt") );
 }

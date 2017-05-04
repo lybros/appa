@@ -8,6 +8,8 @@
 #include <QMap>
 #include <QString>
 
+#include "io/storageio.h"
+
 Reconstructor::Reconstructor(Project* project) : project_(project) {
   storage_ = project_->GetStorage();
   options_ = project_->GetOptions();
@@ -58,8 +60,7 @@ void Reconstructor::SmartBuild() {
   report_->colorizing_time_ = colorizing_timer.ElapsedTimeInSeconds();
   LOG(INFO) << "Reconstruction colorized successfully!";
 
-  storage_->SetReconstructions(reconstructions);
-  storage_->WriteReconstructions();
+  StorageIO(storage_).WriteReconstructions(reconstructions);
 
   report_->overall_time_ = overall_timer.ElapsedTimeInSeconds();
 

@@ -62,20 +62,9 @@ class Storage {
 
   void SetOutputLocation(const QString& output_location);
 
-  // Check if model already in memory, load it if not, and return.
-  Reconstruction* GetReconstruction(const int number);
+  Reconstruction* GetReconstruction(const QString reconstruction_name);
 
-  // Update model in memory and sets status_ to LOADED_IN_MEMORY.
-  void SetReconstructions(const std::vector<Reconstruction*>& reconstructions);
-
-  // Write all models to binary file.
-  void WriteReconstructions();
-
-  void SetReconstructionStatus(ReconstructionStatus status);
-
-  ReconstructionStatus GetReconstructionStatus() const;
-
-  QStringList GetReconstrutionNames();
+  QStringList& GetReconstructions();
 
   bool GetCalibration(QMap<QString, theia::CameraIntrinsicsPrior>*);
 
@@ -84,19 +73,25 @@ class Storage {
   ~Storage();
 
  private:
-  // Two following data structures must be synced.
-  std::vector<Reconstruction*> reconstructions_;
-  QStringList reconstruction_names_;
+  // List of full paths to reconstructions (.model files) in filesystem.
+  QStringList reconstructions_;
+  // The only reason to have this field is to be able to deallocate memory
+  // allocated for the reconstruction.
+  Reconstruction* loaded_reconstruction_;
+  QString loaded_reconstruction_name_;
 
   QVector<QString>* images_;
   QString images_path_;
   QString output_location_;
-  ReconstructionStatus status_;
 
   Options* options_;
 
-  // Reads model from binary file.
-  void ReadReconstructions();
+  // Reads one specific Reconstruction by name from filesystem.
+  // As only one Reconstruction may be rendered at the same time, no need to
+  // have them all loaded to memory.
+  // As this method is private, you must call GetReconstruction() method, which
+  // also checks if reconstruction is already in memory.
+  void LoadReconstruction(QString reconstruction_name);
 
   QString GetCameraIntrinsicsPath() const;
 };

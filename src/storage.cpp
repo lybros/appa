@@ -8,7 +8,8 @@ Storage::Storage() : options_(nullptr),
                      images_(nullptr),
                      images_path_(""),
                      output_location_(""),
-                     status_(ReconstructionStatus::NOT_BUILT) {
+                     loaded_reconstruction_(nullptr),
+                     loaded_reconstruction_name_("") {
 }
 
 void Storage::SetOptions(Options* options) {
@@ -19,7 +20,7 @@ QString Storage::GetImagesPath() {
   return images_path_;
 }
 
-// TODO(uladbohdan): clean up out/ when dataset was changed
+// TODO(uladbohdan): clean up out/ when dataset was changed.
 int Storage::UpdateImagesPath(QString images_path) {
   images_path_ = images_path;
   return ParseImageFolder();
@@ -86,41 +87,18 @@ int Storage::NumberOfImages() {
   return images_->length();
 }
 
-// TODO(all): maybe some refactor to get model by name instead index.
-Reconstruction* Storage::GetReconstruction(int number) {
-  if (status_ != ReconstructionStatus::LOADED_INTO_MEMORY) {
-    ReadReconstructions();
+Reconstruction* Storage::GetReconstruction(const QString reconstruction_name) {
+  // Avoiding reloading model if it's already in memory.
+  if (reconstruction_name != loaded_reconstruction_name_) {
+    LoadReconstruction(reconstruction_name);
   }
-  if (reconstructions_.size() < number + 1) { return NULL; }
-
-  return reconstructions_[number];
-}
-
-void Storage::SetReconstructions(
-    const std::vector<Reconstruction*>& reconstructions) {
-  // Removing old reconstructions.
-  for (auto reconstruction : reconstructions_) {
-    delete reconstruction;
-  }
-
-  reconstructions_.resize(reconstructions.size());
-  for (int i = 0; i < reconstructions_.size(); i++) {
-    reconstructions_[i] = reconstructions[i];
-  }
-
-  if (!reconstructions_.size()) {
-    status_ = ReconstructionStatus::NOT_BUILT;
-    return;
-  }
-
-  status_ = ReconstructionStatus::LOADED_INTO_MEMORY;
-  LOG(INFO) << "Reconstructions have been saved to memory.";
+  return loaded_reconstruction_;
 }
 
 void Storage::LoadModelsList() {
-  reconstruction_names_.clear();
+  reconstructions_.clear();
 
-  QDirIterator it(output_location_);
+  QDirIterator it(QDir(output_location_).filePath("models/"));
 
   LOG(INFO) << "Loading list of models...";
 
@@ -135,61 +113,32 @@ void Storage::LoadModelsList() {
     }
 
     LOG(INFO) << "\t Model found: " << next_model.toStdString();
-    reconstruction_names_ << next_model;
+    reconstructions_ << next_model;
   }
 
-  LOG(INFO) << "Found " << reconstruction_names_.size() << " models";
+  LOG(INFO) << "Found " << reconstructions_.size() << " models";
 }
 
-void Storage::ReadReconstructions() {
+void Storage::LoadReconstruction(QString reconstruction_name) {
+  LOG(INFO) << "Loading model" << reconstruction_name.toStdString()
+            << "to memory...";
+
+  Reconstruction* reconstruction = new Reconstruction();
+  CHECK(ReadReconstruction(reconstruction_name.toStdString(), reconstruction))
+  << "Could not read model from file.";
+
+  delete loaded_reconstruction_;
+
+  loaded_reconstruction_ = reconstruction;
+  loaded_reconstruction_name_ = reconstruction_name;
+
+  LOG(INFO) << "Model " << loaded_reconstruction_name_.toStdString()
+            << "was successfully loaded to memory.";
+}
+
+QStringList& Storage::GetReconstructions() {
   LoadModelsList();
-
-  LOG(INFO) << "Loading models to memory...";
-
-  std::vector<Reconstruction*> reconstructions;
-
-  for (QString reconstruction_name : reconstruction_names_) {
-    QString filename = QDir(output_location_).filePath(reconstruction_name);
-
-    Reconstruction* reconstruction = new Reconstruction();
-    CHECK(ReadReconstruction(filename.toStdString(), reconstruction))
-    << "Could not read model from file.";
-
-    reconstructions.push_back(reconstruction);
-  }
-
-  SetReconstructions(reconstructions);
-  LOG(INFO) << "Successfully load " << reconstructions_.size() << " models";
-}
-
-void Storage::WriteReconstructions() {
-  std::string model_file_template = QDir(output_location_).filePath(
-    QString("build_") +
-    QDateTime::currentDateTime().toString(Qt::ISODate) +
-    QString("_%d.model") ).toStdString();
-
-  for (int i = 0; i < reconstructions_.size(); i++) {
-    std::string output_file =
-        theia::StringPrintf(model_file_template.c_str(), i);
-    LOG(INFO) << "Writing a model to " << output_file;
-    CHECK(theia::WriteReconstruction(*reconstructions_[i], output_file))
-    << "Failed to write model to filesystem.";
-  }
-
-  LOG(INFO) << "Reconstructions have been saved to filesystem.";
-}
-
-void Storage::SetReconstructionStatus(ReconstructionStatus status) {
-  status_ = status;
-}
-
-ReconstructionStatus Storage::GetReconstructionStatus() const {
-  return status_;
-}
-
-QStringList Storage::GetReconstrutionNames() {
-  LoadModelsList();
-  return reconstruction_names_;
+  return reconstructions_;
 }
 
 const QString& Storage::GetOutputLocation() const {
@@ -212,7 +161,5 @@ QString Storage::GetCameraIntrinsicsPath() const {
 
 Storage::~Storage() {
   delete images_;
-  for (auto reconstruction : reconstructions_) {
-    delete reconstruction;
-  }
+  delete loaded_reconstruction_;
 }

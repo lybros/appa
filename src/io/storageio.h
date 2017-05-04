@@ -27,6 +27,8 @@
 #ifndef SRC_IO_STORAGEIO_H_
 #define SRC_IO_STORAGEIO_H_
 
+#include <vector>
+
 #include <QMap>
 #include <QString>
 #include <QTextStream>
@@ -43,6 +45,9 @@ class StorageIO {
   bool ReadCalibrationFile(
       QString calibration_file_path,
       QMap<QString, theia::CameraIntrinsicsPrior>* camera_intrinsics_prior);
+
+  bool WriteReconstructions(
+      const std::vector<theia::Reconstruction*>& reconstructions);
 
   ~StorageIO();
 

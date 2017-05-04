@@ -3,6 +3,7 @@
 #include "reconstruction_window.h"
 
 #include <QInputDialog>
+#include <QMessageBox>
 
 ReconstructionWindow::ReconstructionWindow() {
   QGLViewer();
@@ -20,16 +21,25 @@ void ReconstructionWindow::UpdateActiveProject(Project* project) {
 void ReconstructionWindow::BuildFromDefaultPath() {
   world_points_.clear();
 
-  QStringList items = project_->GetStorage()->GetReconstrutionNames();
-  for (auto& item : items) {
-    item = FileNameFromPath(item);
+  QStringList full_names = project_->GetStorage()->GetReconstructions();
+  if (full_names.empty()) {
+    QMessageBox::warning(this, "No models available",
+                         "No models were found in filesystem. "
+                         "Start reconstruction process to create a new one!",
+                         QMessageBox::Ok);
+    return;
+  }
+
+  QStringList short_names;
+  for (auto& full_name : full_names) {
+    short_names << FileNameFromPath(full_name);
   }
 
   bool ok;
   QString reconstruction_name =
       QInputDialog::getItem(this, "Reconstruction picker",
                             "Choose a reconstruction to render",
-                            items, 0, false, &ok);
+                            short_names, 0, false, &ok);
   if (!ok || (reconstruction_name == "")) {
     LOG(WARNING) << "Failed to choose a model to render.";
     return;
@@ -37,9 +47,9 @@ void ReconstructionWindow::BuildFromDefaultPath() {
 
   theia::Reconstruction* reconstruction =
       project_->GetStorage()->GetReconstruction(
-        items.indexOf(QRegExp(reconstruction_name)));
+        full_names[short_names.indexOf(QRegExp(reconstruction_name))]);
   if (!reconstruction) {
-    LOG(WARNING) << "There is no built models!";
+    LOG(WARNING) << "Failed to get reconstruction to render!";
     return;
   }
 

@@ -2,6 +2,8 @@
 
 #include "storage.h"
 
+#include <QDateTime>
+
 Storage::Storage() : options_(nullptr),
                      images_(nullptr),
                      images_path_(""),
@@ -147,14 +149,27 @@ void Storage::ReadReconstructions() {
 
 void Storage::WriteReconstructions() {
   std::string output_file_template =
-      QDir(output_location_).filePath("model").toStdString();
+      QDir(output_location_).filePath("model-%d.binary").toStdString();
 
   for (int i = 0; i < reconstructions_.size(); i++) {
     std::string output_file =
-        theia::StringPrintf("%s-%d.binary", output_file_template.c_str(), i);
+        theia::StringPrintf(output_file_template.c_str(), i);
     LOG(INFO) << "Writing reconstruction " << i << " to " << output_file;
     CHECK(theia::WriteReconstruction(*reconstructions_[i], output_file))
     << "Could not write reconstruction to file";
+  }
+
+  std::string alternative_file_template = QDir(output_location_).filePath(
+    QString("build_") +
+    QDateTime::currentDateTime().toString(Qt::ISODate) +
+    QString("_%d.model") ).toStdString();
+
+  for (int i = 0; i < reconstructions_.size(); i++) {
+    std::string output_file =
+        theia::StringPrintf(alternative_file_template.c_str(), i);
+    LOG(INFO) << "Writing a copy to " << output_file;
+    CHECK(theia::WriteReconstruction(*reconstructions_[i], output_file))
+    << "Failed to write alternative reconstruction to filesystem.";
   }
 
   LOG(INFO) << "Reconstructions has been saved to filesystem.";

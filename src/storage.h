@@ -26,7 +26,7 @@ using theia::Reconstruction;
 // The pattern may be extended with image extensions which are supported
 // by Theia.
 const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|JPG|jpeg|JPEG|png|PNG)";
-const QString MODEL_FILENAME_PATTERN = "model-\\d+.binary";
+const QString MODEL_FILENAME_PATTERN = "*.model";
 
 const QString DEFAULT_CALIBRATION_FILE_NAME = "camera_intrinsics.txt";
 

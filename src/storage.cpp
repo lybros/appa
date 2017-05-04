@@ -123,11 +123,12 @@ void Storage::ReadReconstructions() {
 
   LOG(INFO) << "Reading models...";
   QRegExp rx(MODEL_FILENAME_PATTERN);
+  rx.setPatternSyntax(QRegExp::Wildcard);
   while (it.hasNext()) {
     QString next_model;
     next_model = it.next();
 
-    if (rx.indexIn(next_model) == -1) {
+    if (rx.exactMatch(next_model) == false) {
       LOG(WARNING) << "\t" << next_model.toStdString() <<
                    "- \"does not match the regex.\"";
       continue;

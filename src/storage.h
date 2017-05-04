@@ -10,6 +10,7 @@
 #include <QtAlgorithms>
 #include <QDirIterator>
 #include <QFileInfo>
+#include <QStringList>
 #include <QTextStream>
 #include <QVector>
 
@@ -25,6 +26,7 @@ using theia::Reconstruction;
 
 // The pattern may be extended with image extensions which are supported
 // by Theia.
+// TODO(uladbohdan): to achieve consistency in regexps.
 const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|JPG|jpeg|JPEG|png|PNG)";
 const QString MODEL_FILENAME_PATTERN = "*.model";
 
@@ -73,12 +75,19 @@ class Storage {
 
   ReconstructionStatus GetReconstructionStatus() const;
 
+  QStringList GetReconstrutionNames();
+
   bool GetCalibration(QMap<QString, theia::CameraIntrinsicsPrior>*);
+
+  void LoadModelsList();
 
   ~Storage();
 
  private:
+  // Two following data structures must be synced.
   std::vector<Reconstruction*> reconstructions_;
+  QStringList reconstruction_names_;
+
   QVector<QString>* images_;
   QString images_path_;
   QString output_location_;

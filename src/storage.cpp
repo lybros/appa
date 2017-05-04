@@ -117,25 +117,39 @@ void Storage::SetReconstructions(
   LOG(INFO) << "Reconstructions have been saved to memory.";
 }
 
-void Storage::ReadReconstructions() {
-  QDirIterator it(output_location_);
-  std::vector<Reconstruction*> reconstructions;
+void Storage::LoadModelsList() {
+  reconstruction_names_.clear();
 
-  LOG(INFO) << "Reading models...";
+  QDirIterator it(output_location_);
+
+  LOG(INFO) << "Loading list of models...";
+
   QRegExp rx(MODEL_FILENAME_PATTERN);
   rx.setPatternSyntax(QRegExp::Wildcard);
   while (it.hasNext()) {
-    QString next_model;
-    next_model = it.next();
-
+    QString next_model = it.next();
     if (rx.exactMatch(next_model) == false) {
-      LOG(WARNING) << "\t" << next_model.toStdString() <<
-                   "- \"does not match the regex.\"";
+      LOG(WARNING) << "\t" << next_model.toStdString()
+                   << "- \"does not match the regex.\"";
       continue;
     }
 
-    LOG(INFO) << "\t" << next_model.toStdString();
-    QString filename = QDir(output_location_).filePath(next_model);
+    LOG(INFO) << "\t Model found: " << next_model.toStdString();
+    reconstruction_names_ << next_model;
+  }
+
+  LOG(INFO) << "Found " << reconstruction_names_.size() << " models";
+}
+
+void Storage::ReadReconstructions() {
+  LoadModelsList();
+
+  LOG(INFO) << "Loading models to memory...";
+
+  std::vector<Reconstruction*> reconstructions;
+
+  for (QString reconstruction_name : reconstruction_names_) {
+    QString filename = QDir(output_location_).filePath(reconstruction_name);
 
     Reconstruction* reconstruction = new Reconstruction();
     CHECK(ReadReconstruction(filename.toStdString(), reconstruction))
@@ -149,31 +163,20 @@ void Storage::ReadReconstructions() {
 }
 
 void Storage::WriteReconstructions() {
-  std::string output_file_template =
-      QDir(output_location_).filePath("model-%d.binary").toStdString();
-
-  for (int i = 0; i < reconstructions_.size(); i++) {
-    std::string output_file =
-        theia::StringPrintf(output_file_template.c_str(), i);
-    LOG(INFO) << "Writing reconstruction " << i << " to " << output_file;
-    CHECK(theia::WriteReconstruction(*reconstructions_[i], output_file))
-    << "Could not write reconstruction to file";
-  }
-
-  std::string alternative_file_template = QDir(output_location_).filePath(
+  std::string model_file_template = QDir(output_location_).filePath(
     QString("build_") +
     QDateTime::currentDateTime().toString(Qt::ISODate) +
     QString("_%d.model") ).toStdString();
 
   for (int i = 0; i < reconstructions_.size(); i++) {
     std::string output_file =
-        theia::StringPrintf(alternative_file_template.c_str(), i);
-    LOG(INFO) << "Writing a copy to " << output_file;
+        theia::StringPrintf(model_file_template.c_str(), i);
+    LOG(INFO) << "Writing a model to " << output_file;
     CHECK(theia::WriteReconstruction(*reconstructions_[i], output_file))
-    << "Failed to write alternative reconstruction to filesystem.";
+    << "Failed to write model to filesystem.";
   }
 
-  LOG(INFO) << "Reconstructions has been saved to filesystem.";
+  LOG(INFO) << "Reconstructions have been saved to filesystem.";
 }
 
 void Storage::SetReconstructionStatus(ReconstructionStatus status) {
@@ -182,6 +185,11 @@ void Storage::SetReconstructionStatus(ReconstructionStatus status) {
 
 ReconstructionStatus Storage::GetReconstructionStatus() const {
   return status_;
+}
+
+QStringList Storage::GetReconstrutionNames() {
+  LoadModelsList();
+  return reconstruction_names_;
 }
 
 const QString& Storage::GetOutputLocation() const {

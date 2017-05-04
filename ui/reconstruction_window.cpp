@@ -2,6 +2,8 @@
 
 #include "reconstruction_window.h"
 
+#include <QInputDialog>
+
 ReconstructionWindow::ReconstructionWindow() {
   QGLViewer();
 }
@@ -17,8 +19,25 @@ void ReconstructionWindow::UpdateActiveProject(Project* project) {
 
 void ReconstructionWindow::BuildFromDefaultPath() {
   world_points_.clear();
+
+  QStringList items = project_->GetStorage()->GetReconstrutionNames();
+  for (auto& item : items) {
+    item = FileNameFromPath(item);
+  }
+
+  bool ok;
+  QString reconstruction_name =
+      QInputDialog::getItem(this, "Reconstruction picker",
+                            "Choose a reconstruction to render",
+                            items, 0, false, &ok);
+  if (!ok || (reconstruction_name == "")) {
+    LOG(WARNING) << "Failed to choose a model to render.";
+    return;
+  }
+
   theia::Reconstruction* reconstruction =
-      project_->GetStorage()->GetReconstruction(0);
+      project_->GetStorage()->GetReconstruction(
+        items.indexOf(QRegExp(reconstruction_name)));
   if (!reconstruction) {
     LOG(WARNING) << "There is no built models!";
     return;

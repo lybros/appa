@@ -13,6 +13,9 @@ Project::Project(QString project_path) :
   features_ = new Features(storage_, options_);
 
   storage_->SetOptions(options_);
+
+  // Searching for models.
+  storage_->LoadModelsList();
 }
 
 Project::Project(QString project_name,

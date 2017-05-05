@@ -13,9 +13,6 @@ Project::Project(QString project_path) :
   features_ = new Features(storage_, options_);
 
   storage_->SetOptions(options_);
-
-  // Searching for models.
-  storage_->LoadModelsList();
 }
 
 Project::Project(QString project_name,
@@ -40,7 +37,7 @@ Project::Project(QString project_name,
 
   // Creating out/ directory.
   QDir(project_path).mkdir("out");
-  QDir(project_path + "out").mkdir("models");
+  QDir(QDir(project_path).filePath("out")).mkdir("models");
   storage_->SetOutputLocation(GetDefaultOutputPath());
   options_ = new Options(storage_->GetOutputLocation());
   features_ = new Features(storage_, options_);

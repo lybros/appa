@@ -10,13 +10,12 @@
 // file. These options are then parsed if Options::ParseCommandLineArguments()
 // method.
 
-/* THEIA's flags.
- * The full description may be found in Theia's docs or in Theia's
- * //applications/build_reconstruction.cc file.
- */
+// THEIA's flags.
+// The full description may be found in Theia's docs or in Theia's
+// //applications/build_reconstruction.cc file.
 
 // General.
-DEFINE_int32(num_threads, 1, "");
+DEFINE_int32(num_threads, 4, "");
 
 // Feature extraction.
 DEFINE_string(descriptor_type, "SIFT", "");

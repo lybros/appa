@@ -171,10 +171,6 @@ Options* Project::GetOptions() {
   return options_;
 }
 
-bool Project::RemoveProject() {
-  return true;
-}
-
 Project::~Project() {
   WriteConfigurationFile();
   delete options_;

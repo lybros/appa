@@ -19,6 +19,15 @@
  * upd:
  *  - each image is described with relative to IMAGES_LOCATION path.
  *    That means full image is IMAGES_LOCATION/"name0.jpg".
+ *
+ * Notice: keep in mind, that reconstruction (colorizing) fails for datasets
+ * which are organized in non-plane structure (e.g. folder contains several
+ * folders with images). The STRONG recommendation is to use datasets with the
+ * following structure:
+ * images_path/
+ * |--image0.jpg
+ * ...
+ * |--imageN.jpg
  */
 
 #ifndef SRC_IO_PROJECTIO_H_

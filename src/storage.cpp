@@ -22,6 +22,7 @@ QString Storage::GetImagesPath() {
 
 // TODO(uladbohdan): clean up out/ when dataset was changed.
 int Storage::UpdateImagesPath(QString images_path) {
+  EnsureTrailingSlash(&images_path);
   images_path_ = images_path;
   return ParseImageFolder();
 }
@@ -38,6 +39,7 @@ bool Storage::ForceInitialize(QString images_path,
   }
 
   // Everything seems to be fine. Force overriding the fields.
+  EnsureTrailingSlash(&images_path);
   images_path_ = images_path;
   images_ = new QVector<QString>(images);
 

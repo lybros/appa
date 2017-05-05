@@ -83,6 +83,8 @@ void RunCLI() {
 
   Project* project;
 
+  QString temp_project_path;
+
   if (FLAGS_cli_mode == "open") {
     project = new Project(QString::fromStdString(FLAGS_project_path));
   } else if (FLAGS_cli_mode == "new") {
@@ -90,8 +92,14 @@ void RunCLI() {
                           QString::fromStdString(FLAGS_project_path),
                           QString::fromStdString(FLAGS_images_path));
   } else if (FLAGS_cli_mode == "temp") {
-    project = new Project(QDateTime::currentDateTime().toString(Qt::ISODate),
-                          QDir::tempPath(),
+    QString temp_project_name =
+        QString("appa-project-") +
+        QDateTime::currentDateTime().toString(Qt::ISODate);
+    temp_project_path = QDir::temp().filePath(temp_project_name);
+    LOG(INFO) << "Temp project will be created in "
+              << temp_project_path.toStdString();
+    project = new Project(temp_project_name,
+                          temp_project_path,
                           QString::fromStdString(FLAGS_images_path));
   }
 
@@ -101,7 +109,11 @@ void RunCLI() {
   }
 
   if (FLAGS_cli_mode == "temp") {
-    project->RemoveProject();
+    if (QDir(temp_project_path).removeRecursively()) {
+      LOG(INFO) << "Temp project was successfully removed.";
+    } else {
+      LOG(ERROR) << "Failed to remove a temporary project.";
+    }
   }
 
   LOG(INFO) << "Quitting the application...";

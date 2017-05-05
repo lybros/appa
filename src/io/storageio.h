@@ -46,7 +46,7 @@ class StorageIO {
       QString calibration_file_path,
       QMap<QString, theia::CameraIntrinsicsPrior>* camera_intrinsics_prior);
 
-  bool WriteReconstructions(
+  void WriteReconstructions(
       const std::vector<theia::Reconstruction*>& reconstructions);
 
   ~StorageIO();

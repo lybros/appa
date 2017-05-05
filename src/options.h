@@ -53,6 +53,8 @@ class Options {
  public:
   explicit Options(QString output_location);
 
+  void ParseCommandLineArguments();
+
   ReconstructionBuilderOptions GetReconstructionBuilderOptions();
 
   FeatureExtractor::Options GetFeatureExtractorOptions();
@@ -79,8 +81,8 @@ class Options {
   MatchingStrategy match_strategy_ = MatchingStrategy::CASCADE_HASHING;
 
   // Reconstruction.
-  bool shared_calibration = true;
-  bool use_camera_intrinsics_prior = false;
+  bool shared_calibration;
+  bool use_camera_intrinsics_prior;
 
   // Reconstruction Estimator Options.
   OptimizeIntrinsicsType intrinsics_to_optimize_ =

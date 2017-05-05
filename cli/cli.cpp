@@ -104,5 +104,6 @@ void RunCLI() {
     project->RemoveProject();
   }
 
+  LOG(INFO) << "Quitting the application...";
   delete project;
 }

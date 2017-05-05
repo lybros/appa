@@ -2,7 +2,57 @@
 
 #include "options.h"
 
-Options::Options(QString output_location) : output_location_(output_location) {}
+#include "gflags/gflags.h"
+
+#include "theia_utils.h"
+
+// Options which are common both for UI and CLI mode must be specified in this
+// file. These options are then parsed if Options::ParseCommandLineArguments()
+// method.
+
+/* THEIA's flags.
+ * The full description may be found in Theia's docs or in Theia's
+ * //applications/build_reconstruction.cc file.
+ */
+
+// General.
+DEFINE_int32(num_threads, 1, "");
+
+// Feature extraction.
+DEFINE_string(descriptor_type, "SIFT", "");
+
+// Feature matching.
+DEFINE_bool(match_out_of_core, true, "");
+DEFINE_bool(perform_geometric_verification, false, "");
+DEFINE_string(match_strategy, "Cascade Hashing", "");
+
+// Reconstruction.
+DEFINE_bool(shared_calibration, true, "");
+DEFINE_bool(use_camera_intrinsics_prior, false, "");
+DEFINE_string(intrinsics_to_optimize, "f,rad", "");
+
+Options::Options(QString output_location) : output_location_(output_location) {
+  ParseCommandLineArguments();
+}
+
+void Options::ParseCommandLineArguments() {
+  num_threads_ = FLAGS_num_threads;
+
+  descriptor_type_ = DescriptorExtractorTypeFromString(
+        QString::fromStdString(FLAGS_descriptor_type));
+
+  match_out_of_core_ = FLAGS_match_out_of_core;
+  perform_geometric_verification_ = FLAGS_perform_geometric_verification;
+  match_strategy_ = MatchingStrategyFromString(
+        QString::fromStdString(FLAGS_match_strategy));
+
+  shared_calibration = FLAGS_shared_calibration;
+  use_camera_intrinsics_prior = FLAGS_use_camera_intrinsics_prior;
+
+  // TODO(uladbohdan): to parse FLAGS_intrinsics_to_optimize.
+
+  LOG(INFO) << "Options flags parsed successfully.";
+}
 
 ReconstructionBuilderOptions Options::GetReconstructionBuilderOptions() {
   ReconstructionBuilderOptions options;

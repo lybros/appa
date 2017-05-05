@@ -24,7 +24,9 @@ using theia::Keypoint;
 
 class Features {
  public:
-  typedef std::pair<std::vector<theia::Keypoint>, std::vector<Eigen::VectorXf> > FeatureVectors;
+  typedef std::pair<
+      std::vector<theia::Keypoint>, std::vector<Eigen::VectorXf>
+  > FeatureVectors;
   typedef std::unordered_map<std::string, FeatureVectors> FeaturesMap;
 
   Features(Storage* storage, Options* options);

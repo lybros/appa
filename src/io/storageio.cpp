@@ -119,31 +119,17 @@ bool StorageIO::ReadCalibrationFileRow(
 
 void StorageIO::WriteReconstructions(
     const std::vector<theia::Reconstruction*>& reconstructions) {
-  QString models_path = QDir(storage_->output_location_)
-      .filePath(QString("models"));
-
-  if (!QDir(models_path).exists()) {
-    QDir().mkdir(models_path);
-  }
-
-  std::string model_file_template = (QDir(models_path).filePath(
+  std::string model_file_template = QDir(storage_->output_location_).filePath(
+      QString("models/build_") +
       QDateTime::currentDateTime().toString(Qt::ISODate) +
-      QString("_%d.model"))).toStdString();
+      QString("_%d.model")).toStdString();
 
   for (int i = 0; i < reconstructions.size(); i++) {
     std::string output_file = theia::StringPrintf(
         model_file_template.c_str(), i);
-    QString file_name = QString::fromUtf8(output_file.c_str());
-    QFile file(file_name);
-
-    if (file.open(QIODevice::WriteOnly)) {
-      LOG(INFO) << "Writing a model to " << output_file;
-      CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
-      << "Failed to write model to filesystem.";
-      file.close();
-    } else {
-      LOG(INFO) << "Failed to open " << output_file;
-    }
+    LOG(INFO) << "Writing a model to " << output_file;
+    CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
+    << "Failed to write model to filesystem.";
   }
 
   LOG(INFO) << "Reconstructions have been saved to filesystem.";

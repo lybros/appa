@@ -83,6 +83,9 @@ class Project {
 
   Options* GetOptions();
 
+  // Method completely removes Project from filesystem.
+  bool RemoveProject();
+
   ~Project();
 
  private:

@@ -28,7 +28,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 # The order below is important:
 add_subdirectory(libs/QtAwesome/QtAwesome)
 add_subdirectory(src)
+add_subdirectory(cli)
 add_subdirectory(ui)
 
 add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} src ui QtAwesome)
+target_link_libraries(${PROJECT_NAME} src cli ui QtAwesome)

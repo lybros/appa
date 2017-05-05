@@ -10,6 +10,7 @@
 #include <QtAlgorithms>
 #include <QDirIterator>
 #include <QFileInfo>
+#include <QStringList>
 #include <QTextStream>
 #include <QVector>
 
@@ -25,8 +26,9 @@ using theia::Reconstruction;
 
 // The pattern may be extended with image extensions which are supported
 // by Theia.
+// TODO(uladbohdan): to achieve consistency in regexps.
 const QString IMAGE_FILENAME_PATTERN = "\\b.(jpg|JPG|jpeg|JPEG|png|PNG)";
-const QString MODEL_FILENAME_PATTERN = "model-\\d+.binary";
+const QString MODEL_FILENAME_PATTERN = "*.model";
 
 const QString DEFAULT_CALIBRATION_FILE_NAME = "camera_intrinsics.txt";
 
@@ -60,34 +62,36 @@ class Storage {
 
   void SetOutputLocation(const QString& output_location);
 
-  // Check if model already in memory, load it if not, and return.
-  Reconstruction* GetReconstruction(const int number);
+  Reconstruction* GetReconstruction(const QString reconstruction_name);
 
-  // Update model in memory and sets status_ to LOADED_IN_MEMORY.
-  void SetReconstructions(const std::vector<Reconstruction*>& reconstructions);
-
-  // Write all models to binary file.
-  void WriteReconstructions();
-
-  void SetReconstructionStatus(ReconstructionStatus status);
-
-  ReconstructionStatus GetReconstructionStatus() const;
+  QStringList& GetReconstructions();
 
   bool GetCalibration(QMap<QString, theia::CameraIntrinsicsPrior>*);
+
+  void LoadModelsList();
 
   ~Storage();
 
  private:
-  std::vector<Reconstruction*> reconstructions_;
+  // List of full paths to reconstructions (.model files) in filesystem.
+  QStringList reconstructions_;
+  // The only reason to have this field is to be able to deallocate memory
+  // allocated for the reconstruction.
+  Reconstruction* loaded_reconstruction_;
+  QString loaded_reconstruction_name_;
+
   QVector<QString>* images_;
   QString images_path_;
   QString output_location_;
-  ReconstructionStatus status_;
 
   Options* options_;
 
-  // Reads model from binary file.
-  void ReadReconstructions();
+  // Reads one specific Reconstruction by name from filesystem.
+  // As only one Reconstruction may be rendered at the same time, no need to
+  // have them all loaded to memory.
+  // As this method is private, you must call GetReconstruction() method, which
+  // also checks if reconstruction is already in memory.
+  void LoadReconstruction(QString reconstruction_name);
 
   QString GetCameraIntrinsicsPath() const;
 };

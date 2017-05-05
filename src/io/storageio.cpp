@@ -2,6 +2,10 @@
 
 #include "storageio.h"
 
+#include <string>
+
+#include <QDateTime>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 
@@ -111,4 +115,22 @@ bool StorageIO::ReadCalibrationFileRow(
   (*stream) >> temp_camera_intrinsics_prior->radial_distortion.value[1];
 
   return true;
+}
+
+void StorageIO::WriteReconstructions(
+    const std::vector<theia::Reconstruction*>& reconstructions) {
+  std::string model_file_template = QDir(storage_->output_location_).filePath(
+      QString("models/build_") +
+      QDateTime::currentDateTime().toString(Qt::ISODate) +
+      QString("_%d.model")).toStdString();
+
+  for (int i = 0; i < reconstructions.size(); i++) {
+    std::string output_file = theia::StringPrintf(
+        model_file_template.c_str(), i);
+    LOG(INFO) << "Writing a model to " << output_file;
+    CHECK(theia::WriteReconstruction(*reconstructions[i], output_file))
+    << "Failed to write model to filesystem.";
+  }
+
+  LOG(INFO) << "Reconstructions have been saved to filesystem.";
 }

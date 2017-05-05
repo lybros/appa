@@ -29,14 +29,13 @@
 
 #include <theia/theia.h>
 
-// TODO(uladbohdan): to be consistent in using "using" keyword.
-using theia::MatchingStrategy;
 using theia::DescriptorExtractorType;
-using theia::ReconstructionBuilderOptions;
-using theia::FeatureMatcherOptions;
-using theia::ReconstructionEstimatorOptions;
 using theia::FeatureExtractor;
+using theia::FeatureMatcherOptions;
+using theia::MatchingStrategy;
 using theia::OptimizeIntrinsicsType;
+using theia::ReconstructionBuilderOptions;
+using theia::ReconstructionEstimatorOptions;
 
 class Options {
   friend class OptionsDialog;
@@ -60,7 +59,7 @@ class Options {
 
   FeatureMatcherOptions GetFeatureMatcherOptions();
 
-  theia::ReconstructionEstimatorOptions GetReconstructionEstimatorOptions();
+  ReconstructionEstimatorOptions GetReconstructionEstimatorOptions();
 
   ~Options();
 
@@ -87,12 +86,6 @@ class Options {
   OptimizeIntrinsicsType intrinsics_to_optimize_ =
       OptimizeIntrinsicsType::FOCAL_LENGTH |
       OptimizeIntrinsicsType::RADIAL_DISTORTION;
-};
-
-enum ReconstructionStatus {
-  NOT_BUILT = 0,              // There is no any models.
-  BUILT = 1,                  // Models built and saved into filesystem.
-  LOADED_INTO_MEMORY = 2      // Models read from disk and stored into Storage.
 };
 
 #endif  // SRC_OPTIONS_H_

@@ -23,6 +23,8 @@ class Report {
   explicit Report(Project* project);
   ~Report();
 
+  QString GetDefaultReportPath();
+
   bool GenerateSmartReconstructionReport(QString filepath);
 
  private:

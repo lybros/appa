@@ -2,11 +2,14 @@
 
 #include "storage.h"
 
+#include <QDateTime>
+
 Storage::Storage() : options_(nullptr),
                      images_(nullptr),
                      images_path_(""),
                      output_location_(""),
-                     status_(ReconstructionStatus::NOT_BUILT) {
+                     loaded_reconstruction_(nullptr),
+                     loaded_reconstruction_name_("") {
 }
 
 void Storage::SetOptions(Options* options) {
@@ -17,7 +20,7 @@ QString Storage::GetImagesPath() {
   return images_path_;
 }
 
-// TODO(uladbohdan): clean up out/ when dataset was changed
+// TODO(uladbohdan): clean up out/ when dataset was changed.
 int Storage::UpdateImagesPath(QString images_path) {
   images_path_ = images_path;
   return ParseImageFolder();
@@ -84,88 +87,58 @@ int Storage::NumberOfImages() {
   return images_->length();
 }
 
-// TODO(all): maybe some refactor to get model by name instead index.
-Reconstruction* Storage::GetReconstruction(int number) {
-  if (status_ != ReconstructionStatus::LOADED_INTO_MEMORY) {
-    ReadReconstructions();
+Reconstruction* Storage::GetReconstruction(const QString reconstruction_name) {
+  // Avoiding reloading model if it's already in memory.
+  if (reconstruction_name != loaded_reconstruction_name_) {
+    LoadReconstruction(reconstruction_name);
   }
-  if (reconstructions_.size() < number + 1) { return NULL; }
-
-  return reconstructions_[number];
+  return loaded_reconstruction_;
 }
 
-void Storage::SetReconstructions(
-    const std::vector<Reconstruction*>& reconstructions) {
-  // Removing old reconstructions.
-  for (auto reconstruction : reconstructions_) {
-    delete reconstruction;
-  }
+void Storage::LoadModelsList() {
+  reconstructions_.clear();
 
-  reconstructions_.resize(reconstructions.size());
-  for (int i = 0; i < reconstructions_.size(); i++) {
-    reconstructions_[i] = reconstructions[i];
-  }
+  QDirIterator it(QDir(output_location_).filePath("models/"));
 
-  if (!reconstructions_.size()) {
-    status_ = ReconstructionStatus::NOT_BUILT;
-    return;
-  }
+  LOG(INFO) << "Loading list of models...";
 
-  status_ = ReconstructionStatus::LOADED_INTO_MEMORY;
-  LOG(INFO) << "Reconstructions have been saved to memory.";
-}
-
-void Storage::ReadReconstructions() {
-  QDirIterator it(output_location_);
-  std::vector<Reconstruction*> reconstructions;
-
-  LOG(INFO) << "Reading models...";
   QRegExp rx(MODEL_FILENAME_PATTERN);
+  rx.setPatternSyntax(QRegExp::Wildcard);
   while (it.hasNext()) {
-    QString next_model;
-    next_model = it.next();
-
-    if (rx.indexIn(next_model) == -1) {
-      LOG(WARNING) << "\t" << next_model.toStdString() <<
-                   "- \"does not match the regex.\"";
+    QString next_model = it.next();
+    if (rx.exactMatch(next_model) == false) {
+      LOG(WARNING) << "\t" << next_model.toStdString()
+                   << "- \"does not match the regex.\"";
       continue;
     }
 
-    LOG(INFO) << "\t" << next_model.toStdString();
-    QString filename = QDir(output_location_).filePath(next_model);
-
-    Reconstruction* reconstruction = new Reconstruction();
-    CHECK(ReadReconstruction(filename.toStdString(), reconstruction))
-    << "Could not read model from file.";
-
-    reconstructions.push_back(reconstruction);
+    LOG(INFO) << "\t Model found: " << next_model.toStdString();
+    reconstructions_ << next_model;
   }
 
-  SetReconstructions(reconstructions);
-  LOG(INFO) << "Successfully load " << reconstructions_.size() << " models";
+  LOG(INFO) << "Found " << reconstructions_.size() << " models";
 }
 
-void Storage::WriteReconstructions() {
-  std::string output_file_template =
-      QDir(output_location_).filePath("model").toStdString();
+void Storage::LoadReconstruction(QString reconstruction_name) {
+  LOG(INFO) << "Loading model" << reconstruction_name.toStdString()
+            << "to memory...";
 
-  for (int i = 0; i < reconstructions_.size(); i++) {
-    std::string output_file =
-        theia::StringPrintf("%s-%d.binary", output_file_template.c_str(), i);
-    LOG(INFO) << "Writing reconstruction " << i << " to " << output_file;
-    CHECK(theia::WriteReconstruction(*reconstructions_[i], output_file))
-    << "Could not write reconstruction to file";
-  }
+  Reconstruction* reconstruction = new Reconstruction();
+  CHECK(ReadReconstruction(reconstruction_name.toStdString(), reconstruction))
+  << "Could not read model from file.";
 
-  LOG(INFO) << "Reconstructions has been saved to filesystem.";
+  delete loaded_reconstruction_;
+
+  loaded_reconstruction_ = reconstruction;
+  loaded_reconstruction_name_ = reconstruction_name;
+
+  LOG(INFO) << "Model " << loaded_reconstruction_name_.toStdString()
+            << "was successfully loaded to memory.";
 }
 
-void Storage::SetReconstructionStatus(ReconstructionStatus status) {
-  status_ = status;
-}
-
-ReconstructionStatus Storage::GetReconstructionStatus() const {
-  return status_;
+QStringList& Storage::GetReconstructions() {
+  LoadModelsList();
+  return reconstructions_;
 }
 
 const QString& Storage::GetOutputLocation() const {
@@ -188,7 +161,5 @@ QString Storage::GetCameraIntrinsicsPath() const {
 
 Storage::~Storage() {
   delete images_;
-  for (auto reconstruction : reconstructions_) {
-    delete reconstruction;
-  }
+  delete loaded_reconstruction_;
 }

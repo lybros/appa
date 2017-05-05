@@ -37,6 +37,7 @@ Project::Project(QString project_name,
 
   // Creating out/ directory.
   QDir(project_path).mkdir("out");
+  QDir(QDir(project_path).filePath("out")).mkdir("models");
   storage_->SetOutputLocation(GetDefaultOutputPath());
   options_ = new Options(storage_->GetOutputLocation());
   features_ = new Features(storage_, options_);

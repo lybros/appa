@@ -28,7 +28,7 @@ DEFINE_string(match_strategy, "CascadeHashing", "");
 // Reconstruction.
 DEFINE_bool(shared_calibration, true, "");
 DEFINE_bool(use_camera_intrinsics_prior, false, "");
-DEFINE_string(intrinsics_to_optimize, "f,rad", "");
+DEFINE_string(intrinsics_to_optimize, "focal,raddist", "");
 
 Options::Options(QString output_location) : output_location_(output_location) {
   ParseCommandLineArguments();
@@ -48,7 +48,8 @@ void Options::ParseCommandLineArguments() {
   shared_calibration = FLAGS_shared_calibration;
   use_camera_intrinsics_prior = FLAGS_use_camera_intrinsics_prior;
 
-  // TODO(uladbohdan): to parse FLAGS_intrinsics_to_optimize.
+  intrinsics_to_optimize_ = OptimizeIntrinsicsTypeFromString(
+        QString::fromStdString(FLAGS_intrinsics_to_optimize));
 
   LOG(INFO) << "Options flags parsed successfully.";
 }

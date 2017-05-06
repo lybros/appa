@@ -33,3 +33,30 @@ MatchingStrategy MatchingStrategyFromString(QString str) {
     {"CascadeHashing", theia::MatchingStrategy::CASCADE_HASHING},
   })[str];
 }
+
+OptimizeIntrinsicsType OptimizeIntrinsicsTypeFromString(QString str) {
+  OptimizeIntrinsicsType type = OptimizeIntrinsicsType::NONE;
+
+  QStringList options = str.split(",", QString::SkipEmptyParts);
+
+  if (options.contains("focal")) {
+    type |= OptimizeIntrinsicsType::FOCAL_LENGTH;
+  }
+  if (options.contains("aratio")) {
+    type |= OptimizeIntrinsicsType::ASPECT_RATIO;
+  }
+  if (options.contains("skew")) {
+    type |= OptimizeIntrinsicsType::SKEW;
+  }
+  if (options.contains("ppoints")) {
+    type |= OptimizeIntrinsicsType::PRINCIPAL_POINTS;
+  }
+  if (options.contains("raddist")) {
+    type |= OptimizeIntrinsicsType::RADIAL_DISTORTION;
+  }
+  if (options.contains("tandist")) {
+    type |= OptimizeIntrinsicsType::TANGENTIAL_DISTORTION;
+  }
+
+  return type;
+}

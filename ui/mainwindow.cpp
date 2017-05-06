@@ -76,7 +76,7 @@ void MainWindow::on_actionNewProject_triggered() {
     // Checking if we've initialized new project.
     LOG(INFO) << "New project basic parameteres:"
               << "\n\t" << project_options.project_name.toStdString()
-              << "\n\t" << project_options.project_path.toStdString()
+              << "\n\t" << project_options.project_parent_path.toStdString()
               << "\n\t" << project_options.images_path.toStdString();
 
     // Try/catch section here to understand if constructor failed
@@ -86,7 +86,7 @@ void MainWindow::on_actionNewProject_triggered() {
 
     active_project_ = new Project(
         project_options.project_name,
-        project_options.project_path,
+        project_options.project_parent_path,
         project_options.images_path);
 
     view_->UpdateActiveProject(active_project_);

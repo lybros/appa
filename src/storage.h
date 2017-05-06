@@ -60,7 +60,7 @@ class Storage {
 
   const QString& GetOutputLocation() const;
 
-  void SetOutputLocation(const QString& output_location);
+  bool SetOutputLocation(const QString& output_location);
 
   Reconstruction* GetReconstruction(const QString reconstruction_name);
 

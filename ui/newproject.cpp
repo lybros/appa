@@ -74,15 +74,8 @@ bool NewProjectDialog::verify_new_project_options() {
 
 bool NewProjectDialog::initialize_new_project() {
   project_options_->project_name = ui->project_name->toPlainText();
-
-  QString project_parent_path = ui->project_parent_path->text();
-  project_options_->project_path =
-      QDir(project_parent_path).filePath(project_options_->project_name);
-  EnsureTrailingSlash(&(project_options_->project_path));
-
+  project_options_->project_parent_path = ui->project_parent_path->text();
   project_options_->images_path = ui->images_path->text();
-  EnsureTrailingSlash(&(project_options_->images_path));
-
   return true;
 }
 

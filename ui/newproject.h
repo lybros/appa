@@ -49,7 +49,7 @@ class NewProjectDialog : public QDialog {
 
 struct NewProjectOptions {
   QString project_name;
-  QString project_path;
+  QString project_parent_path;
   QString images_path;
 };
 

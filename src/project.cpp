@@ -2,6 +2,8 @@
 
 #include "project.h"
 
+#include "utils.h"
+
 Project::Project(QString project_path) :
     project_path_(project_path), storage_(new Storage()) {
   // This constructor assumes we're opening an existent project.
@@ -16,29 +18,31 @@ Project::Project(QString project_path) :
 }
 
 Project::Project(QString project_name,
-                 QString project_path,
-                 QString images_path) : project_name_(project_name),
-                                        project_path_(project_path),
+                 QString project_parent_path,
+                 QString images_path,
+                 QString output_path) : project_name_(project_name),
                                         storage_(new Storage()) {
   storage_->UpdateImagesPath(images_path);
 
   // Creating a Project in filesystem.
   // TODO(uladbohdan): to handle the situation when creating a folder fails.
-  QDir project_parent_dir(project_path);
 
-  CHECK(project_parent_dir.cdUp()) << "cdUp failed";
+  QDir project_parent_dir(project_parent_path);
 
   CHECK(project_parent_dir.mkdir(project_name))
   << "Creating Project Directory failed.";
+
+  project_path_ = QDir(project_parent_path).filePath(project_name);
+  EnsureTrailingSlash(&project_path_);
 
   LOG(INFO) << "Project Directory was created successfully!";
 
   WriteConfigurationFile();
 
-  // Creating out/ directory.
-  QDir(project_path).mkdir("out");
-  QDir(QDir(project_path).filePath("out")).mkdir("models");
-  storage_->SetOutputLocation(GetDefaultOutputPath());
+  CHECK(storage_->SetOutputLocation(
+    output_path == QString() ? GetDefaultOutputPath() : output_path))
+  << "Failed to create output_location";
+
   options_ = new Options(storage_->GetOutputLocation());
   features_ = new Features(storage_, options_);
 

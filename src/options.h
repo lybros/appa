@@ -53,6 +53,8 @@ class Options {
  public:
   explicit Options(QString output_location);
 
+  void ParseCommandLineArguments();
+
   ReconstructionBuilderOptions GetReconstructionBuilderOptions();
 
   FeatureExtractor::Options GetFeatureExtractorOptions();
@@ -68,24 +70,22 @@ class Options {
   QString output_location_;
 
   // THEIA's OPTIONS.
-  int num_threads_ = 4;
+  int num_threads_;
 
   // Feature Extraction.
-  DescriptorExtractorType descriptor_type_ = DescriptorExtractorType::SIFT;
+  DescriptorExtractorType descriptor_type_;
 
   // Feature Matching.
-  bool match_out_of_core_ = true;
-  bool perform_geometric_verification_ = false;
-  MatchingStrategy match_strategy_ = MatchingStrategy::CASCADE_HASHING;
+  bool match_out_of_core_;
+  bool perform_geometric_verification_;
+  MatchingStrategy match_strategy_;
 
   // Reconstruction.
-  bool shared_calibration = true;
-  bool use_camera_intrinsics_prior = false;
+  bool shared_calibration;
+  bool use_camera_intrinsics_prior;
 
   // Reconstruction Estimator Options.
-  OptimizeIntrinsicsType intrinsics_to_optimize_ =
-      OptimizeIntrinsicsType::FOCAL_LENGTH |
-      OptimizeIntrinsicsType::RADIAL_DISTORTION;
+  OptimizeIntrinsicsType intrinsics_to_optimize_;
 };
 
 #endif  // SRC_OPTIONS_H_

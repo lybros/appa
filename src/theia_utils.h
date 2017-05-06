@@ -26,7 +26,7 @@ MatchingStrategy MatchingStrategyFromString(QString);
 // ppoints  PRINCIPAL_POINTS
 // raddist  RADIAL_DISTORTION
 // tandist  TANGENTIAL_DISTORTION
-// separated with comma with no spaces. Example: "f,skew,raddist"
+// separated with comma with no spaces. Example: "focal,skew,raddist"
 // Returns NONE if empty or invalid string.
 OptimizeIntrinsicsType OptimizeIntrinsicsTypeFromString(QString);
 

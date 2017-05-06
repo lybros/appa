@@ -23,7 +23,7 @@ DEFINE_string(descriptor_type, "SIFT", "");
 // Feature matching.
 DEFINE_bool(match_out_of_core, true, "");
 DEFINE_bool(perform_geometric_verification, false, "");
-DEFINE_string(match_strategy, "Cascade Hashing", "");
+DEFINE_string(match_strategy, "CascadeHashing", "");
 
 // Reconstruction.
 DEFINE_bool(shared_calibration, true, "");

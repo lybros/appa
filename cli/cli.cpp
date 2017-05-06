@@ -22,11 +22,16 @@ DEFINE_string(cli_mode, "",
               "or open an existent one. Choose between open, new or temp "
               "(temp means new + removal after processing).");
 DEFINE_string(project_path, "",
-              "If you're in 'open' cli_mode, you must specify the project.");
+              "If you're in 'open' cli_mode, you must specify the project. "
+              "If you're in 'new' cli_mode, you must specify the folder where "
+              "the new project will be created.");
 DEFINE_string(project_name, "",
               "You must provide a project name in order to create a new one.");
 DEFINE_string(images_path, "",
               "You must provide a dataset in order to create a new project.");
+DEFINE_string(output_path, "",
+              "Optional. You may specify output location for descriptors, "
+              "matches, models, reports. May be useful in 'temp' cli_mode.");
 
 DEFINE_string(action, "",
               "Choose if you want to extract features, match them or run "
@@ -100,7 +105,8 @@ void RunCLI() {
               << temp_project_path.toStdString();
     project = new Project(temp_project_name,
                           temp_project_path,
-                          QString::fromStdString(FLAGS_images_path));
+                          QString::fromStdString(FLAGS_images_path),
+                          QString::fromStdString(FLAGS_output_path));
   }
 
   if (FLAGS_action == "reconstruction") {

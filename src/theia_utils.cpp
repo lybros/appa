@@ -28,6 +28,8 @@ QString MatchingStrategyToString(MatchingStrategy strategy) {
 MatchingStrategy MatchingStrategyFromString(QString str) {
   return QMap<QString, theia::MatchingStrategy>({
     {"Brute Force", theia::MatchingStrategy::BRUTE_FORCE},
+    {"BruteForce", theia::MatchingStrategy::BRUTE_FORCE},
     {"Cascade Hashing", theia::MatchingStrategy::CASCADE_HASHING},
+    {"CascadeHashing", theia::MatchingStrategy::CASCADE_HASHING},
   })[str];
 }

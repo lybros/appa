@@ -147,8 +147,19 @@ const QString& Storage::GetOutputLocation() const {
   return output_location_;
 }
 
-void Storage::SetOutputLocation(const QString& output_location) {
+bool Storage::SetOutputLocation(const QString& output_location) {
+  // Creating a structure of output location.
+  bool ok;
+  ok = QDir().mkpath(output_location);
+  if (!ok) {
+    return false;
+  }
+  ok = QDir(output_location).mkdir("models");
+  if (!ok) {
+    return false;
+  }
   output_location_ = output_location;
+  return true;
 }
 
 bool Storage::GetCalibration(

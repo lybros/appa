@@ -17,7 +17,8 @@ Project::Project(QString project_path) :
 
 Project::Project(QString project_name,
                  QString project_path,
-                 QString images_path) : project_name_(project_name),
+                 QString images_path,
+                 QString output_path) : project_name_(project_name),
                                         project_path_(project_path),
                                         storage_(new Storage()) {
   storage_->UpdateImagesPath(images_path);
@@ -35,10 +36,10 @@ Project::Project(QString project_name,
 
   WriteConfigurationFile();
 
-  // Creating out/ directory.
-  QDir(project_path).mkdir("out");
-  QDir(QDir(project_path).filePath("out")).mkdir("models");
-  storage_->SetOutputLocation(GetDefaultOutputPath());
+  CHECK(storage_->SetOutputLocation(
+    output_path == QString() ? GetDefaultOutputPath() : output_path))
+  << "Failed to create output_location";
+
   options_ = new Options(storage_->GetOutputLocation());
   features_ = new Features(storage_, options_);
 

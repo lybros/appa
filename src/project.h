@@ -44,7 +44,8 @@ class Project {
   // This constructor must be called if we're creating new project. That will
   // create a new project folder in filesystem and call
   // Project::WriteConfigurationFile() method.
-  Project(QString project_name, QString project_path, QString images_name);
+  Project(QString project_name, QString project_path,
+          QString images_name, QString output_path = QString());
 
   // Runs Smart building process, which figures out if we need matching stage
   // or it has been already run.

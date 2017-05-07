@@ -163,9 +163,10 @@ bool Storage::SetOutputLocation(const QString& output_location) {
 }
 
 bool Storage::GetCalibration(
-    QMap<QString, theia::CameraIntrinsicsPrior>* camera_intrinsics_prior) {
+    QMap<QString, theia::CameraIntrinsicsPrior>* camera_intrinsics_prior,
+    bool* shared_calibration, bool* geo_data_included) {
   return StorageIO(this).ReadCalibrationFile(GetCameraIntrinsicsPath(),
-                                             camera_intrinsics_prior);
+    camera_intrinsics_prior, shared_calibration, geo_data_included);
 }
 
 QString Storage::GetCameraIntrinsicsPath() const {

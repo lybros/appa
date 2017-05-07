@@ -135,8 +135,13 @@ bool Reconstructor::ExtractFeaturesMatches(
 
   // Making decision if Prior Camera Calibration parameters are provided.
   QMap<QString, theia::CameraIntrinsicsPrior> camera_intrinsics_prior;
+  // TODO(uladbohdan): refactor that with new parameters;
+  bool shared_calibration;
+  bool geo_data_included;
   if (options_->use_camera_intrinsics_prior &&
-      storage_->GetCalibration(&camera_intrinsics_prior)) {
+      storage_->GetCalibration(&camera_intrinsics_prior,
+                               &shared_calibration,
+                               &geo_data_included)) {
     report_->using_calibration_file_ = true;
 
     for (QString image_path : storage_->GetImages()) {

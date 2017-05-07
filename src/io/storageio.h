@@ -8,17 +8,24 @@
  * provided).
  * The file format is:
  * ----------------------------------------------------------------------------
- * CAMERA_CALIBRATION_<TYPE>_1.0
+ * CAMERA_CALIBRATION_<TYPE>_1.1
+ * SHARED_CALIBRATION <YES/NO>
+ * GEO_DATA_INCLUDED <YES/NO>
  * NUMBER_OF_IMAGES <N>
- * <IMG_1_NAME> <parameters ... vary from TYPE>
+ * <camera inner parameters ... vary from TYPE ... if SHARED_CALIBRATION is YES>
+ * <IMG_1_NAME> <parameters ... vary from TYPE ... if SHARED_CALIBRATION is NO>
+ *              <lat, long, alt if GEO_DATA_INCLUDED is YES>
  * ...
  * <IMG_N_NAME> ...
  * ----------------------------------------------------------------------------
  * The file format for PINHOLE camera:
  * ----------------------------------------------------------------------------
- * CAMERA_CALIBRATION_PINHOLE_1.0
+ * CAMERA_CALIBRATION_PINHOLE_1.1
+ * SHARED_CALIBRATION YES
+ * GEO_DATA_INCLUDED YES
  * NUMBER_OF_IMAGES N
- * <IMG_1_NAME> <focal_length> <px> <py> <skew> <aspect_ratio> <rad1> <rad2>
+ * <focal_length> <px> <py> <skew> <aspect_ratio> <rad1> <rad2>
+ * <IMG_1_NAME> <lat> <long> <alt>
  * ...
  * <IMG_N_NAME> ...
  * ----------------------------------------------------------------------------
@@ -36,6 +43,8 @@
 
 #include "theia/theia.h"
 
+using theia::CameraIntrinsicsPrior;
+
 class Storage;
 
 class StorageIO {
@@ -44,7 +53,9 @@ class StorageIO {
 
   bool ReadCalibrationFile(
       QString calibration_file_path,
-      QMap<QString, theia::CameraIntrinsicsPrior>* camera_intrinsics_prior);
+      QMap<QString, CameraIntrinsicsPrior>* camera_intrinsics_prior,
+      bool* shared_calibration,
+      bool* geo_data_included);
 
   void WriteReconstructions(
       const std::vector<theia::Reconstruction*>& reconstructions);
@@ -54,9 +65,19 @@ class StorageIO {
  private:
   Storage* storage_;
 
-  bool ReadCalibrationFileRow(
-      QTextStream* stream,
-      theia::CameraIntrinsicsPrior* temp_camera_intrinsics_prior);
+  bool ReadCalibrationFile_Pinhole(
+      QTextStream& stream,
+      QMap<QString, CameraIntrinsicsPrior>* camera_intrinsics_prior,
+      bool* shared_calibration,
+      bool* geo_data_included);
+
+  bool ReadSharedCalibration(QTextStream& stream, bool* yes);
+  bool GeoDataIncluded(QTextStream& stream, bool* yes);
+  bool ReadNumberOfImages(QTextStream& stream, int* num);
+  bool ReadCameraIntrinsics_Pinhole(QTextStream& stream,
+      CameraIntrinsicsPrior* temp_camera_intrinsics_prior);
+  bool ReadGeoData(QTextStream& stream,
+      CameraIntrinsicsPrior* temp_camera_intrinsics_prior);
 };
 
 #endif  // SRC_IO_STORAGEIO_H_

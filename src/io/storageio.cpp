@@ -199,9 +199,9 @@ bool StorageIO::ReadGeoData(
   stream >> temp_camera_intrinsics_prior->altitude.value[0];
 
   LOG(INFO) << "GPS read: "
-            << temp_camera_intrinsics_prior->latitude.value[0]
-            << temp_camera_intrinsics_prior->longitude.value[0]
-            << temp_camera_intrinsics_prior->altitude.value[0];
+            << temp_camera_intrinsics_prior->latitude.value[0] << " "
+            << temp_camera_intrinsics_prior->longitude.value[0] << " "
+            << temp_camera_intrinsics_prior->altitude.value[0] << " ";
 
   return true;
 }

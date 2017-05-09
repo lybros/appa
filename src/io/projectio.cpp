@@ -154,6 +154,7 @@ bool ProjectIO::ReadOutputLocation(QTextStream& stream) {
     return false;
   }
   stream >> temp_line;
-  pr->storage_->SetOutputLocation(temp_line);
+  CHECK(pr->storage_->SetOutputLocation(temp_line))
+      << "Failed to initialize output location from config file.";
   return true;
 }

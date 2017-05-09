@@ -79,13 +79,13 @@
    <property name="title">
     <string>Reconstruction</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>30</y>
       <width>301</width>
-      <height>285</height>
+      <height>281</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -112,7 +112,22 @@ the same camera</string>
         </font>
        </property>
        <property name="text">
-        <string>Initialize cameras with prior values</string>
+        <string>Initialize cameras with prior intrinsics
+(if file is provided)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="use_geodata_checkBox">
+       <property name="font">
+        <font>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Initialize views with geolocation data
+(if file is provided)</string>
        </property>
       </widget>
      </item>

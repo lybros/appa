@@ -28,6 +28,7 @@ DEFINE_string(match_strategy, "CascadeHashing", "");
 // Reconstruction.
 DEFINE_bool(shared_calibration, true, "");
 DEFINE_bool(use_camera_intrinsics_prior, false, "");
+DEFINE_bool(use_geodata, false, "");
 DEFINE_string(intrinsics_to_optimize, "focal,raddist", "");
 
 Options::Options(QString output_location) : output_location_(output_location) {
@@ -45,8 +46,9 @@ void Options::ParseCommandLineArguments() {
   match_strategy_ = MatchingStrategyFromString(
         QString::fromStdString(FLAGS_match_strategy));
 
-  shared_calibration = FLAGS_shared_calibration;
-  use_camera_intrinsics_prior = FLAGS_use_camera_intrinsics_prior;
+  shared_calibration_ = FLAGS_shared_calibration;
+  use_camera_intrinsics_prior_ = FLAGS_use_camera_intrinsics_prior;
+  use_geodata_ = FLAGS_use_geodata;
 
   intrinsics_to_optimize_ = OptimizeIntrinsicsTypeFromString(
         QString::fromStdString(FLAGS_intrinsics_to_optimize));

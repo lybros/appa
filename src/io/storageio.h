@@ -29,6 +29,9 @@
  * ...
  * <IMG_N_NAME> ...
  * ----------------------------------------------------------------------------
+ * Notice: the geolocation values (latitude, longitude, altitude) are single
+ * decimal values. Latitude must be below zero if it's South; longitude must be
+ * below zero if it's West.
  */
 
 #ifndef SRC_IO_STORAGEIO_H_
@@ -51,6 +54,14 @@ class StorageIO {
  public:
   explicit StorageIO(Storage* storage);
 
+  // ReadCalibrationFile attempts to read calibration from file provided with
+  // dataset. The method only tries to return data, specified with options
+  // Options::use_camera_intrinsics_prior_ and Options::use_geodata_.
+  // The method also checks and returns only images which are are known to
+  // Storage as images from dataset.
+  // Note that if file uses SHARED_CALIBRATION, it will be applied for every
+  // image listed. At the same time, Geo data may be only unique (must be
+  // specified separately for every image).
   bool ReadCalibrationFile(
       QString calibration_file_path,
       QMap<QString, CameraIntrinsicsPrior>* camera_intrinsics_prior,

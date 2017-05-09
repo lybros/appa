@@ -22,6 +22,9 @@ const int RECONSTRUCTION_OPTIONS      = 0b00001000;
 
 /* HOWTO add a new option to the dialog.
  * 1. The option must be in Options class (flag, string, number or whatever).
+ *    The default value is set using DEFINE macros (that also allows the option
+ *    to be command-line-settable. Add parsing rules to
+ *    Options::ParseCommandLineArguments() method.
  * 2. To add the label and the data-input widget to the options_dialog.ui file
  *    to the appropriate section. To give the widget non-default name.
  * 3. To implement reading a default (or read from config file) value in

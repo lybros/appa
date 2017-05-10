@@ -190,12 +190,20 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_actionVisualizeBinary_triggered() {
-  theia::Reconstruction* model = GetModel();
-  LOG(INFO) << model->NumViews();
+  theia::Reconstruction* model = SelectModel();
   view_->Visualize(model);
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {
+  Reconstruction* model = SelectModel();
+
+  if (!model) {
+    LOG(WARNING) << "Provide model to search!";
+    return;
+  }
+
+  view_->Visualize(model);
+
   QString image_path = QFileDialog::getOpenFileName(
       this,
       tr("Choose image for search"),
@@ -205,8 +213,6 @@ void MainWindow::on_actionSearch_Image_triggered() {
       QFileDialog::DontUseNativeDialog | QFileDialog::ReadOnly);
 
   if (!image_path.length()) { return; }
-
-//  view_->Visualize();
 
   std::function<void(QList<QSet<theia::TrackId>*>)> on_finish =
       [this](QList<QSet<theia::TrackId>*> found_tracks) {   // why QList??
@@ -220,7 +226,8 @@ void MainWindow::on_actionSearch_Image_triggered() {
       QtConcurrent::run(
           active_project_,
           &Project::SearchImage,
-          image_path),
+          image_path,
+          model),
       on_finish);
 }
 
@@ -313,7 +320,7 @@ void MainWindow::EnableActions() {
   ui->actionVisualizeBinary->setEnabled(true);
 }
 
-theia::Reconstruction* MainWindow::GetModel() {
+theia::Reconstruction* MainWindow::SelectModel() {
   QStringList full_names = active_project_->GetStorage()->GetReconstructions();
 
   if (full_names.empty()) {

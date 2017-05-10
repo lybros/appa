@@ -40,7 +40,7 @@ Project::Project(QString project_name,
   WriteConfigurationFile();
 
   CHECK(storage_->SetOutputLocation(
-    output_path == QString() ? GetDefaultOutputPath() : output_path))
+      output_path == QString() ? GetDefaultOutputPath() : output_path))
   << "Failed to create output_location";
 
   options_ = new Options(storage_->GetOutputLocation());
@@ -53,15 +53,9 @@ void Project::BuildModelToBinary() {
   Reconstructor(this).SmartBuild();
 }
 
-QSet<theia::TrackId>* Project::SearchImage(QString file_path) {
-  // TODO(drapegnik): replace hardcode index with some value.
-  Reconstruction* model = storage_->GetReconstruction(0);
+QSet<theia::TrackId>* Project::SearchImage(
+    QString file_path, Reconstruction* model) {
   QSet<theia::TrackId>* found_tracks = new QSet<theia::TrackId>();
-
-  if (!model) {
-    LOG(WARNING) << "There is no built models!";
-    return found_tracks;
-  }
 
   std::vector<theia::Keypoint> keypoints;
   std::vector<Eigen::VectorXf> descriptors;

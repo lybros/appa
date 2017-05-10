@@ -84,7 +84,7 @@ class MainWindow : public QMainWindow {
   void EnableActions();
 
   // Find all built models in filesystem and ask user for one of it.
-  theia::Reconstruction* GetModel();
+  theia::Reconstruction* SelectModel();
 };
 
 #endif  // UI_MAINWINDOW_H_

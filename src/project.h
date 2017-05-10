@@ -60,7 +60,7 @@ class Project {
   void StartReconstruction();
 
   // Try to find place for image on 3d reconstruction map
-  QSet<theia::TrackId>* SearchImage(QString file_path);
+  QSet<theia::TrackId>* SearchImage(QString file_path, Reconstruction* model);
 
   QString GetProjectName();
 

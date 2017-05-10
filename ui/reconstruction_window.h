@@ -66,10 +66,10 @@ class ReconstructionWindow : public QGLViewer {
   // The name of the View is the same with Image name (not the full path).
   void SetHighlightedViewNames(const QVector<QString>& views);
 
-  // Set found flag for WordPoint
+  // Set found flag for WorldPoint
   void SetFoundPoints(const QSet<theia::TrackId>* found_tracks);
 
-  // Set selected flag for WordPoint
+  // Set selected flag for WorldPoint
   void SetSelectedPoints(const std::multiset<theia::TrackId> s_tracks);
 
   ~ReconstructionWindow();

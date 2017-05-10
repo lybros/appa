@@ -5,7 +5,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-ReconstructionWindow::ReconstructionWindow() {
+ReconstructionWindow::ReconstructionWindow() : reconstruction_(nullptr) {
   QGLViewer();
 }
 
@@ -23,10 +23,11 @@ void ReconstructionWindow::BuildFromDefaultPath() {
 
   QStringList full_names = project_->GetStorage()->GetReconstructions();
   if (full_names.empty()) {
-    QMessageBox::warning(this, "No models available",
-                         "No models were found in filesystem. "
-                         "Start reconstruction process to create a new one!",
-                         QMessageBox::Ok);
+    QMessageBox::warning(
+        this, "No models available",
+        "No models were found in filesystem. "
+            "Start reconstruction process to create a new one!",
+        QMessageBox::Ok);
     return;
   }
 
@@ -37,17 +38,19 @@ void ReconstructionWindow::BuildFromDefaultPath() {
 
   bool ok;
   QString reconstruction_name =
-      QInputDialog::getItem(this, "Reconstruction picker",
-                            "Choose a reconstruction to render",
-                            short_names, 0, false, &ok);
+      QInputDialog::getItem(
+          this, "Reconstruction picker",
+          "Choose a reconstruction to render",
+          short_names, 0, false, &ok);
+
   if (!ok || (reconstruction_name == "")) {
     LOG(WARNING) << "Failed to choose a model to render.";
     return;
   }
 
-  reconstruction_ =
-      project_->GetStorage()->GetReconstruction(
-          full_names[short_names.indexOf(QRegExp(reconstruction_name))]);
+  reconstruction_ = project_->GetStorage()->GetReconstruction(
+      full_names[short_names.indexOf(QRegExp(reconstruction_name))]);
+
   if (!reconstruction_) {
     LOG(WARNING) << "Failed to get reconstruction to render!";
     return;
@@ -256,7 +259,5 @@ void ReconstructionWindow::SetSelectedPoints(
 }
 
 ReconstructionWindow::~ReconstructionWindow() {
-  if (reconstruction_) {
-    delete reconstruction_;
-  }
+  delete reconstruction_;
 }

@@ -204,13 +204,13 @@ void MainWindow::on_actionSearch_Image_triggered() {
 
   if (!image_path.length()) { return; }
 
-  view_->BuildFromDefaultPath();
+//  view_->BuildFromDefaultPath();
 
   std::function<void(QList<QSet<theia::TrackId>*>)> on_finish =
-      [this](QList<QSet<theia::TrackId>*> highlighted_tracks) {   // why QList??
-        if (!highlighted_tracks.size()) { return; }
-        view_->SetHighlightedPoints(highlighted_tracks[0]);
-        delete highlighted_tracks[0];
+      [this](QList<QSet<theia::TrackId>*> found_tracks) {   // why QList??
+        if (!found_tracks.size()) { return; }
+        view_->SetFoundPoints(found_tracks[0]);
+        delete found_tracks[0];
       };
 
   process_manager_->StartNewProcess(

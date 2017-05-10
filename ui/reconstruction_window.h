@@ -70,7 +70,7 @@ class ReconstructionWindow : public QGLViewer {
   void SetFoundPoints(const QSet<theia::TrackId>* found_tracks);
 
   // Set selected flag for WorldPoint
-  void SetSelectedPoints(const std::multiset<theia::TrackId> s_tracks);
+  void SetSelectedPoints(const std::multiset<theia::TrackId>& s_tracks);
 
   ~ReconstructionWindow();
 

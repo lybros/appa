@@ -251,7 +251,7 @@ void ReconstructionWindow::SetFoundPoints(
 }
 
 void ReconstructionWindow::SetSelectedPoints(
-    const std::multiset<theia::TrackId> s_tracks) {
+    const std::multiset<theia::TrackId>& s_tracks) {
 
   for (WorldPoint& point : world_points_) {
     point.is_selected = s_tracks.find(point.trackId) != s_tracks.end();

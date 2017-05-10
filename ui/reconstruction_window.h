@@ -58,9 +58,8 @@ class ReconstructionWindow : public QGLViewer {
   // the project.
   void UpdateActiveProject(Project* project);
 
-  // TODO(uladbohdan): to remove.
-  // No read from file may be implemented in the ReconstructionWindow class.
-  void BuildFromDefaultPath();
+  // Gets reconstruction and render it on screen.
+  void Visualize(theia::Reconstruction* reconstruction);
 
   // Passing a vector of names of views to be highlighted on a map.
   // The name of the View is the same with Image name (not the full path).

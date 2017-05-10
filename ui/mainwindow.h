@@ -10,6 +10,8 @@
 #include <QtConcurrent/QtConcurrentMap>
 
 #include <QFileInfo>
+#include <QInputDialog>
+#include <QMessageBox>
 #include <QMainWindow>
 #include <QPair>
 #include <QProcess>
@@ -35,7 +37,7 @@ class MainWindow : public QMainWindow {
  public:
   explicit MainWindow(QWidget* parent = 0);
 
-  void set_icons(QtAwesome* awesome = 0);
+  void SetIcons(QtAwesome* awesome = 0);
 
   void UpdateSelectedThumbnails();
 
@@ -80,6 +82,9 @@ class MainWindow : public QMainWindow {
   void UpdateActiveProjectInfo();
 
   void EnableActions();
+
+  // Find all built models in filesystem and ask user for one of it.
+  theia::Reconstruction* GetModel();
 };
 
 #endif  // UI_MAINWINDOW_H_

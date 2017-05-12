@@ -228,5 +228,4 @@ void ReconstructionWindow::SetSelectedPoints(
 }
 
 ReconstructionWindow::~ReconstructionWindow() {
-  delete reconstruction_;
 }

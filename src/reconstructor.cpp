@@ -73,39 +73,6 @@ void Reconstructor::SmartBuild() {
     LOG(INFO) << "Failed to create reconstruction report.";
   }
 
-  // PRINTING VALUES AFTER RECONSTRUCTION /////////////////////
-/*
-  LOG(INFO) << "FINAL VALUES:";
-  if (reconstructions.empty()) {
-    return;
-  }
-  theia::Reconstruction* rec = reconstructions[0];
-  LOG(INFO) << "Num views: " << rec->NumViews();
-  for (const theia::ViewId view_id : rec->ViewIds()) {
-    const auto* view = rec->View(view_id);
-    LOG(INFO) << view->Name();
-    if (view == nullptr || !view->IsEstimated()) {
-      LOG(INFO) << "something's wrong.";
-      continue;
-    }
-    view->Camera().PrintCameraIntrinsics();
-  }
-  //-------------------
-  // was memory shared?
-  LOG(INFO) << "Shared object:";
-  for (const theia::ViewId view_id : rec->ViewIds()) {
-    const auto* view = rec->View(view_id);
-    LOG(INFO) << view->Name();
-    if (view == nullptr || !view->IsEstimated()) {
-      LOG(INFO) << "something's wrong.";
-      continue;
-    }
-    LOG(INFO) << &view->CameraIntrinsicsPrior();
-  }
-  LOG(INFO) << "end of //////////////////////////////"; */
-
-  //-----------------------------------------------------------
-
   return;
 }
 
@@ -168,15 +135,9 @@ bool Reconstructor::ExtractFeaturesMatches(
     LOG(INFO) << "Prior calibration is not available. Processing without it.";
   }
 
-  LOG(INFO) << "shared_calibration: " << shared_calibration;
-  //LOG(INFO) << "geo_data_included: " << geo_data_included;
-  LOG(INFO) << "prior intrinsics request: " << options_->use_camera_intrinsics_prior_;
-  //LOG(INFO) << "prior geodata request: " << options_->use_geodata_;
-
   if (calibration_available && options_->use_camera_intrinsics_prior_) {
     // The user requested to use prior data from file and that's possible.
     report_->using_camera_intrinsics_prior_ = true;
-   // report_->using_geodata_prior_ = true;
 
     theia::CameraIntrinsicsGroupId intrinsics_group_id =
         theia::kInvalidCameraIntrinsicsGroupId;
@@ -202,43 +163,6 @@ bool Reconstructor::ExtractFeaturesMatches(
       }
     }
 
-    // Unsetting all fields set by Calibration Reader if user hasn't requested
-    // all kinds of prior initialization.
-
-    // That only works for Pinhole camera for now.
-    // TODO(uladbohdan): to refactor for general case.
-    /*
-    if (!options_->use_camera_intrinsics_prior_) {
-      // User hasn't requested initialization of camera intrinsics.
-      for (QMap<QString, CameraIntrinsicsPrior>::iterator it =
-            camera_intrinsics_prior.begin();
-           it != camera_intrinsics_prior.end(); it++) {
-        it.value().focal_length.is_set = false;
-        it.value().principal_point.is_set = false;
-        it.value().aspect_ratio.is_set = false;
-        it.value().skew.is_set = false;
-        it.value().radial_distortion.is_set = false;
-        LOG(INFO) << "prior intrinsics unset for: " << it.key().toStdString();
-      }
-      report_->using_camera_intrinsics_prior_ = false;
-      LOG(INFO) << "all prior camera intrinsics have been removed";
-    } */
-
-   /* if ((!options_->use_geodata_)) {// || (!geo_data_included)) {
-      // User hasn't requested initialization of geodata.
-      for (QMap<QString, CameraIntrinsicsPrior>::iterator it =
-            camera_intrinsics_prior.begin();
-           it != camera_intrinsics_prior.end(); it++) {
-        it.value().latitude.is_set = false;
-        it.value().longitude.is_set = false;
-        it.value().altitude.is_set = false;
-        LOG(INFO) << "prior geodata unset for: " << it.key().toStdString() << "  "
-                  << "must be false: " << it.value().latitude.is_set;
-      }
-      report_->using_geodata_prior_ = false;
-      LOG(INFO) << "all prior geodata was removed";
-    } */
-
     if (shared_calibration && options_->shared_calibration_) {
       // Shared calibration means adding the prior calibration to only one
       // image would be enough.
@@ -252,28 +176,19 @@ bool Reconstructor::ExtractFeaturesMatches(
     } else {
       // No shared calibration.
       for (QString image_path : storage_->GetImages()) {
-        if (camera_intrinsics_prior.contains(FileNameFromPath(image_path))) {
+        QString image_name = FileNameFromPath(image_path);
+        if (camera_intrinsics_prior.contains(image_name)) {
           // Adding prior intrinsics only for images explicitly specified.
-
           CHECK(reconstruction_builder->AddImageWithCameraIntrinsicsPrior(
                 image_path.toStdString(),
-                camera_intrinsics_prior[FileNameFromPath(image_path)],
-                intrinsics_group_id)) << "Image NOT ADDED!!!";
-
-          /* CameraIntrinsicsPrior prior =
-              camera_intrinsics_prior[FileNameFromPath(image_path)];
-          LOG(INFO) << FileNameFromPath(image_path).toStdString();
-          LOG(INFO) << prior.focal_length.value[0] << " "
-                    << prior.principal_point.value[0] << " "
-                    << prior.principal_point.value[1] << " "
-                    << prior.aspect_ratio.value[0] << " "
-                    << prior.skew.value[0] << " "
-                    << prior.radial_distortion.value[0] << " "
-                    << prior.radial_distortion.value[1]; */
+                camera_intrinsics_prior[image_name],
+                intrinsics_group_id)) << "Image not added: "
+                                      << image_name.toStdString();
         } else {
-          reconstruction_builder->AddImage(
+          CHECK(reconstruction_builder->AddImage(
                 image_path.toStdString(),
-                intrinsics_group_id);
+                intrinsics_group_id)) << "Image not added: "
+                                      << image_name.toStdString();
         }
       }
     }

@@ -83,37 +83,10 @@ bool StorageIO::ReadCalibrationFile_Pinhole(
       LOG(ERROR) << "Failed to read shared camera intrinsics.";
       return false;
     }
-    /*
-    LOG(INFO) << "Shared calibration parameters read! ";
-    LOG(INFO) << shared_camera_intrinsics_prior.focal_length.value[0] << " "
-              << shared_camera_intrinsics_prior.principal_point.value[0] << " "
-              << shared_camera_intrinsics_prior.principal_point.value[1] << " "
-              << shared_camera_intrinsics_prior.aspect_ratio.value[0] << " "
-              << shared_camera_intrinsics_prior.skew.value[0] << " "
-              << shared_camera_intrinsics_prior.radial_distortion.value[0] << " "
-              << shared_camera_intrinsics_prior.radial_distortion.value[1];*/
 
     for (int i = 0; i < num; i++) {
       QString image_name;
       stream >> image_name;
-
-
-      //CameraIntrinsicsPrior temp_camera_intrinsics_prior(
-      //      shared_camera_intrinsics_prior);
-
-      // experiment:
-      //CameraIntrinsicsPrior temp_camera_intrinsics_prior;
-      //if (i == 0) {
-      //  temp_camera_intrinsics_prior = shared_camera_intrinsics_prior;
-      //}
-
-      // TODO(uladbohdan): to check if geo_data_included.
-      //ok = ReadGeoData(stream, &temp_camera_intrinsics_prior);
-      //if (!ok) {
-      //  LOG(ERROR) << "Failed to read geo data on image "
-      //             << image_name.toStdString();
-      //  return false;
-      //}
 
       if (geo_data_included && !ReadGeoData(stream, nullptr)) {
         LOG(ERROR) << "Failed to read geo data for image "
@@ -233,22 +206,6 @@ bool StorageIO::ReadGeoData(
     CameraIntrinsicsPrior* temp_camera_intrinsics_prior) {
   double lat, lng, alt;
   stream >> lat >> lng >> alt;
-  /*
-  // Latitude.
-  temp_camera_intrinsics_prior->latitude.is_set = true;
-  stream >> temp_camera_intrinsics_prior->latitude.value[0];
-  // Longitude.
-  temp_camera_intrinsics_prior->longitude.is_set = true;
-  stream >> temp_camera_intrinsics_prior->longitude.value[0];
-  // Altitude.
-  temp_camera_intrinsics_prior->altitude.is_set = true;
-  stream >> temp_camera_intrinsics_prior->altitude.value[0];
-
-  LOG(INFO) << "GPS read: "
-            << temp_camera_intrinsics_prior->latitude.value[0] << " "
-            << temp_camera_intrinsics_prior->longitude.value[0] << " "
-            << temp_camera_intrinsics_prior->altitude.value[0] << " ";*/
-
   // TODO(uladbohdan): to assign values after it's implemented in TheiaSfm.
   return true;
 }

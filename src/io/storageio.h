@@ -8,20 +8,37 @@
  * provided).
  * The file format is:
  * ----------------------------------------------------------------------------
- * CAMERA_CALIBRATION_<TYPE>_1.0
+ * CAMERA_CALIBRATION_<TYPE>_1.1
+ * SHARED_CALIBRATION <YES/NO>
+ * GEO_DATA <YES/NO>
+ * POSITION <YES/NO>
+ * ORIENTATION <YES/NO>
  * NUMBER_OF_IMAGES <N>
- * <IMG_1_NAME> <parameters ... vary from TYPE>
+ * <camera inner parameters ... vary from TYPE ... if SHARED_CALIBRATION is YES>
+ * <IMG_1_NAME> <parameters ... vary from TYPE ... if SHARED_CALIBRATION is NO>
+ *              <lat, long, alt if GEO_DATA_INCLUDED is YES>
  * ...
  * <IMG_N_NAME> ...
  * ----------------------------------------------------------------------------
  * The file format for PINHOLE camera:
  * ----------------------------------------------------------------------------
- * CAMERA_CALIBRATION_PINHOLE_1.0
+ * CAMERA_CALIBRATION_PINHOLE_1.1
+ * SHARED_CALIBRATION YES
+ * GEO_DATA YES
+ * POSITION YES
+ * ORIENTATION YES
  * NUMBER_OF_IMAGES N
- * <IMG_1_NAME> <focal_length> <px> <py> <skew> <aspect_ratio> <rad1> <rad2>
+ * <focal_length> <px> <py> <skew> <aspect_ratio> <rad1> <rad2>
+ * <IMG_1_NAME> <lat> <long> <alt> <pos_x> <pos_y> <pos_z> <or1> <or2> <or3>
  * ...
  * <IMG_N_NAME> ...
  * ----------------------------------------------------------------------------
+ * Notice: the geolocation values (latitude, longitude, altitude) are single
+ * decimal values. Latitude must be below zero if it's South; longitude must be
+ * below zero if it's West.
+ *
+ * Notice: currently Geo, position and orientation data is ignored as it's not
+ * yet implemented in Theia.
  */
 
 #ifndef SRC_IO_STORAGEIO_H_
@@ -36,15 +53,24 @@
 
 #include "theia/theia.h"
 
+using theia::CameraIntrinsicsPrior;
+
 class Storage;
 
 class StorageIO {
  public:
   explicit StorageIO(Storage* storage);
 
+  // ReadCalibrationFile attempts to read calibration from file provided with
+  // dataset. The method simply reads the file with data analisys. If shared
+  // calibration is enabled, the map will include all images listed in a file
+  // with the same calibration parameters (you may want to use only one
+  // instance).
+  // Note that geo, position and orientaion data is currently ignored.
   bool ReadCalibrationFile(
       QString calibration_file_path,
-      QMap<QString, theia::CameraIntrinsicsPrior>* camera_intrinsics_prior);
+      QMap<QString, CameraIntrinsicsPrior>* camera_intrinsics_prior,
+      bool* shared_calibration);
 
   void WriteReconstructions(
       const std::vector<theia::Reconstruction*>& reconstructions);
@@ -54,9 +80,23 @@ class StorageIO {
  private:
   Storage* storage_;
 
-  bool ReadCalibrationFileRow(
-      QTextStream* stream,
-      theia::CameraIntrinsicsPrior* temp_camera_intrinsics_prior);
+  bool ReadCalibrationFile_Pinhole(
+      QTextStream& stream,
+      QMap<QString, CameraIntrinsicsPrior>* camera_intrinsics_prior,
+      bool* shared_calibration);
+
+  bool ReadNumberOfImages(QTextStream& stream, int* num);
+  bool ReadCameraIntrinsics_Pinhole(QTextStream& stream,
+      CameraIntrinsicsPrior* temp_camera_intrinsics_prior);
+  bool ReadGeoData(QTextStream& stream,
+      CameraIntrinsicsPrior* temp_camera_intrinsics_prior);
+  bool ReadPosition(QTextStream& stream,
+      CameraIntrinsicsPrior* temp_camera_intrinsics_prior);
+  bool ReadOrientation(QTextStream& stream,
+      CameraIntrinsicsPrior* temp_camera_intrinsics_prior);
+
+  // Helpers.
+  bool ReadYesNoExpression(QTextStream& stream, QString header, bool* yes);
 };
 
 #endif  // SRC_IO_STORAGEIO_H_

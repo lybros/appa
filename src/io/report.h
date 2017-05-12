@@ -37,7 +37,8 @@ class Report {
   // No getters/setters are implemented; may be set from friend classes.
 
   // RECONSTRUCTION options.
-  bool using_calibration_file_;
+  bool shared_calibration_;
+  bool using_camera_intrinsics_prior_;
   bool using_prebuilt_matches_;
 
   // Timing (in seconds).

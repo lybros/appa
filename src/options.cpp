@@ -45,8 +45,8 @@ void Options::ParseCommandLineArguments() {
   match_strategy_ = MatchingStrategyFromString(
         QString::fromStdString(FLAGS_match_strategy));
 
-  shared_calibration = FLAGS_shared_calibration;
-  use_camera_intrinsics_prior = FLAGS_use_camera_intrinsics_prior;
+  shared_calibration_ = FLAGS_shared_calibration;
+  use_camera_intrinsics_prior_ = FLAGS_use_camera_intrinsics_prior;
 
   intrinsics_to_optimize_ = OptimizeIntrinsicsTypeFromString(
         QString::fromStdString(FLAGS_intrinsics_to_optimize));

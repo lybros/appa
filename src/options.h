@@ -81,8 +81,8 @@ class Options {
   MatchingStrategy match_strategy_;
 
   // Reconstruction.
-  bool shared_calibration;
-  bool use_camera_intrinsics_prior;
+  bool shared_calibration_;
+  bool use_camera_intrinsics_prior_;
 
   // Reconstruction Estimator Options.
   OptimizeIntrinsicsType intrinsics_to_optimize_;

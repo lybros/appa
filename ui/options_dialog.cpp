@@ -33,9 +33,9 @@ void OptionsDialog::InitializeForms() {
                   MatchingStrategyToString(options_->match_strategy_));
 
   // Reconstruction options.
-  ui->shared_calibration_checkBox->setChecked(options_->shared_calibration);
+  ui->shared_calibration_checkBox->setChecked(options_->shared_calibration_);
   ui->use_intrinsics_prior_checkBox->setChecked(
-        options_->use_camera_intrinsics_prior);
+        options_->use_camera_intrinsics_prior_);
 
   SetCheckbox(ui->optimize_focal_length_checkBox,
               OptimizeIntrinsicsType::FOCAL_LENGTH);
@@ -76,8 +76,9 @@ void OptionsDialog::accept() {
   }
 
   if (options_enabled_ & RECONSTRUCTION_OPTIONS) {
-    options_->shared_calibration = ui->shared_calibration_checkBox->isChecked();
-    options_->use_camera_intrinsics_prior =
+    options_->shared_calibration_ =
+        ui->shared_calibration_checkBox->isChecked();
+    options_->use_camera_intrinsics_prior_ =
         ui->use_intrinsics_prior_checkBox->isChecked();
 
     OptimizeIntrinsicsType optimize_type = OptimizeIntrinsicsType::NONE;

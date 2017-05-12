@@ -10,6 +10,7 @@
 #include "project.h"
 #include "storage.h"
 
+using theia::CameraIntrinsicsPrior;
 using theia::Reconstruction;
 using theia::ReconstructionBuilder;
 using theia::ReconstructionBuilderOptions;

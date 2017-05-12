@@ -148,24 +148,28 @@ const QString& Storage::GetOutputLocation() const {
 }
 
 bool Storage::SetOutputLocation(const QString& output_location) {
-  // Creating a structure of output location.
-  bool ok;
-  ok = QDir().mkpath(output_location);
-  if (!ok) {
-    return false;
+  // Checking if storage structure already exists and creating it, if it's not.
+  if (!QFileInfo(output_location).exists()) {
+    bool ok = QDir().mkpath(output_location);
+    if (!ok) {
+      return false;
+    }
   }
-  ok = QDir(output_location).mkdir("models");
-  if (!ok) {
-    return false;
+  if (!QFileInfo(QDir(output_location).filePath("models")).exists()) {
+    bool ok = QDir(output_location).mkdir("models");
+    if (!ok) {
+      return false;
+    }
   }
   output_location_ = output_location;
   return true;
 }
 
 bool Storage::GetCalibration(
-    QMap<QString, theia::CameraIntrinsicsPrior>* camera_intrinsics_prior) {
+    QMap<QString, theia::CameraIntrinsicsPrior>* camera_intrinsics_prior,
+    bool* shared_calibration) {
   return StorageIO(this).ReadCalibrationFile(GetCameraIntrinsicsPath(),
-                                             camera_intrinsics_prior);
+    camera_intrinsics_prior, shared_calibration);
 }
 
 QString Storage::GetCameraIntrinsicsPath() const {

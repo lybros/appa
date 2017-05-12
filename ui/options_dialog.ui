@@ -82,10 +82,10 @@
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>30</y>
+      <x>11</x>
+      <y>31</y>
       <width>301</width>
-      <height>285</height>
+      <height>281</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -112,7 +112,8 @@ the same camera</string>
         </font>
        </property>
        <property name="text">
-        <string>Initialize cameras with prior values</string>
+        <string>Initialize cameras with prior intrinsics
+(if file is provided)</string>
        </property>
       </widget>
      </item>

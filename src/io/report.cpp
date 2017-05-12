@@ -78,16 +78,10 @@ bool Report::GenerateSmartReconstructionReport(QString filepath) {
   r << endl;
 
   r << "----- RECONSTRUCTION -----" << endl;
-  r << "shared calibration mode: "
-    << (options_->shared_calibration ? "on" : "off") << endl
-    << "prior camera information: ";
-  if (options_->use_camera_intrinsics_prior) {
-    r << "from file" << endl
-      << "  reading calibration file: "
-      << (using_calibration_file_ ? "succeeded" : "failed / no need") << endl;
-  } else {
-    r << "from exif" << endl;
-  }
+  r << "shared calibration: "
+    << (shared_calibration_ ? "applied" : "not applied") << endl
+    << "prior camera intrinsics: "
+    << (using_camera_intrinsics_prior_ ? "from file" : "from exif") << endl;
   r << "timing:" << endl
     << "  overall:        " << overall_time_ << "s" << endl
     << "  reconstruction: " << reconstruction_time_ << "s" << endl

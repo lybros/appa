@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     awesome->initFontAwesome();
 
     MainWindow w;
-    w.set_icons(awesome);
+    w.SetIcons(awesome);
     w.show();
 
     return a.exec();

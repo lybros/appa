@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent),
   ui->imagesPreviewScrollArea->setVisible(false);
 }
 
-void MainWindow::set_icons(QtAwesome* awesome) {
+void MainWindow::SetIcons(QtAwesome* awesome) {
   awesome->initFontAwesome();
   QVariantMap options;
 // For some reasons icons with default scale-factor does not look good
@@ -190,10 +190,20 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_actionVisualizeBinary_triggered() {
-  view_->BuildFromDefaultPath();
+  theia::Reconstruction* model = SelectModel();
+  view_->Visualize(model);
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {
+  Reconstruction* model = SelectModel();
+
+  if (!model) {
+    LOG(WARNING) << "Provide model to search!";
+    return;
+  }
+
+  view_->Visualize(model);
+
   QString image_path = QFileDialog::getOpenFileName(
       this,
       tr("Choose image for search"),
@@ -203,8 +213,6 @@ void MainWindow::on_actionSearch_Image_triggered() {
       QFileDialog::DontUseNativeDialog | QFileDialog::ReadOnly);
 
   if (!image_path.length()) { return; }
-
-//  view_->BuildFromDefaultPath();
 
   std::function<void(QList<QSet<theia::TrackId>*>)> on_finish =
       [this](QList<QSet<theia::TrackId>*> found_tracks) {   // why QList??
@@ -218,7 +226,8 @@ void MainWindow::on_actionSearch_Image_triggered() {
       QtConcurrent::run(
           active_project_,
           &Project::SearchImage,
-          image_path),
+          image_path,
+          model),
       on_finish);
 }
 
@@ -309,4 +318,37 @@ void MainWindow::EnableActions() {
   ui->actionSearch_Image->setEnabled(true);
   // ui->actionStart_Reconstruction->setEnabled(true);
   ui->actionVisualizeBinary->setEnabled(true);
+}
+
+theia::Reconstruction* MainWindow::SelectModel() {
+  QStringList full_names = active_project_->GetStorage()->GetReconstructions();
+
+  if (full_names.empty()) {
+    QMessageBox::warning(
+        this, "No models available",
+        "No models were found in filesystem. "
+            "Start reconstruction process to create a new one!",
+        QMessageBox::Ok);
+    return NULL;
+  }
+
+  QStringList short_names;
+  for (auto& full_name : full_names) {
+    short_names << FileNameFromPath(full_name);
+  }
+
+  bool ok;
+  QString reconstruction_name =
+      QInputDialog::getItem(
+          this, "Reconstruction picker",
+          "Choose a reconstruction",
+          short_names, 0, false, &ok);
+
+  if (!ok || (reconstruction_name == "")) {
+    LOG(WARNING) << "Failed to choose a model.";
+    return NULL;
+  }
+
+  return active_project_->GetStorage()->GetReconstruction(
+      full_names[short_names.indexOf(QRegExp(reconstruction_name))]);
 }

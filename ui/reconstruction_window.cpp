@@ -2,9 +2,6 @@
 
 #include "reconstruction_window.h"
 
-#include <QInputDialog>
-#include <QMessageBox>
-
 ReconstructionWindow::ReconstructionWindow() : reconstruction_(nullptr) {
   QGLViewer();
 }
@@ -18,43 +15,15 @@ void ReconstructionWindow::UpdateActiveProject(Project* project) {
   project_ = project;
 }
 
-void ReconstructionWindow::BuildFromDefaultPath() {
+void ReconstructionWindow::Visualize(theia::Reconstruction* reconstruction) {
   world_points_.clear();
 
-  QStringList full_names = project_->GetStorage()->GetReconstructions();
-  if (full_names.empty()) {
-    QMessageBox::warning(
-        this, "No models available",
-        "No models were found in filesystem. "
-            "Start reconstruction process to create a new one!",
-        QMessageBox::Ok);
+  if (!reconstruction) {
+    LOG(WARNING) << "Provide reconstruction to visualize it!";
     return;
   }
 
-  QStringList short_names;
-  for (auto& full_name : full_names) {
-    short_names << FileNameFromPath(full_name);
-  }
-
-  bool ok;
-  QString reconstruction_name =
-      QInputDialog::getItem(
-          this, "Reconstruction picker",
-          "Choose a reconstruction to render",
-          short_names, 0, false, &ok);
-
-  if (!ok || (reconstruction_name == "")) {
-    LOG(WARNING) << "Failed to choose a model to render.";
-    return;
-  }
-
-  reconstruction_ = project_->GetStorage()->GetReconstruction(
-      full_names[short_names.indexOf(QRegExp(reconstruction_name))]);
-
-  if (!reconstruction_) {
-    LOG(WARNING) << "Failed to get reconstruction to render!";
-    return;
-  }
+  reconstruction_ = reconstruction;
 
   // Centers the reconstruction based on the absolute deviation of 3D points.
   reconstruction_->Normalize();
@@ -259,5 +228,4 @@ void ReconstructionWindow::SetSelectedPoints(
 }
 
 ReconstructionWindow::~ReconstructionWindow() {
-  delete reconstruction_;
 }

@@ -79,7 +79,8 @@ bool StorageIO::ReadCalibrationFile_Pinhole(
   if (shared_calibration) {
     // The file has shared calibration structure.
     CameraIntrinsicsPrior shared_camera_intrinsics_prior;
-    if (!ReadCameraIntrinsics_Pinhole(stream, &shared_camera_intrinsics_prior)) {
+    if (!ReadCameraIntrinsics_Pinhole(stream,
+                                      &shared_camera_intrinsics_prior)) {
       LOG(ERROR) << "Failed to read shared camera intrinsics.";
       return false;
     }
@@ -116,7 +117,8 @@ bool StorageIO::ReadCalibrationFile_Pinhole(
       stream >> image_name;
       CameraIntrinsicsPrior temp_camera_intrinsics_prior;
 
-      if (!ReadCameraIntrinsics_Pinhole(stream, &temp_camera_intrinsics_prior)) {
+      if (!ReadCameraIntrinsics_Pinhole(stream,
+                                        &temp_camera_intrinsics_prior)) {
         LOG(ERROR) << "Failed to read camera intrinsics for image "
                    << image_name.toStdString();
         return false;

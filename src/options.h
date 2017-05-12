@@ -83,7 +83,6 @@ class Options {
   // Reconstruction.
   bool shared_calibration_;
   bool use_camera_intrinsics_prior_;
-  bool use_geodata_;
 
   // Reconstruction Estimator Options.
   OptimizeIntrinsicsType intrinsics_to_optimize_;

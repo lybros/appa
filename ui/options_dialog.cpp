@@ -36,7 +36,6 @@ void OptionsDialog::InitializeForms() {
   ui->shared_calibration_checkBox->setChecked(options_->shared_calibration_);
   ui->use_intrinsics_prior_checkBox->setChecked(
         options_->use_camera_intrinsics_prior_);
-  ui->use_geodata_checkBox->setChecked(options_->use_geodata_);
 
   SetCheckbox(ui->optimize_focal_length_checkBox,
               OptimizeIntrinsicsType::FOCAL_LENGTH);
@@ -81,7 +80,6 @@ void OptionsDialog::accept() {
         ui->shared_calibration_checkBox->isChecked();
     options_->use_camera_intrinsics_prior_ =
         ui->use_intrinsics_prior_checkBox->isChecked();
-    options_->use_geodata_ = ui->use_geodata_checkBox->isChecked();
 
     OptimizeIntrinsicsType optimize_type = OptimizeIntrinsicsType::NONE;
     if (ui->optimize_focal_length_checkBox->isChecked()) {

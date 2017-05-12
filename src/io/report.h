@@ -39,7 +39,6 @@ class Report {
   // RECONSTRUCTION options.
   bool shared_calibration_;
   bool using_camera_intrinsics_prior_;
-  bool using_geodata_prior_;
   bool using_prebuilt_matches_;
 
   // Timing (in seconds).

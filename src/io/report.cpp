@@ -81,10 +81,7 @@ bool Report::GenerateSmartReconstructionReport(QString filepath) {
   r << "shared calibration: "
     << (shared_calibration_ ? "applied" : "not applied") << endl
     << "prior camera intrinsics: "
-    << (using_camera_intrinsics_prior_ ? "from file" : "from exif") << endl
-    << "prior geodata: "
-    << (using_geodata_prior_ ? "read from file" : "no prior estimation")
-    << endl;
+    << (using_camera_intrinsics_prior_ ? "from file" : "from exif") << endl;
   r << "timing:" << endl
     << "  overall:        " << overall_time_ << "s" << endl
     << "  reconstruction: " << reconstruction_time_ << "s" << endl

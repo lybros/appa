@@ -67,7 +67,7 @@ class Storage {
   QStringList& GetReconstructions();
 
   bool GetCalibration(QMap<QString, theia::CameraIntrinsicsPrior>*,
-                      bool* shared_calibration, bool* geo_data_included);
+                      bool* shared_calibration);
 
   void LoadModelsList();
 

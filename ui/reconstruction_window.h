@@ -3,6 +3,8 @@
 #ifndef UI_RECONSTRUCTION_WINDOW_H_
 #define UI_RECONSTRUCTION_WINDOW_H_
 
+#include <algorithm>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -19,7 +21,8 @@ struct WorldPoint {
   QVector3D coords;
   QColor color;
   theia::TrackId trackId;
-  bool is_highlighted;
+  bool is_found;
+  bool is_selected;
 };
 
 class ModifiedCamera : public theia::Camera {
@@ -63,8 +66,11 @@ class ReconstructionWindow : public QGLViewer {
   // The name of the View is the same with Image name (not the full path).
   void SetHighlightedViewNames(const QVector<QString>& views);
 
-  // Set highlight flag for WordPoint
-  void SetHighlightedPoints(const QSet<theia::TrackId>* h_tracks);
+  // Set found flag for WorldPoint
+  void SetFoundPoints(const QSet<theia::TrackId>* found_tracks);
+
+  // Set selected flag for WorldPoint
+  void SetSelectedPoints(const std::multiset<theia::TrackId>& s_tracks);
 
   ~ReconstructionWindow();
 
@@ -75,6 +81,7 @@ class ReconstructionWindow : public QGLViewer {
 
  private:
   Project* project_;
+  theia::Reconstruction* reconstruction_;
 
   // TODO(uladbohdan): to manage the inconsistency: to use either std::vector
   // ot QVector.
@@ -83,7 +90,7 @@ class ReconstructionWindow : public QGLViewer {
 
   QVector<QString> highlighted_views_;
 
-  void InitCameras(theia::Reconstruction* reconstruction);
+  void InitCameras();
 
   void UpdateHighlightedCameras();
 

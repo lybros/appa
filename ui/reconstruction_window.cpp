@@ -5,7 +5,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-ReconstructionWindow::ReconstructionWindow() {
+ReconstructionWindow::ReconstructionWindow() : reconstruction_(nullptr) {
   QGLViewer();
 }
 
@@ -23,10 +23,11 @@ void ReconstructionWindow::BuildFromDefaultPath() {
 
   QStringList full_names = project_->GetStorage()->GetReconstructions();
   if (full_names.empty()) {
-    QMessageBox::warning(this, "No models available",
-                         "No models were found in filesystem. "
-                         "Start reconstruction process to create a new one!",
-                         QMessageBox::Ok);
+    QMessageBox::warning(
+        this, "No models available",
+        "No models were found in filesystem. "
+            "Start reconstruction process to create a new one!",
+        QMessageBox::Ok);
     return;
   }
 
@@ -37,28 +38,30 @@ void ReconstructionWindow::BuildFromDefaultPath() {
 
   bool ok;
   QString reconstruction_name =
-      QInputDialog::getItem(this, "Reconstruction picker",
-                            "Choose a reconstruction to render",
-                            short_names, 0, false, &ok);
+      QInputDialog::getItem(
+          this, "Reconstruction picker",
+          "Choose a reconstruction to render",
+          short_names, 0, false, &ok);
+
   if (!ok || (reconstruction_name == "")) {
     LOG(WARNING) << "Failed to choose a model to render.";
     return;
   }
 
-  theia::Reconstruction* reconstruction =
-      project_->GetStorage()->GetReconstruction(
-        full_names[short_names.indexOf(QRegExp(reconstruction_name))]);
-  if (!reconstruction) {
+  reconstruction_ = project_->GetStorage()->GetReconstruction(
+      full_names[short_names.indexOf(QRegExp(reconstruction_name))]);
+
+  if (!reconstruction_) {
     LOG(WARNING) << "Failed to get reconstruction to render!";
     return;
   }
 
   // Centers the reconstruction based on the absolute deviation of 3D points.
-  reconstruction->Normalize();
-  world_points_.reserve(reconstruction->NumTracks());
+  reconstruction_->Normalize();
+  world_points_.reserve(reconstruction_->NumTracks());
 
-  for (const theia::TrackId track_id : reconstruction->TrackIds()) {
-    const auto* track = reconstruction->Track(track_id);
+  for (const theia::TrackId track_id : reconstruction_->TrackIds()) {
+    const auto* track = reconstruction_->Track(track_id);
     if (track == nullptr || !track->IsEstimated()) {
       continue;
     }
@@ -77,12 +80,13 @@ void ReconstructionWindow::BuildFromDefaultPath() {
     world_point.coords = point_coords;
     world_point.color = point_color;
     world_point.trackId = track_id;
-    world_point.is_highlighted = false;
+    world_point.is_found = false;
+    world_point.is_selected = false;
 
     world_points_.emplace_back(world_point);
   }
 
-  InitCameras(reconstruction);
+  InitCameras();
 
   LOG(INFO) << "DRAWING: num world points: " << world_points_.size();
   LOG(INFO) << "DRAWING: num cameras: " << cameras_.size();
@@ -93,13 +97,13 @@ void ReconstructionWindow::BuildFromDefaultPath() {
   update();
 }
 
-void ReconstructionWindow::InitCameras(theia::Reconstruction* reconstruction) {
+void ReconstructionWindow::InitCameras() {
   cameras_.clear();
 
-  cameras_.reserve(reconstruction->NumViews());
+  cameras_.reserve(reconstruction_->NumViews());
 
-  for (const theia::ViewId view_id : reconstruction->ViewIds()) {
-    const auto* view = reconstruction->View(view_id);
+  for (const theia::ViewId view_id : reconstruction_->ViewIds()) {
+    const auto* view = reconstruction_->View(view_id);
     if (view == nullptr || !view->IsEstimated()) {
       continue;
     }
@@ -113,9 +117,24 @@ void ReconstructionWindow::InitCameras(theia::Reconstruction* reconstruction) {
 
 void ReconstructionWindow::UpdateHighlightedCameras() {
   for (ModifiedCamera& camera : cameras_) {
-    camera.SetHighlighted(
-        highlighted_views_.contains(camera.GetViewName()));
+    camera.SetHighlighted(highlighted_views_.contains(camera.GetViewName()));
   }
+
+  if (!reconstruction_) { return; }
+
+  std::multiset<theia::TrackId> selected_tracks;
+  for (QString viewName : highlighted_views_) {
+    const theia::View* view = reconstruction_->View(
+        reconstruction_->ViewIdFromName(viewName.toStdString()));
+
+    if (!view) { continue; }
+
+    std::vector<theia::TrackId> tracks = view->TrackIds();
+    std::copy(tracks.begin(), tracks.end(),
+              std::inserter(selected_tracks, selected_tracks.end()));
+  }
+
+  SetSelectedPoints(selected_tracks);
 }
 
 void ReconstructionWindow::init() {
@@ -133,9 +152,14 @@ void ReconstructionWindow::draw() {
     auto coords = point.coords;
     auto color = point.color;
 
-    if (point.is_highlighted) {
+    if (point.is_found) {
+      // Drawing founded track with Red.
       glColor3f(1.0, 0.0, 0.0);
+    } else if (point.is_selected) {
+      // Drawing track from selected view with Blue.
+      glColor3f(0.0, 0.0, 1.0);
     } else {
+      // Drawing track with it real color.
       glColor3f(color.redF(), color.greenF(), color.blueF());
     }
     glVertex3i(coords.x(), coords.y(), coords.z());
@@ -216,15 +240,24 @@ void ReconstructionWindow::SetHighlightedViewNames(
   update();
 }
 
-void ReconstructionWindow::SetHighlightedPoints(
-    const QSet<theia::TrackId>* h_tracks) {
+void ReconstructionWindow::SetFoundPoints(
+    const QSet<theia::TrackId>* found_tracks) {
 
   for (WorldPoint& point : world_points_) {
-    point.is_highlighted = h_tracks->contains(point.trackId);
+    point.is_found = found_tracks->contains(point.trackId);
   }
 
   update();
 }
 
+void ReconstructionWindow::SetSelectedPoints(
+    const std::multiset<theia::TrackId>& s_tracks) {
+
+  for (WorldPoint& point : world_points_) {
+    point.is_selected = s_tracks.find(point.trackId) != s_tracks.end();
+  }
+}
+
 ReconstructionWindow::~ReconstructionWindow() {
+  delete reconstruction_;
 }

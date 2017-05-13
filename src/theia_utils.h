@@ -5,6 +5,7 @@
 
 #include <QString>
 
+#include "opencv2/features2d/features2d.hpp"
 #include "theia/theia.h"
 
 using theia::DescriptorExtractorType;
@@ -29,5 +30,7 @@ MatchingStrategy MatchingStrategyFromString(QString);
 // separated with comma with no spaces. Example: "focal,skew,raddist"
 // Returns NONE if empty or invalid string.
 OptimizeIntrinsicsType OptimizeIntrinsicsTypeFromString(QString);
+
+cv::Mat* TheiaImageToOpenCVImage(const theia::FloatImage& image);
 
 #endif  // SRC_THEIA_UTILS_H_

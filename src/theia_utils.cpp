@@ -60,3 +60,19 @@ OptimizeIntrinsicsType OptimizeIntrinsicsTypeFromString(QString str) {
 
   return type;
 }
+
+cv::Mat* TheiaImageToOpenCVImage(const theia::FloatImage& image) {
+  theia::FloatImage grayscale_theia_image = image.AsGrayscaleImage();
+
+  cv::Mat* cvimage = new cv::Mat(grayscale_theia_image.Height(),
+                        grayscale_theia_image.Width(), CV_8UC1);
+
+  for (int i = 0; i < grayscale_theia_image.Height(); i++) {
+    for (int j = 0; j < grayscale_theia_image.Width(); j++) {
+      cvimage->at<uchar>(i, j) =
+          static_cast<uchar>(255 * grayscale_theia_image.GetXY(i, j, 0));
+    }
+  }
+
+  return cvimage;
+}

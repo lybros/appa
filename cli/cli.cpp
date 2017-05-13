@@ -11,10 +11,15 @@
 
 #include "../src/project.h"
 
+/* Put your includes for running experiments purposes below: */
+// #include <algorithm>
+/* Don't forget to remove them afterwards. */
+
 /* The minimum sets of parameters in CLI mode (to pass verification) are:
  *   new + project_name + project_path + images_path + action
  *   open + action
  *   temp + images_path + action
+ *   experiment
  */
 
 DEFINE_string(cli_mode, "",
@@ -37,7 +42,15 @@ DEFINE_string(action, "",
               "Choose if you want to extract features, match them or run "
               "reconstruction. Visualization is only available in 'ui' mode");
 
+void RunExperiment();
+
 bool VerifyCommandlineArguments() {
+  if (FLAGS_cli_mode == "experiment") {
+    // You don't need any other mandatory flags if you're running your
+    // experiment using RunExperiment() function.
+    return true;
+  }
+
   if (FLAGS_cli_mode != "new" &&
       FLAGS_cli_mode != "open" &&
       FLAGS_cli_mode != "temp") {
@@ -107,6 +120,9 @@ void RunCLI() {
                           temp_project_path,
                           QString::fromStdString(FLAGS_images_path),
                           QString::fromStdString(FLAGS_output_path));
+  } else if (FLAGS_cli_mode == "experiment") {
+    RunExperiment();
+    return;
   }
 
   if (FLAGS_action == "reconstruction") {
@@ -124,4 +140,16 @@ void RunCLI() {
 
   LOG(INFO) << "Quitting the application...";
   delete project;
+}
+
+// This is a place to put your experimental code.
+// To run this experimental function, you'll need the command:
+// ./appa --mode=cli --cli_mode=experiment
+//
+// Don't forget to remove any redundant include-s and to clean the function so
+// it only contains LOG(INFO) row, comment and 'return;' row.
+void RunExperiment() {
+  LOG(INFO) << "Running experiments.";
+  /* Put your experimental code here. */
+  return;
 }

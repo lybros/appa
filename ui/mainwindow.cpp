@@ -195,6 +195,10 @@ void MainWindow::on_actionVisualizeBinary_triggered() {
 }
 
 void MainWindow::on_actionSearch_Image_triggered() {
+  SearchDialog search_dialog(active_project_->GetImagesPath());
+  SearchDialogOptions search_options;
+  search_dialog.SetOptions(&search_options);
+
   Reconstruction* model = SelectModel();
 
   if (!model) {
@@ -202,33 +206,31 @@ void MainWindow::on_actionSearch_Image_triggered() {
     return;
   }
 
-  view_->Visualize(model);
+  if (search_dialog.exec()) {
+    view_->Visualize(model);
 
-  QString image_path = QFileDialog::getOpenFileName(
-      this,
-      tr("Choose image for search"),
-      active_project_->GetImagesPath(),
-      tr("images (*.jpg *.jpeg *.png)"),
-      0,
-      QFileDialog::DontUseNativeDialog | QFileDialog::ReadOnly);
+    LOG(INFO) << "Search params:"
+              << "\n\t" << search_options.features_num
+              << "\n\t" << search_options.image_path.toStdString();
 
-  if (!image_path.length()) { return; }
+    std::function<void(QList<QSet<theia::TrackId>*>)> on_finish =
+        [this](QList<QSet<theia::TrackId>*> found_tracks) {   // why QList??
+          if (!found_tracks.size()) { return; }
+          view_->SetFoundPoints(found_tracks[0]);
+          delete found_tracks[0];
+        };
 
-  std::function<void(QList<QSet<theia::TrackId>*>)> on_finish =
-      [this](QList<QSet<theia::TrackId>*> found_tracks) {   // why QList??
-        if (!found_tracks.size()) { return; }
-        view_->SetFoundPoints(found_tracks[0]);
-        delete found_tracks[0];
-      };
+    process_manager_->StartNewProcess(
+        QString("Search image " + search_options.image_path + "..."),
+        QtConcurrent::run(
+            active_project_,
+            &Project::SearchImage,
+            search_options.image_path,
+            model,
+            search_options.features_num),
+        on_finish);
 
-  process_manager_->StartNewProcess(
-      QString("Search image " + image_path + "..."),
-      QtConcurrent::run(
-          active_project_,
-          &Project::SearchImage,
-          image_path,
-          model),
-      on_finish);
+  }
 }
 
 void MainWindow::UpdateActiveProjectInfo() {

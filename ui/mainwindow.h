@@ -23,6 +23,7 @@
 #include "options_dialog.h"
 #include "process_manager.h"
 #include "reconstruction_window.h"
+#include "search_dialog.h"
 
 #include "../src/project.h"
 #include "../src/utils.h"

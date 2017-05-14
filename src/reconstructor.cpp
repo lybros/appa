@@ -151,13 +151,13 @@ bool Reconstructor::ExtractFeaturesMatches(
         report_->shared_calibration_ = true;
       } else {
         LOG(INFO) << "Ignoring user request of shared_calibration due to "
-                     "the structure of calibration file.";
+            "the structure of calibration file.";
       }
     } else {
       if (shared_calibration) {
         LOG(INFO) << "File has shared_calibration structure but user didn't "
-                     "request to use the feature. Cameras will be initialized "
-                     "with the same values but algorithm will not use that.";
+            "request to use the feature. Cameras will be initialized "
+            "with the same values but algorithm will not use that.";
       } else {
         LOG(INFO) << "Running without shared_calibration";
       }

@@ -74,6 +74,7 @@ class Options {
 
   // Feature Extraction.
   DescriptorExtractorType descriptor_type_;
+  int max_num_features_;
 
   // Feature Matching.
   bool match_out_of_core_;

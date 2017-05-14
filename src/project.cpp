@@ -54,12 +54,12 @@ void Project::BuildModelToBinary() {
 }
 
 QSet<theia::TrackId>* Project::SearchImage(
-    QString file_path, Reconstruction* model) {
+    QString file_path, Reconstruction* model, int features_num) {
   QSet<theia::TrackId>* found_tracks = new QSet<theia::TrackId>();
 
   std::vector<theia::Keypoint> keypoints;
   std::vector<Eigen::VectorXf> descriptors;
-  features_->ExtractFeature(file_path, &keypoints, &descriptors);
+  features_->ExtractFeature(file_path, &keypoints, &descriptors, features_num);
   LOG(INFO) << "Successfully extract " << descriptors.size() << " features";
 
   Features::FeaturesMap features;

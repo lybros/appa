@@ -19,6 +19,8 @@ DEFINE_int32(num_threads, 4, "");
 
 // Feature extraction.
 DEFINE_string(descriptor_type, "SIFT", "");
+DEFINE_int32(max_num_features, 16384,
+             "The features returned will be no larger than this size");
 
 // Feature matching.
 DEFINE_bool(match_out_of_core, true, "");
@@ -38,18 +40,19 @@ void Options::ParseCommandLineArguments() {
   num_threads_ = FLAGS_num_threads;
 
   descriptor_type_ = DescriptorExtractorTypeFromString(
-        QString::fromStdString(FLAGS_descriptor_type));
+      QString::fromStdString(FLAGS_descriptor_type));
+  max_num_features_ = FLAGS_max_num_features;
 
   match_out_of_core_ = FLAGS_match_out_of_core;
   perform_geometric_verification_ = FLAGS_perform_geometric_verification;
   match_strategy_ = MatchingStrategyFromString(
-        QString::fromStdString(FLAGS_match_strategy));
+      QString::fromStdString(FLAGS_match_strategy));
 
   shared_calibration_ = FLAGS_shared_calibration;
   use_camera_intrinsics_prior_ = FLAGS_use_camera_intrinsics_prior;
 
   intrinsics_to_optimize_ = OptimizeIntrinsicsTypeFromString(
-        QString::fromStdString(FLAGS_intrinsics_to_optimize));
+      QString::fromStdString(FLAGS_intrinsics_to_optimize));
 
   LOG(INFO) << "Options flags parsed successfully.";
 }
@@ -77,6 +80,7 @@ FeatureExtractor::Options Options::GetFeatureExtractorOptions() {
   options.output_directory = QDir(output_location_).
       filePath("features/").toStdString();
   options.num_threads = num_threads_;
+  options.max_num_features = max_num_features_;
 
   return options;
 }

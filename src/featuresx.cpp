@@ -38,17 +38,20 @@ void Features::Extract(
 void Features::ExtractFeature(
     QString filename,
     std::vector<theia::Keypoint>* keypoints,
-    std::vector<Eigen::VectorXf>* descriptors
+    std::vector<Eigen::VectorXf>* descriptors,
+    int features_num
 ) {
   LOG(INFO) << "Start process " << filename.toStdString();
   std::vector<std::string> filenames;
   std::vector<std::vector<theia::Keypoint> > keypoints_vector;
   std::vector<std::vector<Eigen::VectorXf> > descriptors_vector;
   filenames.push_back(filename.toStdString());
+  theia::FeatureExtractor::Options options = options_->GetFeatureExtractorOptions();
+  options.max_num_features = features_num;
 
   theia::Timer timer;
   std::unique_ptr<theia::FeatureExtractor> extractor(
-      new theia::FeatureExtractor(options_->GetFeatureExtractorOptions()));
+      new theia::FeatureExtractor(options));
   CHECK(extractor->Extract(filenames, &keypoints_vector, &descriptors_vector))
   << "Feature extraction failed!";
   const double time = timer.ElapsedTimeInSeconds();

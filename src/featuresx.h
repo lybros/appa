@@ -45,7 +45,8 @@ class Features {
   // Extract features for single image. Doesn't work with disc.
   void ExtractFeature(QString filename,
                       std::vector<theia::Keypoint>* keypoints,
-                      std::vector<Eigen::VectorXf>* descriptors);
+                      std::vector<Eigen::VectorXf>* descriptors,
+                      int features_num = 5000);
 
   // Load features and descriptors,
   // return map with <image name> as key

@@ -14,7 +14,7 @@ Implemented as a part of [uladbohdan](https://github.com/uladbohdan) and [drapeg
 - [ ] **Windows**
 
 #### macOS Sierra `10.12.4`
-![](http://res.cloudinary.com/dzsjwgjii/image/upload/v1492271418/appa-mac-demo.png)
+![](http://res.cloudinary.com/dzsjwgjii/image/upload/v1501505020/appa-main.png)
 
 #### ubuntu `16.04`
 ![](http://res.cloudinary.com/dzsjwgjii/image/upload/v1492276224/appa-linux-demo.png)

@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include <QDir>
 #include <QMap>
@@ -22,6 +23,7 @@
 
 #include <theia/theia.h>
 #include <theia/matching/distance.h>
+#include <theia/matching/image_pair_match.h>
 
 #include "io/projectio.h"
 #include "featuresx.h"
@@ -106,6 +108,12 @@ class Project {
   Features* features_;
 
   QString GetConfigurationFilePath();
+
+  // TODO(uladbohdan): to consider moving it somewhere else.
+  //
+  // The key is a two ORB_SLAM2 timestamps merged. ImagePairMatch gathers all
+  // the data about these two images combination.
+  std::unordered_map<int, theia::ImagePairMatch> slam_data_;
 };
 
 #endif  // SRC_PROJECT_H_

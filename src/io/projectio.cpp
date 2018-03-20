@@ -158,3 +158,7 @@ bool ProjectIO::ReadOutputLocation(QTextStream& stream) {
       << "Failed to initialize output location from config file.";
   return true;
 }
+
+bool ProjectIO::ReadSlamData() {
+  return true;
+}

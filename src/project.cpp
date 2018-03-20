@@ -111,6 +111,10 @@ QSet<theia::TrackId>* Project::SearchImage(
   return found_tracks;
 }
 
+void Project::SLAM_Experiment() {
+  CHECK(ReadSlamData()) << "Failed to read Experimental SLAM data.";
+}
+
 void Project::ExtractFeatures() {
   features_->ForceExtract();
 }
@@ -151,6 +155,10 @@ bool Project::WriteConfigurationFile() {
 
 bool Project::ReadConfigurationFile() {
   return ProjectIO(this).ReadConfigurationFile();
+}
+
+bool Project::ReadSlamData() {
+  return ProjectIO(this).ReadSlamData();
 }
 
 QString Project::GetConfigurationFilePath() {

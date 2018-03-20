@@ -45,8 +45,8 @@ bool VerifyCommandlineArguments() {
     return false;
   }
 
-  // TODO(uladbohdan): to support more actions.
-  if (FLAGS_action != "reconstruction") {
+  // TODO(uladbohdan): to rename 'slam' action.
+  if (FLAGS_action != "reconstruction" && FLAGS_action != "slam") {
     LOG(ERROR) << "You must pass a valid action to proceed.";
     return false;
   }
@@ -82,7 +82,7 @@ void RunCLI() {
   LOG(INFO) << "Running in CLI mode.";
 
   if (!VerifyCommandlineArguments()) {
-    LOG(ERROR) << "CL arguments verification failed.";
+    LOG(ERROR) << "Command Line arguments verification failed.";
     return;
   }
 
@@ -112,6 +112,9 @@ void RunCLI() {
   if (FLAGS_action == "reconstruction") {
     LOG(INFO) << "Starting reconstruction...";
     project->BuildModelToBinary();
+  } else if (FLAGS_action == "slam") {
+    LOG(INFO) << "Performing SLAM experiments...";
+    project->SLAM_Experiment();
   }
 
   if (FLAGS_cli_mode == "temp") {

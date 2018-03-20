@@ -44,6 +44,8 @@ class ProjectIO {
   bool WriteConfigurationFile();
   bool ReadConfigurationFile();
 
+  bool ReadSlamData();
+
   ~ProjectIO();
 
  private:

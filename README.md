@@ -8,7 +8,7 @@ Implemented as a part of [uladbohdan](https://github.com/uladbohdan) and [drapeg
 
 <img src="http://res.cloudinary.com/dzsjwgjii/image/upload/v1492274096/appa.png" height="150px" >
 
-### Supported platforms:
+### supported platforms:
 - [x] **macOS**
 - [x] **Linux**
 - [ ] **Windows**
@@ -35,18 +35,15 @@ git submodule update --init
 ```
 
 ### dependencies:
-* [OpenImageIO](https://sites.google.com/site/openimageio/home) ~ [`v1.7.11`](https://github.com/OpenImageIO/oiio/tree/Release-1.7.11)
-* [TheiaSfM](http://www.theia-sfm.org/) ~ [`v0.7`](https://github.com/sweeneychris/TheiaSfM/tree/v0.7)
-* [Qt](https://www.qt.io/) ~ `v5.7`
-* [QGLViewer](https://libqglviewer.com/) ~ `v2.6.4` 
-* [OpenGL](https://www.opengl.org/) (*seems that you already have installed it on your computer*)
+* [`OpenImageIO`](https://sites.google.com/site/openimageio/home) ~ [`v1.7.11`](https://github.com/OpenImageIO/oiio/tree/Release-1.7.11)
+* [`TheiaSfM`](http://www.theia-sfm.org/) ~ [`v0.7`](https://github.com/sweeneychris/TheiaSfM/tree/v0.7)
+* [`Qt`](https://www.qt.io/) ~ `v5.7`
+* [`QGLViewer`](https://libqglviewer.com/) ~ `v2.6.4`
+* [`OpenGL`](https://www.opengl.org/) (*seems that you already have installed it on your computer*)
 * [`cpplint`](https://github.com/cpplint/cpplint) (*optional*)
 * [`Ninja`](https://ninja-build.org/manual.html) (*optional*) for build, check the [instruction](https://gist.github.com/nevkontakte/3f22937b2c3a4ff2293c)
 
 ### setup:
-* set `DYLD_LIBRARY_PATH` environment variable to `path/to/openimageio/lib`
-* set `OPENIMAGEIO_INCLUDE_DIR` environment variable `path/to/openimageio/include`
-* set `OPENIMAGEIO_LIBRARY` environment variable to `path/to/openimageio/lib`
 * set `QT_CMAKE_DIR` environment variable to `path/to/Qt/lib/cmake/`
 * add `path/to/openimageio/bin` to `$PATH`
 * add `path/to/theiaSfM/build/bin` to `$PATH`

@@ -61,7 +61,15 @@ class MainWindow : public QMainWindow {
 
   void on_actionSearch_Image_triggered();
 
- private:
+  void on_actionRender_SLAM_Cameras_triggered();
+
+  void on_actionLoad_SLAM_triggered();
+
+  void on_actionBuild_with_SLAM_triggered();
+
+  void on_actionNew_Build_triggered();
+
+private:
   Ui::MainWindow* ui;
   Project* active_project_;
 

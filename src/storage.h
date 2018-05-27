@@ -71,6 +71,27 @@ class Storage {
 
   void LoadModelsList();
 
+  void KeepImagesSubset(QVector<QString>& subset) {
+    // TO IMPROVE.
+    slam_reduced_images_ = new QVector<QString>(subset);
+
+
+    /*slam_reduced_images_->resize(subset.size());
+    for (int i = 0; i < subset.size(); i++) {
+      (*slam_reduced_images_)[i] = subset[i];
+    }*/
+
+    LOG(INFO) << "Alternative subset created with size: " << slam_reduced_images_->length();
+  }
+
+  QVector<QString>& GetSlamImages() {
+    return *slam_reduced_images_;
+  }
+
+  QVector<QString>& GetProperImages() {
+    return slam_reduced_images_->empty() ? *images_ : *slam_reduced_images_;
+  }
+
   ~Storage();
 
  private:
@@ -84,6 +105,8 @@ class Storage {
   QVector<QString>* images_;
   QString images_path_;
   QString output_location_;
+
+  QVector<QString>* slam_reduced_images_;
 
   Options* options_;
 

@@ -227,5 +227,26 @@ void ReconstructionWindow::SetSelectedPoints(
   }
 }
 
+void ReconstructionWindow::RenderSlamExperiment(
+    std::vector<theia::Camera>& cameras) {
+  cameras_.clear();
+
+  cameras_.reserve(cameras.size());
+
+  for (const theia::Camera c : cameras) {
+    theia::Camera cc;
+    cc.SetPosition(c.GetPosition() * 100);
+    cc.SetOrientationFromRotationMatrix(c.GetOrientationAsRotationMatrix());
+    LOG(INFO) << "ROTATION: " << cc.GetOrientationAsRotationMatrix();
+    cameras_.emplace_back(ModifiedCamera(cc));
+  }
+
+  LOG(INFO) << "Cameras pushed for rendering: " << cameras_.size();
+
+  draw();
+
+  update();
+}
+
 ReconstructionWindow::~ReconstructionWindow() {
 }

@@ -71,6 +71,8 @@ class ReconstructionWindow : public QGLViewer {
   // Set selected flag for WorldPoint
   void SetSelectedPoints(const std::multiset<theia::TrackId>& s_tracks);
 
+  void RenderSlamExperiment(std::vector<theia::Camera>& cameras);
+
   ~ReconstructionWindow();
 
  protected:

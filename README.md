@@ -55,7 +55,6 @@ git submodule update --init
 * build the code
 * run `./appa` from `build/` directory
 * create new `project` and run `BuildToBinary` action
-* or download and open prebuilt [`quarry-project`](https://www.dropbox.com/s/0sfd02glicvwvo7/quarry.zip?dl=0) and run `VisualizeBinary` to see the result
 
 ### development:
 * use `LOG(INFO)` from [glog](http://rpg.ifi.uzh.ch/docs/glog.html) instead of `std::cout`. set `GLOG_logtostderr=1` env variable to enable logging

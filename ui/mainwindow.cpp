@@ -352,3 +352,24 @@ theia::Reconstruction* MainWindow::SelectModel() {
   return active_project_->GetStorage()->GetReconstruction(
       full_names[short_names.indexOf(QRegExp(reconstruction_name))]);
 }
+
+void MainWindow::on_actionRender_SLAM_Cameras_triggered() {
+    active_project_->Load_SLAM_data();
+    LoadImagesPreview();
+    LOG(INFO) << "previews updated.";
+    view_->RenderSlamExperiment(active_project_->GetSLAMCameras());
+}
+
+void MainWindow::on_actionLoad_SLAM_triggered() {
+    active_project_->Load_SLAM_data();
+    LOG(INFO) << "SLAM files loaded into the App!";
+}
+
+void MainWindow::on_actionBuild_with_SLAM_triggered() {
+    LOG(INFO) << "About to perform SLAM build...";
+    active_project_->SLAM_Build();
+}
+
+void MainWindow::on_actionNew_Build_triggered() {
+    active_project_->SLAM_New_Build();
+}

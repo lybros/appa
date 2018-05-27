@@ -7,6 +7,7 @@
 Storage::Storage() : options_(nullptr),
                      images_(nullptr),
                      images_path_(""),
+                     slam_reduced_images_(nullptr),
                      output_location_(""),
                      loaded_reconstruction_(nullptr),
                      loaded_reconstruction_name_("") {
@@ -178,5 +179,6 @@ QString Storage::GetCameraIntrinsicsPath() const {
 
 Storage::~Storage() {
   delete images_;
+  delete slam_reduced_images_;
   delete loaded_reconstruction_;
 }

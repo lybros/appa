@@ -13,7 +13,7 @@
 
 /* The minimum sets of parameters in CLI mode (to pass verification) are:
  *   new + project_name + project_path + images_path + action
- *   open + action
+ *   open + project_path + action
  *   temp + images_path + action
  */
 
@@ -100,11 +100,11 @@ void RunCLI() {
     QString temp_project_name =
         QString("appa-project-") +
         QDateTime::currentDateTime().toString(Qt::ISODate);
-    temp_project_path = QDir::temp().filePath(temp_project_name);
+    temp_project_path = "/home/parallels/tmp/" + temp_project_name; // QDir::temp().filePath(temp_project_name);
     LOG(INFO) << "Temp project will be created in "
               << temp_project_path.toStdString();
     project = new Project(temp_project_name,
-                          temp_project_path,
+                          "/home/parallels/tmp",
                           QString::fromStdString(FLAGS_images_path),
                           QString::fromStdString(FLAGS_output_path));
   }
@@ -114,7 +114,8 @@ void RunCLI() {
     project->BuildModelToBinary();
   } else if (FLAGS_action == "slam") {
     LOG(INFO) << "Performing SLAM experiments...";
-    project->SLAM_Experiment();
+    project->Load_SLAM_data();
+    project->SLAM_Build();
   }
 
   if (FLAGS_cli_mode == "temp") {

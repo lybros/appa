@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Appa</string>
+   <string>Surface Reconstruction</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -423,7 +423,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Visualize a binary (default - out/model-0.binary)</string>
+    <string>Visualize binary</string>
    </property>
    <property name="toolTip">
     <string>Visualize a binary (default - out/model-0.binary)</string>
@@ -450,7 +450,7 @@
   </action>
   <action name="actionLoad_SLAM">
    <property name="text">
-    <string>Load SLAM</string>
+    <string>Load SLAM data</string>
    </property>
    <property name="toolTip">
     <string>Load SLAM data into Memory and that is it.</string>
@@ -458,7 +458,7 @@
   </action>
   <action name="actionBuild_with_SLAM">
    <property name="text">
-    <string>Build with SLAM</string>
+    <string>Fast Build</string>
    </property>
    <property name="toolTip">
     <string>Assuming SLAM data is already loaded, building the project.</string>

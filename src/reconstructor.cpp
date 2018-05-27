@@ -181,7 +181,7 @@ bool Reconstructor::ExtractFeaturesMatches(
       // Shared calibration means adding the prior calibration to only one
       // image would be enough.
       CameraIntrinsicsPrior prior = camera_intrinsics_prior.begin().value();
-      for (QString image_path : storage_->GetProperImages()) {
+      for (QString image_path : storage_->GetImages()) {
         CHECK(reconstruction_builder->AddImageWithCameraIntrinsicsPrior(
               image_path.toStdString(),
               prior,
@@ -189,7 +189,7 @@ bool Reconstructor::ExtractFeaturesMatches(
       }
     } else {
       // No shared calibration.
-      for (QString image_path : storage_->GetProperImages()) {
+      for (QString image_path : storage_->GetImages()) {
         QString image_name = FileNameFromPath(image_path);
         if (camera_intrinsics_prior.contains(image_name)) {
           // Adding prior intrinsics only for images explicitly specified.
@@ -219,7 +219,7 @@ bool Reconstructor::ExtractFeaturesMatches(
       report_->shared_calibration_ = true;
     }
 
-    for (QString image_path : storage_->GetProperImages()) {
+    for (QString image_path : storage_->GetImages()) {
       reconstruction_builder->AddImage(image_path.toStdString(),
                                        intrinsics_group_id);
     }

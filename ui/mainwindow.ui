@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Appa</string>
+   <string>Surface Reconstruction</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -319,6 +319,10 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionVisualizeBinary"/>
+   <addaction name="actionLoad_SLAM"/>
+   <addaction name="actionRender_SLAM_Cameras"/>
+   <addaction name="actionBuild_with_SLAM"/>
+   <addaction name="actionNew_Build"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="sizePolicy">
@@ -419,7 +423,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Visualize a binary (default - out/model-0.binary)</string>
+    <string>Visualize binary</string>
    </property>
    <property name="toolTip">
     <string>Visualize a binary (default - out/model-0.binary)</string>
@@ -434,6 +438,38 @@
    </property>
    <property name="toolTip">
     <string>Run Theia's view_reconstruction binary</string>
+   </property>
+  </action>
+  <action name="actionRender_SLAM_Cameras">
+   <property name="text">
+    <string>Render SLAM Cameras</string>
+   </property>
+   <property name="toolTip">
+    <string>This only renders cameras from co-graph/KeyTrajectory file</string>
+   </property>
+  </action>
+  <action name="actionLoad_SLAM">
+   <property name="text">
+    <string>Load SLAM data</string>
+   </property>
+   <property name="toolTip">
+    <string>Load SLAM data into Memory and that is it.</string>
+   </property>
+  </action>
+  <action name="actionBuild_with_SLAM">
+   <property name="text">
+    <string>Fast Build</string>
+   </property>
+   <property name="toolTip">
+    <string>Assuming SLAM data is already loaded, building the project.</string>
+   </property>
+  </action>
+  <action name="actionNew_Build">
+   <property name="text">
+    <string>New Build</string>
+   </property>
+   <property name="toolTip">
+    <string>using SLAM_Build() method</string>
    </property>
   </action>
  </widget>

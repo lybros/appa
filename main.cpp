@@ -23,7 +23,8 @@ int main(int argc, char* argv[]) {
     awesome->initFontAwesome();
 
     MainWindow w;
-    w.SetIcons(awesome);
+    // Temporary avoiding rendering icons.
+    // w.SetIcons(awesome);
     w.show();
 
     return a.exec();

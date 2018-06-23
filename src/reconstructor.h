@@ -24,6 +24,11 @@ class Reconstructor {
 
   void SmartBuild();
 
+  // No feature extraction, no matching.
+  void FastBuild();
+
+  void SLAM_New_Build();
+
  private:
   Project* project_;
   Storage* storage_;

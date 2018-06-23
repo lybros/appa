@@ -111,6 +111,34 @@ QSet<theia::TrackId>* Project::SearchImage(
   return found_tracks;
 }
 
+void Project::Load_SLAM_data() {
+  LOG(INFO) << "About to start with SLAM experiments.";
+  CHECK(ReadSlamData()) << "Failed to read Experimental SLAM data.";
+
+  LOG(INFO) << "SLAM DATA size " << slam_data_.size();
+
+  LOG(INFO) << "181 data: " << slam_data_[181*10000+184].correspondences.size();
+
+  LOG(INFO) << "SLAM Camera Names size: " << slam_camera_names_.size();
+
+//  LOG(INFO) << "====\n" << "Starting with reconstruction...\n"
+//            << "====\n";
+
+  // Now building a subset of images.
+  storage_->KeepImagesSubset(slam_camera_names_);
+
+  LOG(INFO) << "Subset size:" << storage_->GetSlamImages().size();
+}
+
+void Project::SLAM_Build() {
+  Reconstructor(this).FastBuild();
+//  Reconstructor(this).SmartBuild();
+}
+
+void Project::SLAM_New_Build() {
+  Reconstructor(this).SLAM_New_Build();
+}
+
 void Project::ExtractFeatures() {
   features_->ForceExtract();
 }
@@ -151,6 +179,10 @@ bool Project::WriteConfigurationFile() {
 
 bool Project::ReadConfigurationFile() {
   return ProjectIO(this).ReadConfigurationFile();
+}
+
+bool Project::ReadSlamData() {
+  return ProjectIO(this).ReadSlamData();
 }
 
 QString Project::GetConfigurationFilePath() {
